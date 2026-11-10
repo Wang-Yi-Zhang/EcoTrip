@@ -1,0 +1,1714 @@
+{
+ "checked_on": "2026-11-10",
+ "places": [
+  {
+   "key": "tabin",
+   "inat_place_id": 191532,
+   "name": "Tabin Wildlife Reserve (Taman Hidupan Liar)",
+   "usable": true,
+   "bbox": {
+    "swlat": 5.059285995,
+    "swlng": 118.4599660326,
+    "nelat": 5.391040931,
+    "nelng": 118.9504904612
+   },
+   "bbox_is_approximate": false,
+   "notes": "iNat place_type=100 (open space/park), admin_level none. Bbox returned by /v1/places/autocomplete; polygon geometry not downloaded/inspected, but the place filter works (2161 obs total). Bbox is ~37 km N-S x 55 km E-W, larger than the ~1,225 km2 reserve (includes surroundings/Darvel Bay). Prefer place_id over bbox. A second smaller place exists: 194853 Tabin Virgin Jungle Reserve (bbox 5.1931,118.5037 to 5.2168,118.6731) which contains the resort/Lipad area.",
+   "source": "https://api.inaturalist.org/v1/places/autocomplete?q=Tabin (checked 2026-11-10)"
+  },
+  {
+   "key": "danum",
+   "inat_place_id": 191493,
+   "name": "Danum Valley Conservation Area (Kawasan Pemuliharaan)",
+   "usable": true,
+   "bbox": {
+    "swlat": 4.818540873,
+    "swlng": 117.573994641,
+    "nelat": 5.058796333,
+    "nelng": 117.80833887
+   },
+   "bbox_is_approximate": false,
+   "notes": "iNat place_type=100, bbox returned; place filter works (5284 research-grade obs, all taxa). Bbox ~27 x 26 km; Danum CA is 438 km2 (Wikipedia). IMPORTANT: place-filtered counts EXCLUDE taxon-obscured observations (CR/EN/some VU taxa e.g. orangutan, elephant, bearded pig), so place totals of 0 for those taxa do not mean absent.",
+   "source": "https://api.inaturalist.org/v1/places/autocomplete?q=Danum (checked 2026-11-10)"
+  }
+ ],
+ "species": [
+  {
+   "sci": "Pongo pygmaeus",
+   "query_name": "Pongo pygmaeus",
+   "en": "Bornean Orangutan",
+   "inat_preferred_common": "Bornean Orangutan",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 43582,
+   "order": "Primates",
+   "family": "Hominidae",
+   "iucn": "CR",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/43582 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 29,
+    "latest": "2026-06-05"
+   },
+   "inat_bbox_danum": {
+    "total": 112,
+    "latest": "2026-09-04"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://en.wikipedia.org/wiki/Tabin_Wildlife_Reserve",
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.borneoforestheritage.org.my/Danum/nature.htm ; https://en.wikipedia.org/wiki/Danum_Valley_Conservation_Area ; https://www.keybiodiversityareas.org/site/factsheet/16012",
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "iNat observations are mostly the subspecies Pongo pygmaeus morio (verified in API results). Place count 0 because coordinates are obscured (verified: obscured=true, taxon_geoprivacy=obscured). bbox total is a noisy proxy (obscured points fall randomly in a ~0.2 deg cell).; Obscuring: verified obscured via API observation records; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 婆羅洲猩猩; bbox counts: Tabin 29 (latest 2026-06-05), Danum 112 (latest 2026-09-04); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Elephas maximus",
+   "query_name": "Elephas maximus",
+   "en": "Asian Elephant",
+   "inat_preferred_common": "Asian Elephant",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 43697,
+   "order": "Proboscidea",
+   "family": "Elephantidae",
+   "iucn": "EN",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/43697 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 24,
+    "latest": "2026-09-19"
+   },
+   "inat_bbox_danum": {
+    "total": 14,
+    "latest": "2026-03-27"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://en.wikipedia.org/wiki/Tabin_Wildlife_Reserve",
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.borneoforestheritage.org.my/Danum/nature.htm ; https://www.keybiodiversityareas.org/site/factsheet/16012",
+   "activity": "cathemeral",
+   "activity_source": null,
+   "notes": "Borneo population = subspecies E. m. borneensis; iNat files it under the species. Place count 0 due to obscuring (inferred).; Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 亞洲象; bbox counts: Tabin 24 (latest 2026-09-19), Danum 14 (latest 2026-03-27); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Neofelis diardi",
+   "query_name": "Neofelis diardi",
+   "en": "Sunda Clouded Leopard",
+   "inat_preferred_common": "Sunda Clouded Leopard",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 74753,
+   "order": "Carnivora",
+   "family": "Felidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/74753 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 1,
+    "latest": "2024-09-06"
+   },
+   "inat_bbox_danum": {
+    "total": 5,
+    "latest": "2019-10-19"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://en.wikipedia.org/wiki/Tabin_Wildlife_Reserve ; https://eprints.ums.edu.my/id/eprint/19169/1/Records%20of%20Bornean%20felids%20in%20and%20around%20Tabin%20Wildlife%20Reserve.pdf",
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.borneoforestheritage.org.my/Danum/nature.htm ; https://en.wikipedia.org/wiki/Danum_Valley_Conservation_Area",
+   "activity": "cathemeral",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 巽他云豹; bbox counts: Tabin 1 (latest 2024-09-06), Danum 5 (latest 2019-10-19); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Helarctos malayanus",
+   "query_name": "Helarctos malayanus",
+   "en": "Sun Bear",
+   "inat_preferred_common": "Sun Bear",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 41655,
+   "order": "Carnivora",
+   "family": "Ursidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/41655 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 1,
+    "latest": "2018-08-13"
+   },
+   "inat_bbox_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://en.wikipedia.org/wiki/Danum_Valley_Conservation_Area ; https://www.keybiodiversityareas.org/site/factsheet/16012",
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 馬來熊; bbox counts: Tabin 1 (latest 2018-08-13), Danum 0 (latest None); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Hylobates funereus",
+   "query_name": "Hylobates funereus",
+   "en": "North Bornean Gray Gibbon",
+   "inat_preferred_common": "North Bornean Gray Gibbon",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 883485,
+   "order": "Primates",
+   "family": "Hylobatidae",
+   "iucn": "EN",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/883485 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 70,
+    "latest": "2026-09-15"
+   },
+   "inat_bbox_danum": {
+    "total": 48,
+    "latest": "2026-09-04"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Sabah gibbon = H. funereus (North Bornean Grey Gibbon) per iNat; H. muelleri (Mueller's) is a different species (S/E Kalimantan) with 0 obs in both bboxes; older sources (e.g. KBA 2002 page) use Hylobates muelleri for Sabah. Dropped H. muelleri from list.; Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 東部灰長臂猿; bbox counts: Tabin 70 (latest 2026-09-15), Danum 48 (latest 2026-09-04); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Presbytis rubicunda",
+   "query_name": "Presbytis rubicunda",
+   "en": "Maroon Leaf Monkey",
+   "inat_preferred_common": "Maroon Leaf Monkey",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 43502,
+   "order": "Primates",
+   "family": "Cercopithecidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/43502 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 195,
+    "latest": "2026-09-04"
+   },
+   "inat_bbox_tabin": {
+    "total": 1,
+    "latest": "2010-09-16"
+   },
+   "inat_bbox_danum": {
+    "total": 423,
+    "latest": "2026-10-04"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Obscuring: verified: observations have open (non-obscured) coordinates; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 紅葉猴; bbox counts: Tabin 1 (latest 2010-09-16), Danum 423 (latest 2026-10-04); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Macaca nemestrina",
+   "query_name": "Macaca nemestrina",
+   "en": "Southern Pig-tailed Macaque",
+   "inat_preferred_common": "Southern Pig-tailed Macaque",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 43455,
+   "order": "Primates",
+   "family": "Cercopithecidae",
+   "iucn": "EN",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/43455 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 84,
+    "latest": "2026-08-25"
+   },
+   "inat_bbox_danum": {
+    "total": 11,
+    "latest": "2026-02-21"
+   },
+   "default_photo_license": "cc-by",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.keybiodiversityareas.org/site/factsheet/16012",
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 豬尾猴; bbox counts: Tabin 84 (latest 2026-08-25), Danum 11 (latest 2026-02-21); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Macaca fascicularis",
+   "query_name": "Macaca fascicularis",
+   "en": "Long-tailed Macaque",
+   "inat_preferred_common": "Long-tailed Macaque",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 43459,
+   "order": "Primates",
+   "family": "Cercopithecidae",
+   "iucn": "EN",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/43459 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 14,
+    "latest": "2026-08-28"
+   },
+   "inat_bbox_danum": {
+    "total": 46,
+    "latest": "2026-09-19"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.keybiodiversityareas.org/site/factsheet/16012",
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 長尾獼猴; bbox counts: Tabin 14 (latest 2026-08-28), Danum 46 (latest 2026-09-19); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Nasalis larvatus",
+   "query_name": "Nasalis larvatus",
+   "en": "Proboscis Monkey",
+   "inat_preferred_common": "Proboscis Monkey",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 43538,
+   "order": "Primates",
+   "family": "Cercopithecidae",
+   "iucn": "EN",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/43538 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 2,
+    "latest": "2026-08-26"
+   },
+   "inat_bbox_danum": {
+    "total": 4,
+    "latest": "2023-01-17"
+   },
+   "default_photo_license": "cc-by-nc-sa",
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://en.wikipedia.org/wiki/Tabin_Wildlife_Reserve",
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.borneoforestheritage.org.my/Danum/nature.htm ; https://www.keybiodiversityareas.org/site/factsheet/16012",
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Mostly riverine/coastal; place count 0 in Tabin and Danum, small bbox counts (2-4, possibly obscured/displaced or from outside the reserves). Do not promise it in either area. Danum pages (borneoforestheritage, KBA 2002) list it but this is weak.; Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 長鼻猴; bbox counts: Tabin 2 (latest 2026-08-26), Danum 4 (latest 2023-01-17); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Cephalopachus bancanus",
+   "query_name": "Cephalopachus bancanus",
+   "en": "Horsfield's Tarsier",
+   "inat_preferred_common": "Horsfield's Tarsier",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 1369285,
+   "order": "Primates",
+   "family": "Tarsiidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/1369285 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 3,
+    "latest": "2025-08-26"
+   },
+   "inat_bbox_danum": {
+    "total": 25,
+    "latest": "2026-08-07"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "iNat common name Horsfield's Tarsier (aka Western tarsier).; Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 西部眼鏡猴; bbox counts: Tabin 3 (latest 2025-08-26), Danum 25 (latest 2026-08-07); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Nycticebus menagensis",
+   "query_name": "Nycticebus menagensis",
+   "en": "Philippine Slow Loris",
+   "inat_preferred_common": "Philippine Slow Loris",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 74793,
+   "order": "Primates",
+   "family": "Lorisidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/74793 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 4,
+    "latest": "2024-09-07"
+   },
+   "inat_bbox_danum": {
+    "total": 6,
+    "latest": "2026-03-29"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "iNat common name Philippine Slow Loris (aka Bornean slow loris).; Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 菲律賓懶猴; bbox counts: Tabin 4 (latest 2024-09-07), Danum 6 (latest 2026-03-29); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Prionailurus planiceps",
+   "query_name": "Prionailurus planiceps",
+   "en": "Flat-headed Cat",
+   "inat_preferred_common": "Flat-headed Cat",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 41947,
+   "order": "Carnivora",
+   "family": "Felidae",
+   "iucn": "EN",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/41947 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": null,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://eprints.ums.edu.my/id/eprint/19169/1/Records%20of%20Bornean%20felids%20in%20and%20around%20Tabin%20Wildlife%20Reserve.pdf",
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Tabin: photographed in 2002 per the felid paper citing Yasuda et al. 2007 (not re-detected in later survey). Not a realistic sighting target.; Obscuring: no observations in either area; unknown; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 扁頭豹貓; bbox counts: Tabin 0 (latest None), Danum 0 (latest None); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Prionailurus javanensis",
+   "query_name": "Prionailurus javanensis",
+   "en": "Sunda Leopard Cat",
+   "inat_preferred_common": "Sunda Leopard Cat",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 922736,
+   "order": "Carnivora",
+   "family": "Felidae",
+   "iucn": null,
+   "iucn_source": "none: no global IUCN status on iNat taxon; not checked on iucnredlist.org",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 1,
+    "latest": "2023-11-08"
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 62,
+    "latest": "2026-09-18"
+   },
+   "inat_bbox_danum": {
+    "total": 9,
+    "latest": "2026-06-19"
+   },
+   "default_photo_license": "cc-by-nc-nd",
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://eprints.ums.edu.my/id/eprint/19169/1/Records%20of%20Bornean%20felids%20in%20and%20around%20Tabin%20Wildlife%20Reserve.pdf",
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Sunda Leopard Cat; split from P. bengalensis. Literature for Tabin (felid paper) uses the name P. bengalensis. iNat has no global IUCN status on this taxon.; Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 婆羅洲豹貓; bbox counts: Tabin 62 (latest 2026-09-18), Danum 9 (latest 2026-06-19); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Pardofelis marmorata",
+   "query_name": "Pardofelis marmorata",
+   "en": "Marbled Cat",
+   "inat_preferred_common": "Marbled Cat",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 42033,
+   "order": "Carnivora",
+   "family": "Felidae",
+   "iucn": "NT",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/42033 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 7,
+    "latest": "2026-02-13"
+   },
+   "inat_bbox_danum": {
+    "total": 4,
+    "latest": "2026-08-17"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://eprints.ums.edu.my/id/eprint/19169/1/Records%20of%20Bornean%20felids%20in%20and%20around%20Tabin%20Wildlife%20Reserve.pdf",
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "unknown",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; bbox counts: Tabin 7 (latest 2026-02-13), Danum 4 (latest 2026-08-17); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Catopuma badia",
+   "query_name": "Catopuma badia",
+   "en": "Bay Cat",
+   "inat_preferred_common": "Bay Cat",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 569306,
+   "order": "Carnivora",
+   "family": "Felidae",
+   "iucn": "EN",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/569306 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": null,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "default_photo_license": "cc-by-sa",
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://eprints.ums.edu.my/id/eprint/19169/1/Records%20of%20Bornean%20felids%20in%20and%20around%20Tabin%20Wildlife%20Reserve.pdf",
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.keybiodiversityareas.org/site/factsheet/16012",
+   "activity": "unknown",
+   "activity_source": null,
+   "notes": "Rarely recorded; Danum KBA page lists it (2002 data). Treat as very unlikely for a short visit.; Obscuring: no observations in either area; unknown; bbox counts: Tabin 0 (latest None), Danum 0 (latest None); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Bos javanicus",
+   "query_name": "Bos javanicus",
+   "en": "Banteng",
+   "inat_preferred_common": "Banteng",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 42403,
+   "order": "Artiodactyla",
+   "family": "Bovidae",
+   "iucn": "CR",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/42403 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": null,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "default_photo_license": "cc-by",
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://en.wikipedia.org/wiki/Tabin_Wildlife_Reserve",
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.borneoforestheritage.org.my/Danum/nature.htm",
+   "activity": "crepuscular",
+   "activity_source": null,
+   "notes": "Obscuring: no observations in either area; unknown; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 爪哇野牛; bbox counts: Tabin 0 (latest None), Danum 0 (latest None); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Sus barbatus",
+   "query_name": "Sus barbatus",
+   "en": "Western Bearded Pig",
+   "inat_preferred_common": "Western Bearded Pig",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 42136,
+   "order": "Artiodactyla",
+   "family": "Suidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/42136 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 14,
+    "latest": "2020-03-03"
+   },
+   "inat_bbox_danum": {
+    "total": 28,
+    "latest": "2020-09-17"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Obscuring: verified obscured via API observation records; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 鬍鬚豬; bbox counts: Tabin 14 (latest 2020-03-03), Danum 28 (latest 2020-09-17); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Rusa unicolor",
+   "query_name": "Rusa unicolor",
+   "en": "Sambar",
+   "inat_preferred_common": "Sambar",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 75053,
+   "order": "Artiodactyla",
+   "family": "Cervidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/75053 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 6,
+    "latest": "2019-09-21"
+   },
+   "inat_bbox_danum": {
+    "total": 52,
+    "latest": "2026-11-09"
+   },
+   "default_photo_license": "cc-by-sa",
+   "lit_tabin": "recorded",
+   "lit_tabin_source": "https://en.wikipedia.org/wiki/Tabin_Wildlife_Reserve",
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 水鹿; bbox counts: Tabin 6 (latest 2019-09-21), Danum 52 (latest 2026-11-09); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Muntiacus atherodes",
+   "query_name": "Muntiacus atherodes",
+   "en": "Bornean Yellow Muntjac",
+   "inat_preferred_common": "Bornean Yellow Muntjac",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 42190,
+   "order": "Artiodactyla",
+   "family": "Cervidae",
+   "iucn": "NT",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/42190 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 2,
+    "latest": "2009-08-25"
+   },
+   "inat_bbox_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "default_photo_license": "cc-by-nc-sa",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "cathemeral",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 婆羅洲黃麂; bbox counts: Tabin 2 (latest 2009-08-25), Danum 0 (latest None); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Muntiacus muntjak",
+   "query_name": "Muntiacus muntjak",
+   "en": "Southern Red Muntjac",
+   "inat_preferred_common": "Southern Red Muntjac",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 42186,
+   "order": "Artiodactyla",
+   "family": "Cervidae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/42186 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 1,
+    "latest": "2023-05-28"
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 2,
+    "latest": "2023-05-28"
+   },
+   "inat_bbox_danum": {
+    "total": 2,
+    "latest": "2023-10-14"
+   },
+   "default_photo_license": "cc-by",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "cathemeral",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 印度麂 (赤麂); bbox counts: Tabin 2 (latest 2023-05-28), Danum 2 (latest 2023-10-14); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Tragulus kanchil",
+   "query_name": "Tragulus kanchil",
+   "en": "Lesser Oriental Chevrotain",
+   "inat_preferred_common": "Lesser Oriental Chevrotain",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 75193,
+   "order": "Artiodactyla",
+   "family": "Tragulidae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/75193 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 5,
+    "latest": "2019-09-18"
+   },
+   "inat_danum": {
+    "total": 10,
+    "latest": "2025-10-03"
+   },
+   "inat_bbox_tabin": {
+    "total": 13,
+    "latest": "2026-06-11"
+   },
+   "inat_bbox_danum": {
+    "total": 12,
+    "latest": "2025-10-03"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 小鼷鹿; bbox counts: Tabin 13 (latest 2026-06-11), Danum 12 (latest 2025-10-03); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Tragulus napu",
+   "query_name": "Tragulus napu",
+   "en": "Greater Oriental Chevrotain",
+   "inat_preferred_common": "Greater Oriental Chevrotain",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 42109,
+   "order": "Artiodactyla",
+   "family": "Tragulidae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/42109 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 1,
+    "latest": "2012-04-23"
+   },
+   "inat_danum": {
+    "total": 15,
+    "latest": "2026-06-19"
+   },
+   "inat_bbox_tabin": {
+    "total": 3,
+    "latest": "2024-11-01"
+   },
+   "inat_bbox_danum": {
+    "total": 24,
+    "latest": "2026-06-19"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); bbox counts: Tabin 3 (latest 2024-11-01), Danum 24 (latest 2026-06-19); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Arctictis binturong",
+   "query_name": "Arctictis binturong",
+   "en": "Binturong",
+   "inat_preferred_common": "Binturong",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 41631,
+   "order": "Carnivora",
+   "family": "Viverridae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/41631 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 1,
+    "latest": "2015-02-25"
+   },
+   "inat_bbox_danum": {
+    "total": 5,
+    "latest": "2026-09-04"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "cathemeral",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 熊貍; bbox counts: Tabin 1 (latest 2015-02-25), Danum 5 (latest 2026-09-04); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Viverra tangalunga",
+   "query_name": "Viverra tangalunga",
+   "en": "Malay Civet",
+   "inat_preferred_common": "Malay Civet",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 41615,
+   "order": "Carnivora",
+   "family": "Viverridae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/41615 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 14,
+    "latest": "2026-04-28"
+   },
+   "inat_danum": {
+    "total": 33,
+    "latest": "2026-07-18"
+   },
+   "inat_bbox_tabin": {
+    "total": 28,
+    "latest": "2026-04-29"
+   },
+   "inat_bbox_danum": {
+    "total": 66,
+    "latest": "2026-09-17"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 馬來靈貓; bbox counts: Tabin 28 (latest 2026-04-29), Danum 66 (latest 2026-09-17); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Cynogale bennettii",
+   "query_name": "Cynogale bennettii",
+   "en": "Otter Civet",
+   "inat_preferred_common": "Otter Civet",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 41590,
+   "order": "Carnivora",
+   "family": "Viverridae",
+   "iucn": "EN",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/41590 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 1,
+    "latest": "2024-11-20"
+   },
+   "inat_bbox_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "recorded",
+   "lit_danum_source": "https://www.keybiodiversityareas.org/site/factsheet/16012",
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; bbox counts: Tabin 1 (latest 2024-11-20), Danum 0 (latest None); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Hemigalus derbyanus",
+   "query_name": "Hemigalus derbyanus",
+   "en": "Banded Civet",
+   "inat_preferred_common": "Banded Civet",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 41635,
+   "order": "Carnivora",
+   "family": "Viverridae",
+   "iucn": "NT",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/41635 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 2,
+    "latest": "2026-03-24"
+   },
+   "inat_bbox_danum": {
+    "total": 6,
+    "latest": "2026-08-31"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; bbox counts: Tabin 2 (latest 2026-03-24), Danum 6 (latest 2026-08-31); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Galeopterus variegatus",
+   "query_name": "Galeopterus variegatus",
+   "en": "Sunda Colugo",
+   "inat_preferred_common": "Sunda Colugo",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 74351,
+   "order": "Dermoptera",
+   "family": "Cynocephalidae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/74351 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 12,
+    "latest": "2024-10-11"
+   },
+   "inat_danum": {
+    "total": 56,
+    "latest": "2026-09-22"
+   },
+   "inat_bbox_tabin": {
+    "total": 21,
+    "latest": "2025-12-26"
+   },
+   "inat_bbox_danum": {
+    "total": 76,
+    "latest": "2026-09-22"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 馬來亞飛狐猴; bbox counts: Tabin 21 (latest 2025-12-26), Danum 76 (latest 2026-09-22); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Petaurista petaurista",
+   "query_name": "Petaurista petaurista",
+   "en": "Red Giant Flying Squirrel",
+   "inat_preferred_common": "Red Giant Flying Squirrel",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 45982,
+   "order": "Rodentia",
+   "family": "Sciuridae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/45982 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 12,
+    "latest": "2026-07-29"
+   },
+   "inat_danum": {
+    "total": 17,
+    "latest": "2026-08-31"
+   },
+   "inat_bbox_tabin": {
+    "total": 29,
+    "latest": "2026-08-25"
+   },
+   "inat_bbox_danum": {
+    "total": 28,
+    "latest": "2026-08-31"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 棕鼯鼠; bbox counts: Tabin 29 (latest 2026-08-25), Danum 28 (latest 2026-08-31); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Aeromys tephromelas",
+   "query_name": "Aeromys tephromelas",
+   "en": "Black Flying Squirrel",
+   "inat_preferred_common": "Black Flying Squirrel",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 45991,
+   "order": "Rodentia",
+   "family": "Sciuridae",
+   "iucn": "DD",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/45991 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 5,
+    "latest": "2025-04-18"
+   },
+   "inat_danum": {
+    "total": 5,
+    "latest": "2024-02-17"
+   },
+   "inat_bbox_tabin": {
+    "total": 9,
+    "latest": "2026-08-25"
+   },
+   "inat_bbox_danum": {
+    "total": 5,
+    "latest": "2024-02-17"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); bbox counts: Tabin 9 (latest 2026-08-25), Danum 5 (latest 2024-02-17); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Ratufa affinis",
+   "query_name": "Ratufa affinis",
+   "en": "Pale Giant Squirrel",
+   "inat_preferred_common": "Pale Giant Squirrel",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 46032,
+   "order": "Rodentia",
+   "family": "Sciuridae",
+   "iucn": "NT",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/46032 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 2,
+    "latest": "2024-06-10"
+   },
+   "inat_bbox_danum": {
+    "total": 14,
+    "latest": "2026-02-23"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 斑臀巨松鼠; bbox counts: Tabin 2 (latest 2024-06-10), Danum 14 (latest 2026-02-23); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Manis javanica",
+   "query_name": "Manis javanica",
+   "en": "Sunda Pangolin",
+   "inat_preferred_common": "Sunda Pangolin",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 43364,
+   "order": "Pholidota",
+   "family": "Manidae",
+   "iucn": "CR",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/43364 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_danum": {
+    "total": 2,
+    "latest": "2026-09-03"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Danum bbox 2 research-grade (latest 2026-09-03) likely obscured/displaced; place count 0.; Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 馬來穿山甲; bbox counts: Tabin 0 (latest None), Danum 2 (latest 2026-09-03); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Lutra cinerea",
+   "query_name": "Aonyx cinereus",
+   "en": "Asian Small-clawed Otter",
+   "inat_preferred_common": "Asian Small-clawed Otter",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 1638835,
+   "order": "Carnivora",
+   "family": "Mustelidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/1638835 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 4,
+    "latest": "2023-11-08"
+   },
+   "inat_bbox_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "default_photo_license": "cc-by-nc-nd",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "iNat currently files this under the name Lutra cinerea (taxon 1638835). Check naming before display.; iNat taxon name Lutra cinerea (query Aonyx cinereus); Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 小爪水獺; bbox counts: Tabin 4 (latest 2023-11-08), Danum 0 (latest None); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Lutra perspicillata",
+   "query_name": "Lutrogale perspicillata",
+   "en": "Smooth-coated Otter",
+   "inat_preferred_common": "Smooth-coated Otter",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 1638842,
+   "order": "Carnivora",
+   "family": "Mustelidae",
+   "iucn": "VU",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/1638842 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": true,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_danum": {
+    "total": 2,
+    "latest": "2019-09-22"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "iNat currently files this under the name Lutra perspicillata (taxon 1638842).; iNat taxon name Lutra perspicillata (query Lutrogale perspicillata); Obscuring: inferred (not individually verified): 0 in place filter but >0 in bbox => likely taxon-obscured; zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 江獺; bbox counts: Tabin 0 (latest None), Danum 2 (latest 2019-09-22); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Tupaia tana",
+   "query_name": "Tupaia tana",
+   "en": "Large Treeshrew",
+   "inat_preferred_common": "Large Treeshrew",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 46295,
+   "order": "Scandentia",
+   "family": "Tupaiidae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/46295 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 1,
+    "latest": "2023-11-08"
+   },
+   "inat_danum": {
+    "total": 2,
+    "latest": "2025-02-10"
+   },
+   "inat_bbox_tabin": {
+    "total": 1,
+    "latest": "2023-11-08"
+   },
+   "inat_bbox_danum": {
+    "total": 2,
+    "latest": "2025-02-10"
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); bbox counts: Tabin 1 (latest 2023-11-08), Danum 2 (latest 2025-02-10); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Echinosorex gymnurus",
+   "query_name": "Echinosorex gymnura",
+   "en": "Moonrat",
+   "inat_preferred_common": "Moonrat",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 1370747,
+   "order": "Eulipotyphla",
+   "family": "Erinaceidae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/1370747 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 1,
+    "latest": "2024-10-10"
+   },
+   "inat_danum": {
+    "total": 3,
+    "latest": "2025-05-15"
+   },
+   "inat_bbox_tabin": {
+    "total": 6,
+    "latest": "2026-06-04"
+   },
+   "inat_bbox_danum": {
+    "total": 5,
+    "latest": "2025-05-15"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "iNat accepted spelling: Echinosorex gymnurus.; iNat taxon name Echinosorex gymnurus (query Echinosorex gymnura); Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 刺氏鼩蝟; bbox counts: Tabin 6 (latest 2026-06-04), Danum 5 (latest 2025-05-15); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Hystrix brachyura",
+   "query_name": "Hystrix brachyura",
+   "en": "East Asian Porcupine",
+   "inat_preferred_common": "East Asian Porcupine",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 44172,
+   "order": "Rodentia",
+   "family": "Hystricidae",
+   "iucn": "LC",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/44172 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": false,
+   "inat_tabin": {
+    "total": 2,
+    "latest": "2023-05-08"
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 9,
+    "latest": "2024-11-24"
+   },
+   "inat_bbox_danum": {
+    "total": 5,
+    "latest": "2025-10-24"
+   },
+   "default_photo_license": null,
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "nocturnal",
+   "activity_source": null,
+   "notes": "Obscuring: inferred: place-filtered counts > 0 so coordinates open (at least in part); zh candidate from iNat zh-TW locale (community name, NOT verified, not used): 東亞豪豬; bbox counts: Tabin 9 (latest 2024-11-24), Danum 5 (latest 2025-10-24); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  },
+  {
+   "sci": "Urva semitorquata",
+   "query_name": "Urva semitorquata",
+   "en": "Collared Mongoose",
+   "inat_preferred_common": "Collared Mongoose",
+   "zh": null,
+   "zh_source": null,
+   "inat_taxon_id": 925972,
+   "order": "Carnivora",
+   "family": "Herpestidae",
+   "iucn": "NT",
+   "iucn_source": "iNat taxon page conservation_statuses (authority IUCN Red List, global entry): https://www.inaturalist.org/taxa/925972 (checked 2026-11-10). Not cross-checked on iucnredlist.org.",
+   "inat_threatened_or_obscured": null,
+   "inat_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_tabin": {
+    "total": 0,
+    "latest": null
+   },
+   "inat_bbox_danum": {
+    "total": 0,
+    "latest": null
+   },
+   "default_photo_license": "cc-by-nc",
+   "lit_tabin": "unknown",
+   "lit_tabin_source": null,
+   "lit_danum": "unknown",
+   "lit_danum_source": null,
+   "activity": "diurnal",
+   "activity_source": null,
+   "notes": "Genus moved from Herpestes to Urva (iNat). Bornean collared mongoose.; Obscuring: no observations in either area; unknown; bbox counts: Tabin 0 (latest None), Danum 0 (latest None); bbox = whole iNat place bounding box, includes surroundings and obscured/displaced points"
+  }
+ ],
+ "pois": [
+  {
+   "key": "ldu_airport",
+   "name": "Lahad Datu Airport (LDU/WBKD)",
+   "lat": 5.0324683,
+   "lng": 118.3243071,
+   "approximate": false,
+   "source": "https://nominatim.openstreetmap.org/ui/details.html?osmtype=W&osmid=912685761 (OSM way centre); Wikipedia gives 5.03306,118.32111 (https://en.wikipedia.org/wiki/Lahad_Datu_Airport), ~300 m difference. Checked 2026-11-10"
+  },
+  {
+   "key": "tabin_resort",
+   "name": "Tabin Wildlife Resort",
+   "lat": 5.1883684,
+   "lng": 118.5009015,
+   "approximate": false,
+   "source": "https://nominatim.openstreetmap.org/ui/details.html?osmtype=W&osmid=1416922035 (OSM way centre, feature named Tabin Wildlife Resort). Individual river chalets not located. Checked 2026-11-10"
+  },
+  {
+   "key": "lipad_mud_volcano",
+   "name": "Lipad Mud Volcano (Tabin)",
+   "lat": 5.209663,
+   "lng": 118.5079873,
+   "approximate": false,
+   "source": "https://nominatim.openstreetmap.org/ui/details.html?osmtype=N&osmid=13368901115 (OSM node). Checked 2026-11-10"
+  },
+  {
+   "key": "danum_center",
+   "name": "Danum Valley Conservation Area (approx. centre)",
+   "lat": 4.9397,
+   "lng": 117.6957,
+   "approximate": true,
+   "source": "OSM way 1418008830 centre via Nominatim (https://nominatim.openstreetmap.org/ui/details.html?osmtype=W&osmid=1418008830). Other published centres differ up to ~0.1 deg: Wikipedia 4.917,117.667; KBA 4.8833,117.75; International Parks 4.965,117.800. Checked 2026-11-10"
+  },
+  {
+   "key": "brl",
+   "name": "Borneo Rainforest Lodge",
+   "lat": 5.0196725,
+   "lng": 117.7460505,
+   "approximate": false,
+   "source": "https://nominatim.openstreetmap.org/ui/details.html?osmtype=N&osmid=2096399217 (OSM node named Borneo Rainforest Lodge). Checked 2026-11-10"
+  },
+  {
+   "key": "dvfc",
+   "name": "Danum Valley Field Centre",
+   "lat": 4.964,
+   "lng": 117.803,
+   "approximate": true,
+   "source": "UNVERIFIED exact point. Not found as a named OSM feature (only Access Road to Danum Valley Field Center ways near 4.969,117.826 and 4.976,117.857). Approximation inferred from (a) a cluster of non-obscured iNat observations around 4.9636,117.8033 and (b) International Parks listing 4.965,117.800 (https://www.internationalparks.org/malaysia/Danum%20Valley). Checked 2026-11-10"
+  },
+  {
+   "key": "lahad_datu_town",
+   "name": "Lahad Datu town",
+   "lat": 5.0215726,
+   "lng": 118.3275533,
+   "approximate": false,
+   "source": "https://nominatim.openstreetmap.org/ui/details.html?osmtype=N&osmid=1081974263 (OSM place node). Do not use the district relation centre 5.1155,118.4306. Checked 2026-11-10"
+  }
+ ],
+ "lodging": {
+  "brl": {
+   "official": {
+    "site": "https://www.borneonaturetours.com/borneorainforestlodge/",
+    "operator": "Borneo Nature Tours Sdn Bhd (subsidiary of Sabah Foundation / Yayasan Sabah Group)",
+    "booking": "https://www.secure-hotel-booking.com/Borneo-Rainforest-Lodge/J68N/ ; info@borneonaturetours.com ; +60 88-267 637 ; +60 17-818 7727 (Kota Kinabalu sales office)",
+    "published_rates": "NONE on the official pages fetched (only a BOOK NOW button). borneorainforestlodge.com failed SSL handshake in my fetch tool - not read.",
+    "transfer": "about 2.5 h overland from Lahad Datu (LDU); full-board packages include guides and return transfers LDU-BRL-LDU (official page)",
+    "chalets": 30,
+    "closure_notice": "Construction of new clubhouse and chalets 2025-01-01 to 2027-01-22, daytime 8:00-18:00 (official borneonaturetours.com homepage). Checked 2026-11-10"
+   },
+   "third_party_amazing_borneo": {
+    "url": "https://www.amazingborneo.com/package/danum-valley-rainforest-beauty-experience",
+    "type": "THIRD-PARTY operator listing (not official)",
+    "package": "3D2N join-in (shared guide/vehicle), per person, USD, tourism tax extra",
+    "tariff_all_market_2026-04-01_to_2027-03-31_USD_pp": {
+     "jungle_chalet": {
+      "twin": 2033,
+      "triple": 1768,
+      "single": 2897
+     },
+     "deluxe_chalet": {
+      "twin": 2165,
+      "triple": 1867,
+      "single": 3160
+     },
+     "premium_deluxe": {
+      "twin": 2725,
+      "triple": 2230,
+      "single": 4247
+     }
+    },
+    "note_on_prices": "Page shows a second unlabeled figure beside each price; the Malaysia Market table (1 Nov 2026 - 28 Feb 2027, USD 725 twin jungle chalet) is for Malaysian residents only - do not apply. Headline from USD 1,099 matches no row. Peak surcharge USD 30 pp for 1 Mar-30 Apr and 15 Jul-15 Oct (not our dates). Single supplement derived by me = single rate minus twin (jungle chalet 2897-2033 = USD 864 for 3D2N).",
+    "inclusions": [
+     "2 nights accommodation",
+     "2 breakfasts, 3 lunches, 2 dinners",
+     "scheduled seat-in-coach LDU<->BRL transfers (09:30 out, 12:30 return stated)",
+     "entry permit and taxes to Conservation Area",
+     "guided jungle activities incl. trek + canopy walkway (300 m long, up to 26 m high) day 1, night drive 20:30 day 1, night walk day 2, morning trek to Coffin Cliff/Jacuzzi Pool"
+    ],
+    "exclusions": [
+     "domestic flights BKI-LDU",
+     "alcoholic and carbonated drinks",
+     "insurance",
+     "peak surcharge",
+     "tourism tax USD 2/room/night for foreigners (stated; rule dated 2017)"
+    ],
+    "unscheduled_private_transfer_per_vehicle_one_way": {
+     "1-3pax_4x4_USD": 160,
+     "4-6pax_van_USD": 198
+    },
+    "room_types": [
+     "Jungle Chalet",
+     "Deluxe Chalet (outdoor tub)",
+     "Premium Deluxe (private outdoor bathtub, river)",
+     "Premium Single/Double Storey Villa (private pool)"
+    ],
+    "checkin": "14:00",
+    "checkout": "11:30",
+    "temporary_closure": "12-21 Dec 2026 and 4-6 Jan 2027 (maintenance/refurbishment) per this listing - not our dates (29 Jan-6 Feb 2027); construction ends 22 Jan 2027 so confirm works are finished",
+    "checked": "2026-11-10"
+   },
+   "third_party_other": "Other operator figures seen only in search snippets (not opened): ~RM3,190 pp 3D2N (The National, undated), RM5,150 pp twin jungle chalet (operator unnamed). Not reliable.",
+   "single_supplement": "Not published on official pages; derived from third party above.",
+   "includes_conservation_fee": "third party says entry permit and taxes to Conservation Area included"
+  },
+  "dvfc": {
+   "official": {
+    "site": "https://borneoforestheritage.org.my/public/danum/facilities.html",
+    "accommodation": "VIP rooms (2), Resthouse (7 rooms x 2 beds), Hostel (96 beds), Campsite",
+    "power": "electricity 07:30-23:00",
+    "transport_note": "official page says transport between DVFC and Lahad Datu runs Mon, Wed, Fri (conflicts with third-party daily)",
+    "published_rates": "Official tariff page rates.html returned 404; no official rates read. Reservation/Contact pages not read.",
+    "checked": "2026-11-10"
+   },
+   "third_party_amazing_borneo": {
+    "url": "https://amazingborneo.com/package/4d3n-danum-valley-field-centre-nature-lover-experience-budget",
+    "type": "THIRD-PARTY",
+    "package": "4D3N join-in, USD per person, 2-3 pax sharing, International market, travel 2027 (1 Jan-31 Dec 2027)",
+    "rates_2027_USD_pp": {
+     "dormitory": 1560,
+     "standard_resthouse": 1628,
+     "deluxe_resthouse": 1663,
+     "superior_deluxe": 1710
+    },
+    "unlabeled_higher_figure_2027": {
+     "dormitory": 2081,
+     "standard_resthouse": 2171,
+     "deluxe_resthouse": 2217,
+     "superior_deluxe": 2280
+    },
+    "price_warning": "Page shows two figures per rate without labels (probably offer vs list); could not tell which applies.",
+    "single_supplement_USD_pp": {
+     "standard": 215,
+     "deluxe": 241,
+     "superior_deluxe": 289
+    },
+    "inclusions": [
+     "3 nights",
+     "3 breakfasts, 2 lunches, 1 packed lunch, 3 dinners",
+     "scheduled return land transfer (about 2.5 h)",
+     "conservation fee (amount not stated)",
+     "1 night drive + 1 sunrise drive (Bukit Atur)",
+     "trekking with forest ranger or English-speaking guide",
+     "night walks day 2 and 3 subject to weather"
+    ],
+    "exclusions": [
+     "flights",
+     "camera/video fee",
+     "insurance",
+     "peak surcharge (if any)"
+    ],
+    "private_transfer_LDU_DVFC_per_way_USD": "111 per 4WD (1-3 pax)",
+    "private_guide_USD_per_day": 86,
+    "private_bird_guide_USD_per_day": 136,
+    "canopy_walk": "not mentioned on that page; DVFC official page lists a 40 m canopy observation platform and a 10 m tower",
+    "facilities": "described as very basic vs BRL",
+    "checked": "2026-11-10"
+   },
+   "other_third_party": "Sukau Lodge listing: DVFC Superior Deluxe single supplement MYR 1,500 (https://www.sukau.com/?p=15002) - search snippet only."
+  },
+  "tabin": {
+   "official": {
+    "site": "https://tabinwildlife.com.my",
+    "office": "Kota Kinabalu; T +6 088 267266; WhatsApp links on site",
+    "package_page": "https://tabinwildlife.com.my/?p=2041 (4D3N Overnight @ Tabin Mud Volcano)",
+    "price": "from RM3,350 per person, minimum 2 persons per booking (listing says from; booking 5 days ahead; no validity period stated)",
+    "inclusions": [
+     "scheduled return transfers Lahad Datu<->Tabin",
+     "accommodation (timber lodge beside Lipad River, balcony, a/c, hot shower)",
+     "stated meals",
+     "guided activities: early-morning bird walk, jungle trek to Lipad Waterfall, ~20 min trek to mud volcano",
+     "dusk drive Day 1 and night safari after dinner Day 3",
+     "overnight at Lipad mud volcano observation tower with guides setting up camp"
+    ],
+    "not_included": [
+     "optional dawn drive RM80 pp",
+     "unscheduled transfer RM120 pp (official page value)"
+    ],
+    "transfer": "gravel road Lahad Datu->Tabin about 1.5 h; scheduled departures LDU 08:00 and 12:00; Tabin->LDU 14:30 arriving ~16:00 (official page)",
+    "river_chalets": "10 units timber bungalows, 17.5x17.5 ft, twin beds, en-suite hot shower, private balcony, a/c, ceiling fan, up to 3 guests, boardwalk to Sunbird Cafe, balconies over Lipad River (https://tabinwildlife.com.my/river-chalets/). No prices on that page.",
+    "checked": "2026-11-10"
+   },
+   "third_party": {
+    "amazing_borneo": "Tabin 2D1N: shared transfer from LDU MYR150 pp each way, private MYR200, 2-pax minimum; departures LDU 08:00/12:00, return 13:30 (https://www.amazingborneo.com/index.php/package/2d1n-tabin-wildlife-reserve-with-rainforest-trekking-and-lipad-mud-volcano) - search snippet only. One operator note says the Lipad tower is temporarily closed for maintenance (https://www.amazingborneo.com/package/9d8n-danum-valley-triple-gem-with-tabin-wildlife-resort-danum-valley-field-centre-and-borneo-rainforest-lodge) - current status UNVERIFIED.",
+    "other_ops": "borneotravelnetwork.com: RM60 pp each-way unscheduled surcharge; tourism tax RM10/room/night (snippets)."
+   },
+   "double_charge_assessment": "Official Tabin package already INCLUDES scheduled return transfer LDU<->Tabin, guided bird walk / waterfall / mud-volcano treks, dusk drive and night safari, and the overnight at the Lipad tower. A private quote with separate lines for private nature guide per day, private vehicle 0800-1700 per day, private return transfer pp and private night safari pp duplicates these IF added on top of a package; if the quote REPLACES the package (room/meals only + private extras) it is not duplication. Needs the quote's exact basis."
+  }
+ },
+ "travel": {
+  "cny_2027": {
+   "date": "Chinese New Year Day 2027-02-06 (Saturday); CNY eve 2027-02-05; second day 2027-02-07 (Sunday)",
+   "sabah_holidays": "Official Cabinet-announced list dated 27 Aug 2026 (https://www.fmm.org.my/uploads/files/fmm/20260828_144306_GI15%20-%202027%20Public%20Holiday%20National%20&%20State%20-%2027%20Aug.pdf) lists CNY on Sat 6 Feb and 2nd day Sun 7 Feb as national (N) holidays. In the text extraction, 8 Feb (Mon) appears only as Awal Ramadan * (state-specific, not marked for Sabah); no Monday replacement day visible; extraction alignment imperfect so confidence is medium. Third-party sites conflict on an 8 Feb replacement holiday (ajobthing says yes; timeanddate only 6-7 Feb). Sabah gazette UNVERIFIED. No other Sabah public holiday found between 29 Jan and 5 Feb 2027.",
+   "impact": "Trip ends 2027-02-06 = CNY Day. Expect pre-CNY travel rush (flights/transfers around 4-5 Feb) and closures; secure last-day LDU flight and airport transfer early.",
+   "checked": "2026-11-10"
+  },
+  "entry_taiwan_passport": {
+   "visa_free_days": 30,
+   "source": "https://www.boca.gov.tw/sp-foof-countrycp-01-23-a7372-02-1.html (Taiwan BOCA; page shows update date 2022-06-21 yet cites 2024 changes; ROC passport gets visa-free 30 days for tourism/social visits)",
+   "mdac": "BOCA page says MDAC must be filled online within 3 days before entry; free; beware paid sites. Official MDAC portal (imigresen-online.imi.gov.my/mdac) timed out - not read directly.",
+   "funds_ticket": "BOCA page: airports do not accept credit cards as proof of funds; lack of financial proof is a common refusal reason; older notice mentions USD100/day (2022, may be outdated).",
+   "passport_validity": "BOCA page does not state; UNVERIFIED (commonly 6 months, not confirmed from an official source).",
+   "sabah_separate_immigration": "Sabah/Sarawak control their own immigration. Third-party sources (not official) say foreigners are checked by Sabah immigration on arrival at Kota Kinabalu even when coming from Peninsular Malaysia; BOCA page does not describe it. UNVERIFIED officially. imi.gov.my visa page does not mention Taiwan or Sabah.",
+   "imi_page": "https://www.imi.gov.my/index.php/en/main-services/visa-requirement/ (no Taiwan info)",
+   "checked": "2026-11-10"
+  },
+  "flights_to_ldu": {
+   "summary": "Wikipedia lists only AirBorneo, to Kota Kinabalu (BKI) and Sandakan (SDK) (https://en.wikipedia.org/wiki/Lahad_Datu_Airport; its citations are weak). Other aggregators conflict (Malaysia Airlines/MASwings legacy names; AirAsia KL claimed by one source only). Amazing Borneo packages cite BKI-LDU flights MY3012 (ETA 08:15) and MY3019 (ETD 16:05); BRL official page says BKI-LDU about 55 min. Flight numbers/times UNVERIFIED for Jan-Feb 2027; no KL-LDU nonstop confirmed. Likely routing: Taiwan -> BKI (or KUL) -> LDU.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Lahad_Datu_Airport",
+    "https://www.borneonaturetours.com/borneorainforestlodge/",
+    "https://www.amazingborneo.com/package/danum-valley-rainforest-beauty-experience"
+   ],
+   "checked": "2026-11-10"
+  },
+  "weather_jan_feb": {
+   "summary": "Northeast Monsoon roughly Nov-Mar (MetMalaysia via press, Oct 2025 briefing: Sabah east coast/north heavy rain, above-average expected with La Nina). Eastern Sabah (Tawau/Lahad Datu/Sandakan/Kudat) is commonly flagged for continuous-rain/flood warnings Dec-Feb. No Lahad Datu-specific monthly figures or 2027 outlook found. Expect wet conditions, muddy gravel roads, possible transfer delays. Indicative only.",
+   "sources": [
+    "https://www.thestar.com.my/news/nation/2025/10/30/northeast-monsoon-more-rainfall-expected-in-sabah-due-to-la-nina-says-metmalaysia",
+    "https://www.theborneopost.com/2021/12/27/continuous-rain-warning-in-eastern-sabah-may-extend-until-jan-3-says-metmalaysia/"
+   ],
+   "checked": "2026-11-10"
+  },
+  "inaturalist_api": {
+   "rate": "Official API Recommended Practices page returned 403 (Cloudflare) to fetch tools - exact limits UNVERIFIED from the official page. Secondary: pyinaturalist docs say they throttle to iNat's recommended rates (https://pyinaturalist.readthedocs.io/en/stable/user_guide/advanced.html); dronefly bot codes to <=60 req/min; forum report of 429s at 60/min on one endpoint (https://forum.inaturalist.org/t/429-error-from-observations-histogram-api-when-calling-at-60-calls-minute/64709). Safe design: <=1 req/s, cache results, descriptive User-Agent (my ~300 calls at ~1 per 1.1 s had no errors). The 10k/day figure is NOT confirmed.",
+   "photo_licensing": "Taxon default_photo.license_code observed: cc-by, cc-by-nc, cc-by-nc-sa, cc-by-nc-nd, cc-by-sa, or null (all rights reserved) (see species[].default_photo_license). Show photographer attribution and license; NC licenses forbid commercial use; null means do not reuse without permission - prefer link-out or only CC-licensed photos. Based on the API field; formal iNat licensing text not fetched.",
+   "obscured_coordinates": "VERIFIED: threatened taxa (e.g. Pongo pygmaeus, Sus barbatus) have obscured=true observations; place_id filter excludes them, bbox filter returns randomly displaced points. Do not present iNat counts as proof of presence/absence for those species.",
+   "checked": "2026-11-10"
+  },
+  "opentopomap": {
+   "attribution": "Kartendaten: © OpenStreetMap-Mitwirkende, SRTM | Kartendarstellung: © OpenTopoMap (CC-BY-SA)",
+   "tile_url": "https://{a|b|c}.tile.opentopomap.org/{z}/{x}/{y}.png",
+   "policy": "Embedding allowed; heavy use/mass download discouraged; no uptime guarantee; operators appreciate a short notice; commercial use allowed with attribution; CC-BY-SA.",
+   "source": "https://opentopomap.org/about",
+   "checked": "2026-11-10"
+  }
+ },
+ "unverified": [
+  "Chinese common names (zh) for all species: not researched from TaiCOL/Chinese Wikipedia; iNat zh-TW community names exist for many but are not reliable (some use simplified characters, e.g. 巽他云豹) - left null, candidates in notes.",
+  "IUCN statuses taken from iNat global IUCN entries only; not cross-checked on iucnredlist.org.",
+  "Activity patterns (diurnal/nocturnal etc.) are general knowledge, no source URL fetched; activity_source=null.",
+  "Per-species Danum/Tabin literature: only the sources listed were read (Wikipedia Tabin/Danum, UMS Tabin felid paper abstract, KBA 16012 page (2002 data, wider 2,331 km2 area), borneoforestheritage nature page). No full species checklist for either site found; Bernard and Fjeldsa Tabin chapter not accessed; mammalwatching trip report not machine-readable per site.",
+  "iNat place polygons not downloaded; only bounding boxes checked.",
+  "Whether the Lipad mud volcano tower is currently open (one operator says temporarily closed).",
+  "BRL official 2027 rates and single supplement: not on official pages found; borneorainforestlodge.com failed SSL in my fetch tool.",
+  "DVFC official tariff (rates.html 404); DVFC exact coordinates; DVFC transport days (official: Mon/Wed/Fri; third party: daily).",
+  "Sabah-gazetted replacement holiday for CNY (8 Feb 2027).",
+  "MDAC official portal not read (timeout); passport validity requirement not confirmed; Sabah separate immigration check only from third-party sources.",
+  "Airlines/frequencies at LDU for Jan-Feb 2027 (sources conflict; MY3012/MY3019 from a third party only).",
+  "iNaturalist official rate-limit numbers (page blocked, 403); 10,000/day not confirmed.",
+  "Paradoxurus hermaphroditus is not the Bornean palm civet per current iNat taxonomy (Danum iNat has Paradoxurus philippinensis, 22 research-grade obs; taxon id not looked up). Dropped P. hermaphroditus; also dropped Hylobates muelleri and Urva brachyura."
+ ]
+}

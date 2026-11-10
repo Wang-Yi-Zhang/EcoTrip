@@ -1,0 +1,55 @@
+# 沙巴生態之旅事實查證摘要（查證日：2026-11-10）
+
+完整資料與來源網址見 `research-data.json`。凡標示 UNVERIFIED 者表示未能查證，不可當成事實使用。
+
+## 1. 最會影響行程決策的發現
+
+1. **Tabin 官方套裝已含你私人報價的多數項目**（官方 https://tabinwildlife.com.my/?p=2041，4D3N Mud Volcano 套裝，每人 RM3,350 起、2 人成行）：含 Lahad Datu 往返定班接送、導覽步行（賞鳥、Lipad 瀑布、泥火山）、黃昏出車、夜間 safari、Lipad 觀景塔過夜。若私人報價是「疊加」在官方套裝上，私人導遊/私人車輛/私人接送/私人夜間 safari 有重複收費風險；若是「取代」套裝（只買住宿餐食），則不重複。需向報價方確認計價基礎。
+2. **BRL（Borneo Rainforest Lodge）整修**：官方公告新會所與木屋施工 2025-01-01 至 2027-01-22（白天施工）。第三方（Amazing Borneo）另列 2026-12-12~21、2027-01-04~06 暫時休館；我們的 2027-01-29~02-06 不在其中，但建議訂房前書面確認工程已完工。
+3. **農曆新年 2027-02-06（週六）**，初二 02-07（週日），正好是行程最後一天。官方內閣公布的假期表列 02-06、02-07 為全國假日；02-08（週一）是否為沙巴補假，各來源矛盾（我讀到的官方表中 02-08 只出現 Awal Ramadan，未標沙巴）。UNVERIFIED。回程航班與機場接送應提早訂妥。
+4. **接送時間**：LDU → Tabin 約 1.5 小時（Tabin 官方）；LDU → BRL / DVFC 約 2.5 小時碎石路（BRL 官方頁、第三方）。
+5. **東北季風**：約 11 月至 3 月，沙巴東岸常有持續降雨警告（MetMalaysia 經媒體報導；沒有 Lahad Datu 專屬月降雨數據）。預期路況泥濘與可能延誤。
+
+## 2. iNaturalist 地點（T1）
+
+- Tabin Wildlife Reserve：place_id **191532**；Danum Valley Conservation Area：place_id **191493**。兩者都是 iNat 的「公園/保護區」地點，有 bbox，place 篩選可用（未下載/檢視多邊形，只確認 bbox 與篩選結果）。
+- Tabin bbox 偏大（約 37×55 km，含周邊與海域），優先用 place_id。另有 place 194853「Tabin Virgin Jungle Reserve」（較小，涵蓋度假村/Lipad 一帶）。
+
+## 3. 物種資料（T2，共 37 種，已刪除 3 種：Hylobates muelleri、Paradoxurus hermaphroditus、Urva brachyura，理由見 JSON）
+
+**關鍵警告（已實測驗證）**：瀕危物種（如紅毛猩猩、豬、亞洲象等）在 iNat 的座標會被「模糊化」（obscured=true）。用 place_id 篩選會把這些觀察排除，所以許多旗艦物種（猩猩、象、雲豹、馬來熊、長臂猿、穿山甲等）在 Tabin/Danum 的 place 計數是 **0**，這**不代表不存在**。bbox 查詢會回傳被隨機位移的點，數字僅供參考。App 不應拿 iNat 次數證明某物種在或不在。
+
+- 有開放座標、可信的 place 計數例：紅葉猴（Danum 195 筆，最新 2026-09-04）、馬來亞飛狐猴（Danum 56 / Tabin 12）、馬來麝香貓（Danum 33 / Tabin 14）、棕鼯鼠、兩種鼷鹿。
+- 文獻支持（僅讀到的來源）：
+  - Tabin：Wikipedia（象、爪哇野牛、水鹿、猩猩、長鼻猴、雲豹）；UMS 論文摘要（雲豹、紅貓/Catopuma badia、大理石紋貓、豹貓皆有影像紀錄；扁頭貓 2002 年有紀錄，後續調查未再偵測）。
+  - Danum：Borneo Forest Heritage 自然頁（爪哇野牛、象、雲豹、猩猩、長鼻猴）、Wikipedia（猩猩、馬來熊、雲豹）、KBA 16012 頁（2002 年資料，範圍 2,331 km²，比 DVCA 大，僅作弱證據）。
+  - 其他物種：`lit_*` 為 "unknown"，只有 iNat 資料。**未宣稱任何物種為 Tabin 或 Danum 特有種。**
+- 分類變動：北婆羅洲灰長臂猿為 Hylobates funereus（舊資料寫 H. muelleri）；豹貓 Prionailurus javanensis（舊作 bengalensis）；Herpestes → Urva；Echinosorex gymnura 在 iNat 拼作 gymnurus；iNat 把小爪水獺/江獺列為 Lutra cinerea / Lutra perspicillata；Danum 的棕櫚貂其實是 Paradoxurus philippinensis（22 筆），不是 P. hermaphroditus。
+- IUCN 等級取自 iNat 全球 IUCN 欄位，**未**在 iucnredlist.org 交叉核對。
+- 繁體中文名：**全部留 null**（未查 TaiCOL/中文維基）。iNat zh-TW 社群名稱當作候選放在各物種 notes，但可靠度不足（部分用簡體字）。
+- 活動時段（日行/夜行）為一般常識，沒有查來源，`activity_source` 為 null。
+
+## 4. 地點座標（T3）
+
+多數取自 OpenStreetMap（Nominatim），精度可用：LDU 機場 (5.0325, 118.3243)、Tabin Wildlife Resort (5.1884, 118.5009)、Lipad 泥火山 (5.2097, 118.5080)、BRL (5.0197, 117.7461)、Lahad Datu 市區 (5.0216, 118.3276)。
+**近似/未驗證**：Danum 區域中心 (4.9397, 117.6957)（各來源相差約 0.1 度）；Danum Valley Field Centre (4.964, 117.803) 只是依 iNat 開放座標群聚與 International Parks 推估，UNVERIFIED。
+
+## 5. 住宿（T4/T5）
+
+- **BRL 官方**（borneonaturetours.com）：未公布價格，有 30 間木屋，全包套裝含導覽與 LDU–BRL 往返接送；訂房走官方網站訂房系統或 KK 業務辦公室。borneorainforestlodge.com 因 SSL 失敗未能讀取。
+- **BRL 第三方**（Amazing Borneo，非官方）：3D2N 共乘，2026-04-01~2027-03-31 國際市場每人：Jungle Chalet 雙人房 USD 2,033、單人 2,897；Deluxe 2,165/3,160；Premium Deluxe 2,725/4,247。含餐、LDU 往返定班接送、保育區入場許可與稅、導覽、冠層步道、夜間出車、夜間步行；不含機票、酒精/碳酸飲料、旅遊稅（外國人 USD 2/房/晚）。頁面每個價格旁還有一個未標示的較高數字，無法判定哪個是實際價；網頁上的「馬來西亞市場」低價不適用我們。
+- **DVFC 官方**（borneoforestheritage.org.my）：貴賓房/休息屋/宿舍/露營；價目頁 404，官方價格未取得；官方頁稱 DVFC–LDU 交通僅週一、三、五（第三方說每日，矛盾）。
+- **DVFC 第三方**（Amazing Borneo）：4D3N 2027 國際市場 2–3 人同行每人 USD 1,560（宿舍）~1,710（Superior Deluxe）；單人加價 USD 215~289；含 1 次夜間出車與 1 次日出出車；設施「非常簡陋」。同樣有未標示的較高數字。
+- **Tabin**（官方）：河畔木屋 10 間，雙床、可住 3 人、冷氣、熱水、陽台、俯瞰 Lipad 河；官方頁未列房價。官方套裝見上方第 1 點。有業者說 Lipad 觀景塔曾暫停開放維修，目前狀態 UNVERIFIED。
+
+## 6. 旅遊資訊（T6）
+
+- **入境**：臺灣外交部領事事務局頁面：我國護照免簽 30 天；入境前 3 天內須上網填 MDAC（免費）；機場不接受信用卡作財力證明。該頁更新日期標示為 2022-06-21，但內文有 2024 年資訊，建議出發前再核對。馬來西亞移民局 MDAC 官網讀取逾時、護照效期要求未能確認。沙巴自行管理入境（只有第三方來源說明；官方未證實）。
+- **航班**：維基百科只列 AirBorneo 飛 LDU（往 BKI、SDK）；其他來源矛盾；第三方行程引用 BKI–LDU 約 55 分鐘。2027 年實際班表/航班號 UNVERIFIED，不要寫入定案。
+- **iNaturalist API**：官方「API Recommended Practices」頁被 Cloudflare 擋下（403），確切限制 UNVERIFIED。保守作法：每秒不超過 1 次、快取、設定 User-Agent（我約 300 次呼叫、每 1.1 秒一次，沒有被限流）。「每日 1 萬次」未能證實。
+- **照片授權**：taxon default_photo.license_code 實測有 cc-by、cc-by-nc、cc-by-nc-sa、cc-by-nc-nd、cc-by-sa，以及 null（保留所有權利）。需顯示攝影者與授權；NC 不可商用；null 不可直接使用。
+- **OpenTopoMap**：允許嵌入，不鼓勵大量下載，不保證可用性，商用可但需標示、CC-BY-SA。標示文字：`Kartendaten: © OpenStreetMap-Mitwirkende, SRTM | Kartendarstellung: © OpenTopoMap (CC-BY-SA)`（來源 https://opentopomap.org/about）。
+
+## 7. 未能查證清單（摘要）
+
+繁中名稱、IUCN 交叉核對、活動時段來源、各物種完整名錄（Tabin/Danum）、Lipad 觀景塔目前是否開放、BRL 官方 2027 價格與單人加價、DVFC 官方價目與座標、沙巴農曆新年補假、MDAC 官網與護照效期、LDU 2027 年航班、iNat 官方限流數字。詳見 JSON 的 `unverified`。
