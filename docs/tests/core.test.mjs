@@ -129,9 +129,12 @@ t("觀察可能性標籤規則（含座標遮蔽）", () => {
   assert.equal(L({ lit: "unknown" }, 2), "insufficient");
   // 座標遮蔽物種：Place 0 筆但近似範圍有紀錄
   assert.equal(L({ lit: "unknown", inat_snapshot: { total: 0 }, inat_bbox_snapshot: { total: 5 } }, 2, null, true), "recorded");
-  assert.equal(L({ lit: "recorded", inat_snapshot: { total: 0 }, inat_bbox_snapshot: { total: 24 } }, 2, null, true), "strong");
-  // 未遮蔽物種：只有近似範圍（周邊）有紀錄 → 罕見
-  assert.equal(L({ lit: "unknown", inat_snapshot: { total: 0 }, inat_bbox_snapshot: { total: 5 } }, 2, null, false), "rare");
+  // 近似範圍筆數再多也不能得到「較充分」
+  assert.equal(L({ lit: "recorded", inat_snapshot: { total: 0 }, inat_bbox_snapshot: { total: 24 } }, 2, null, true), "recorded");
+  // 弱文獻（如 KBA 2002）單獨不足以判斷
+  assert.equal(L({ lit: "recorded", lit_weak: true, inat_snapshot: { total: 0 } }, 2, null, false), "insufficient");
+  // 未遮蔽物種：只有近似範圍（周邊）有紀錄 → 資料不足
+  assert.equal(L({ lit: "unknown", inat_snapshot: { total: 0 }, inat_bbox_snapshot: { total: 5 } }, 2, null, false), "insufficient");
   const live = C.observabilityLabel({ lit: "unknown", inat_snapshot: { total: 0 } }, 1, { place: 25, bbox: null, fetchedAt: "x" }, false);
   assert.equal(live.key, "strong"); assert.equal(live.usedLive, true);
 });
@@ -154,6 +157,33 @@ t("GAS 信封驗證：schema 錯誤拒收、單一資料集錯誤不影響其他
   const v = C.validateEnvelope({ schema: "ecotrip2027/1", data: { costs: bad, trip: data.trip, foo: {} } });
   assert.equal(v.ok, true); assert.ok(!v.accepted.costs); assert.ok(v.accepted.trip); eq(v.ignored, ["foo"]);
   assert.ok(v.errors.some(e => e.includes("price 必須為 null")));
+});
+t("計價參數錯誤不會產生 NaN，且被驗證擋下", () => {
+  const d2 = clone(data); d2.costs.items.find(i => i.id === "tabin_single").qty.rooms_from = "nope";
+  const b = C.computeBudget(d2, { ...base, pax: 3 });
+  assert.ok(Number.isFinite(b.total)); assert.equal(line(b, "tabin_single").amountMYR, null);
+  assert.ok(C.validateDataset("costs", d2.costs).some(e => e.includes("rooms_from")));
+});
+t("遠端資料集缺必要欄位會被拒收", () => {
+  const sp = clone(data.species); delete sp.items[0].records;
+  assert.ok(C.validateDataset("species", sp).some(e => e.includes("records")));
+  const es = clone(data.essentials); delete es.risks;
+  assert.ok(C.validateDataset("essentials", es).length > 0);
+});
+t("重複計費警告不重複、雙向成立", () => {
+  const w = C.computeBudget(data, base).warnings.filter(x => x.code === "duplicate").map(x => x.msg);
+  assert.equal(new Set(w).size, w.length);
+  assert.ok(w.some(m => m.includes("Private Vehicle")));
+});
+t("Day 6 可行性：關掉 BRL 私人接送時提出警告", () => {
+  const on = C.checkItinerary(data, base).filter(c => c.code === "feasibility");
+  const off = C.checkItinerary(data, { ...base, optionalOn: { brl_private_transfer: false } }).filter(c => c.code === "feasibility");
+  assert.equal(on.length, 0); assert.equal(off.length, 1); assert.equal(off[0].day, 6);
+});
+t("CSV 公式注入防護", () => {
+  const d2 = clone(data); d2.costs.items[0].name = "=HYPERLINK(\"x\")";
+  const csv = C.budgetCSV(C.computeBudget(d2, base), d2.sources.items);
+  assert.ok(csv.includes("'=HYPERLINK"));
 });
 t("CSV：含 BOM、未報價不寫成 0", () => {
   const csv = C.budgetCSV(C.computeBudget(data, { ...base, pax: 3 }), data.sources.items);

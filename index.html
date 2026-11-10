@@ -96,6 +96,8 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
 .b-confirmed{color:#9BE3B5;border-color:#3F8A5D;background:#173225}
 .b-quoted{color:#A9D1F2;border-color:#4C7DA6;background:#16283A}
 .b-public_rate{color:#A9E0E0;border-color:#4A9494;background:#123030}
+.b-third_party{color:#A9E0E0;border-color:#4A9494;background:#123030;border-style:dashed}
+.b-planned{color:#D7E3B0;border-color:#7B8A4A;background:#262D17}
 .b-estimate{color:#F7C97E;border-color:#A86A12;background:#33240D}
 .b-suggested{color:#F7C97E;border-color:#A86A12;background:#33240D}
 .b-tbc{color:#FFB39C;border-color:var(--alert);background:var(--alert-bg)}
@@ -170,6 +172,7 @@ details.act .body{padding:0 12px 12px;border-top:1px dashed var(--line)}
 table{border-collapse:collapse;width:100%;font-size:.9rem}
 th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 th{color:var(--muted);font-weight:600;font-size:.82rem;white-space:nowrap}
+tbody th{white-space:normal}
 td.r,th.r{text-align:right}
 tr.sub td{background:var(--mud);font-weight:700}
 tr.off td{opacity:.5}
@@ -256,6 +259,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <dialog id="dlg-species" aria-labelledby="dlg-species-title"></dialog>
 <dialog id="dlg-settings" aria-labelledby="dlg-settings-title"></dialog>
 <div id="print-view" aria-hidden="true"></div>
+<div id="live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
 <!-- =====================================================================
      內建資料（Mock / 本機資料）。邏輯上的 6+1 個 JSON 資料集。
@@ -829,7 +833,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "lodging_prev": "tabin_resort",
    "lodging": "danum_choice",
-   "lodging_status": "public_rate",
+   "lodging_status": "planned",
    "lodging_note": "Tabin 5D4N 最後一天＝Danum 3D2N 第一天。Danum 住宿依選定方案（BRL 或 DVFC），尚未訂房。",
    "activities": [
     {
@@ -935,7 +939,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "lodging_prev": "danum_choice",
    "lodging": "danum_choice",
-   "lodging_status": "public_rate",
+   "lodging_status": "planned",
    "activities": [
     {
      "id": "d7-dawn",
@@ -1226,6 +1230,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "assumption": "全團一輛車，4 天。",
    "source_ids": [
     "src_quote_a"
+   ],
+   "duplicate_risk": [
+    "tabin_base"
    ]
   },
   {
@@ -1337,7 +1344,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "category": "danum",
    "unit": "per_person",
    "price": 2033,
-   "status": "public_rate",
+   "status": "third_party",
    "applies": "brl",
    "includes": [
     "2 晚住宿",
@@ -1470,6 +1477,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "assumption": "依 RM10／房／晚估算（第三方業者資料）；BRL 第三方頁面寫 USD 2／房／晚，兩者不一致，待確認。各套裝是否已含亦待確認。",
    "source_ids": [
     "src_brl_3p"
+   ],
+   "duplicate_risk": [
+    "brl_package",
+    "dvfc_package",
+    "tabin_base"
    ]
   },
   {
@@ -1496,8 +1508,13 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "price": null,
    "status": "unquoted",
    "applies": "extras",
-   "assumption": "是否另收及金額待查證／待業者確認。",
-   "source_ids": []
+   "assumption": "是否另收及金額待查證／待業者確認；BRL 第三方資料稱套裝已含入園許可與稅。",
+   "source_ids": [],
+   "duplicate_risk": [
+    "brl_package",
+    "dvfc_package",
+    "tabin_base"
+   ]
   },
   {
    "id": "personal",
@@ -1586,7 +1603,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "unit": "per_group",
    "price_currency": "USD",
    "price": 198,
-   "status": "public_rate",
+   "status": "third_party",
    "applies": "optional",
    "default_on": true,
    "when": "plan_brl",
@@ -1594,7 +1611,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "source_ids": [
     "src_brl_3p",
     "src_tabin_official"
-   ]
+   ],
+   "itinerary_check": {
+    "plan": "brl",
+    "day": 6,
+    "msg": "Day 6：未納入 BRL 非排程私人接送。只靠排程車無法同日轉場（Tabin 排程回程約 16:00 抵 LDU，BRL 排程車 09:30 從 LDU 出發）；必須確認 Tabin 私人接送能在 09:30 前抵達 LDU。"
+   }
   },
   {
    "id": "dvfc_private_transfer",
@@ -1614,7 +1636,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "assumption": "第三方資料：私人 4WD 單程 USD 111／輛（1–3 人）；4 人可能需 2 輛（中、高情境以 2 輛計）。DVFC 排程車時刻未查證。",
    "source_ids": [
     "src_dvfc_3p"
-   ]
+   ],
+   "itinerary_check": {
+    "plan": "dvfc",
+    "day": 6,
+    "msg": "Day 6：未納入 DVFC 非排程私人接送。DVFC 排程車時刻未查證，必須確認能與 Tabin 回程銜接。"
+   }
   },
   {
    "id": "dvfc_private_guide",
@@ -1626,7 +1653,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    },
    "price_currency": "USD",
    "price": 86,
-   "status": "public_rate",
+   "status": "third_party",
    "applies": "optional",
    "default_on": false,
    "when": "plan_dvfc",
@@ -1753,7 +1780,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "餐飲及附加服務",
     "brl": {
      "text": "3D2N：2 早、3 午、2 晚；酒精與碳酸飲料另計",
-     "status": "public_rate",
+     "status": "third_party",
      "source_ids": [
       "src_brl_3p"
      ]
@@ -1770,7 +1797,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "嚮導與生態活動",
     "brl": {
      "text": "導覽健行、樹冠步道（約 300 m、最高 26 m）、夜間車遊、夜間步行（併團）",
-     "status": "public_rate",
+     "status": "third_party",
      "source_ids": [
       "src_brl_3p"
      ]
@@ -1788,7 +1815,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "接送需求",
     "brl": {
      "text": "LDU 排程車 09:30 出發、約 2.5 小時；Day 6 需非排程私人接送（USD 160–198／單程）",
-     "status": "public_rate",
+     "status": "third_party",
      "source_ids": [
       "src_brl_3p",
       "src_brl_official"
@@ -1818,7 +1845,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "套裝包含",
     "brl": {
      "text": "住宿、餐食、排程接送、入園許可與稅、導覽活動",
-     "status": "public_rate",
+     "status": "third_party",
      "source_ids": [
       "src_brl_3p"
      ]
@@ -1835,7 +1862,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "套裝不含",
     "brl": {
      "text": "國內線、保險、觀光稅、酒精飲料",
-     "status": "public_rate",
+     "status": "third_party",
      "source_ids": [
       "src_brl_3p"
      ]
@@ -1852,7 +1879,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "資料完整程度",
     "brl": {
      "text": "官方無價格；第三方價格明確但頁面另有未標示數字",
-     "status": "public_rate"
+     "status": "third_party"
     },
     "dvfc": {
      "text": "官方價目頁 404；3D2N 價格為推估",
@@ -1927,7 +1954,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "orangutan",
    "flagship": true,
    "zh": "婆羅洲猩猩",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_orangutan",
    "en": "Bornean Orangutan",
    "sci": "Pongo pygmaeus",
    "order": "Primates",
@@ -1955,7 +1982,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 29,
       "latest": "2026-06-05",
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     },
     "danum": {
      "lit": "recorded",
@@ -1982,7 +2011,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "白天步行或車上搜尋樹冠的巢與覓食樹；嚮導常依結果樹判斷",
    "difficulty": 2,
    "sensitive": false,
-   "summary": "婆羅洲特有的大型猿類，多獨居，每晚在樹上築新巢。沙巴族群屬東北婆羅洲亞種（P. p. morio）。",
+   "summary": "分布於婆羅洲的大型猿類，多獨居，每晚在樹上築新巢。沙巴族群屬東北婆羅洲亞種（P. p. morio）。",
    "source_ids": [
     "src_inat_taxon_43582",
     "src_inat_place_tabin",
@@ -1996,7 +2025,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "pygmy_elephant",
    "flagship": true,
    "zh": "亞洲象",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_pygmy_elephant",
    "en": "Asian Elephant",
    "sci": "Elephas maximus",
    "order": "Proboscidea",
@@ -2024,7 +2053,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 24,
       "latest": "2026-09-19",
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     },
     "danum": {
      "lit": "recorded",
@@ -2064,7 +2095,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "clouded_leopard",
    "flagship": true,
    "zh": "巽他雲豹",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_clouded_leopard",
    "en": "Sunda Clouded Leopard",
    "sci": "Neofelis diardi",
    "order": "Carnivora",
@@ -2133,7 +2164,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "sun_bear",
    "flagship": true,
    "zh": "馬來熊",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_sun_bear",
    "en": "Sun Bear",
    "sci": "Helarctos malayanus",
    "order": "Carnivora",
@@ -2177,7 +2208,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 0,
       "latest": null,
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     }
    },
    "activity": "diurnal",
@@ -2325,7 +2358,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "pigtailed_macaque",
    "flagship": false,
    "zh": "豚尾獼猴",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_pigtailed_macaque",
    "en": "Southern Pig-tailed Macaque",
    "sci": "Macaca nemestrina",
    "order": "Primates",
@@ -2368,7 +2401,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 11,
       "latest": "2026-02-21",
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     }
    },
    "activity": "diurnal",
@@ -2389,8 +2424,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "longtailed_macaque",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "食蟹獼猴",
+   "zh_source": "src_zhwiki_longtailed_macaque",
    "en": "Long-tailed Macaque",
    "sci": "Macaca fascicularis",
    "order": "Primates",
@@ -2433,7 +2468,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 46,
       "latest": "2026-09-19",
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     }
    },
    "activity": "diurnal",
@@ -2454,8 +2491,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "proboscis_monkey",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "長鼻猴",
+   "zh_source": "src_zhwiki_proboscis_monkey",
    "en": "Proboscis Monkey",
    "sci": "Nasalis larvatus",
    "order": "Primates",
@@ -2483,7 +2520,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 2,
       "latest": "2026-08-26",
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     },
     "danum": {
      "lit": "recorded",
@@ -2648,8 +2687,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "flat_headed_cat",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "扁頭豹貓",
+   "zh_source": "src_zhwiki_flat_headed_cat",
    "en": "Flat-headed Cat",
    "sci": "Prionailurus planiceps",
    "order": "Carnivora",
@@ -2677,7 +2716,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 0,
       "latest": null,
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "2002 年影像紀錄，後續調查未再偵測到"
     },
     "danum": {
      "lit": "unknown",
@@ -2700,7 +2741,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "不建議作為目標；極罕見",
    "difficulty": 3,
    "sensitive": true,
-   "summary": "扁頭貓是半水棲的小型貓科，Tabin 有 2002 年的影像紀錄，後續調查未再偵測到。",
+   "summary": "扁頭豹貓（扁頭貓）是半水棲的小型貓科，Tabin 有 2002 年的影像紀錄，後續調查未再偵測到。",
    "source_ids": [
     "src_inat_taxon_41947",
     "src_inat_place_tabin",
@@ -2778,8 +2819,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "marbled_cat",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "紋貓",
+   "zh_source": "src_zhwiki_marbled_cat",
    "en": "Marbled Cat",
    "sci": "Pardofelis marmorata",
    "order": "Carnivora",
@@ -2830,7 +2871,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "極少目擊",
    "difficulty": 3,
    "sensitive": false,
-   "summary": "雲貓體型似家貓，尾長，多在樹上活動，行蹤隱密。",
+   "summary": "紋貓（又稱雲貓）體型似家貓，尾長，多在樹上活動，行蹤隱密。",
    "source_ids": [
     "src_inat_taxon_42033",
     "src_inat_place_tabin",
@@ -2843,8 +2884,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "bay_cat",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "婆羅洲金貓",
+   "zh_source": "src_zhwiki_bay_cat",
    "en": "Bay Cat",
    "sci": "Catopuma badia",
    "order": "Carnivora",
@@ -2889,7 +2930,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 0,
       "latest": null,
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     }
    },
    "activity": "unknown",
@@ -2897,7 +2940,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "極少目擊；不建議作為目標",
    "difficulty": 3,
    "sensitive": true,
-   "summary": "婆羅洲特有的小型貓科，是全球紀錄最少的貓科之一，短期旅行看到的機會極低。",
+   "summary": "小型貓科，紀錄極少，短期旅行看到的機會極低。",
    "source_ids": [
     "src_inat_taxon_569306",
     "src_inat_place_tabin",
@@ -2910,8 +2953,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "banteng",
    "flagship": true,
-   "zh": null,
-   "zh_source": null,
+   "zh": "爪哇野牛",
+   "zh_source": "src_zhwiki_banteng",
    "en": "Banteng",
    "sci": "Bos javanicus",
    "order": "Artiodactyla",
@@ -2939,7 +2982,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 0,
       "latest": null,
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     },
     "danum": {
      "lit": "recorded",
@@ -2977,8 +3022,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "bearded_pig",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "鬚豬",
+   "zh_source": "src_zhwiki_bearded_pig",
    "en": "Western Bearded Pig",
    "sci": "Sus barbatus",
    "order": "Artiodactyla",
@@ -3040,8 +3085,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "sambar",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "水鹿",
+   "zh_source": "src_zhwiki_sambar",
    "en": "Sambar",
    "sci": "Rusa unicolor",
    "order": "Artiodactyla",
@@ -3069,7 +3114,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 6,
       "latest": "2019-09-21",
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     },
     "danum": {
      "lit": "unknown",
@@ -3155,7 +3202,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "清晨或傍晚步道、夜間車遊",
    "difficulty": 2,
    "sensitive": false,
-   "summary": "婆羅洲黃麂，婆羅洲特有的小型鹿。",
+   "summary": "婆羅洲黃麂，小型鹿科。",
    "source_ids": [
     "src_inat_taxon_42190",
     "src_inat_place_tabin",
@@ -3169,7 +3216,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "red_muntjac",
    "flagship": false,
    "zh": "赤麂",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_red_muntjac",
    "en": "Southern Red Muntjac",
    "sci": "Muntiacus muntjak",
    "order": "Artiodactyla",
@@ -3232,7 +3279,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "lesser_mousedeer",
    "flagship": false,
    "zh": "小鼷鹿",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_lesser_mousedeer",
    "en": "Lesser Oriental Chevrotain",
    "sci": "Tragulus kanchil",
    "order": "Artiodactyla",
@@ -3295,7 +3342,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "greater_mousedeer",
    "flagship": false,
    "zh": "大鼷鹿",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_greater_mousedeer",
    "en": "Greater Oriental Chevrotain",
    "sci": "Tragulus napu",
    "order": "Artiodactyla",
@@ -3358,7 +3405,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "binturong",
    "flagship": false,
    "zh": "熊狸",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_binturong",
    "en": "Binturong",
    "sci": "Arctictis binturong",
    "order": "Carnivora",
@@ -3421,7 +3468,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "malay_civet",
    "flagship": false,
    "zh": "馬來靈貓",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_malay_civet",
    "en": "Malay Civet",
    "sci": "Viverra tangalunga",
    "order": "Carnivora",
@@ -3483,8 +3530,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "otter_civet",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "獺狸貓",
+   "zh_source": "src_zhwiki_otter_civet",
    "en": "Otter Civet",
    "sci": "Cynogale bennettii",
    "order": "Carnivora",
@@ -3527,7 +3574,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "total": 0,
       "latest": null,
       "checked_on": "2026-11-10"
-     }
+     },
+     "lit_weak": true,
+     "lit_note": "來源為 Wikipedia 或 KBA 2002 年資料（KBA 範圍大於保護區）"
     }
    },
    "activity": "nocturnal",
@@ -3535,7 +3584,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "極少目擊",
    "difficulty": 3,
    "sensitive": true,
-   "summary": "水獺狸，半水棲的靈貓，全球稀有。",
+   "summary": "獺狸貓（水獺狸），半水棲的靈貓，全球稀有。",
    "source_ids": [
     "src_inat_taxon_41590",
     "src_inat_place_tabin",
@@ -3548,8 +3597,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "banded_civet",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "縞椰子貓",
+   "zh_source": "src_zhwiki_banded_civet",
    "en": "Banded Civet",
    "sci": "Hemigalus derbyanus",
    "order": "Carnivora",
@@ -3598,7 +3647,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "夜間步行偶遇",
    "difficulty": 3,
    "sensitive": false,
-   "summary": "帶狀狸，背部有深色橫帶，夜行性。",
+   "summary": "縞椰子貓，背部有深色橫帶，夜行性。",
    "source_ids": [
     "src_inat_taxon_41635",
     "src_inat_place_tabin",
@@ -3611,8 +3660,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "colugo",
    "flagship": true,
-   "zh": null,
-   "zh_source": null,
+   "zh": "巽他鼯猴",
+   "zh_source": "src_zhwiki_colugo",
    "en": "Sunda Colugo",
    "sci": "Galeopterus variegatus",
    "order": "Dermoptera",
@@ -3674,8 +3723,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "red_giant_flying_squirrel",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "棕鼯鼠",
+   "zh_source": "src_zhwiki_red_giant_flying_squirrel",
    "en": "Red Giant Flying Squirrel",
    "sci": "Petaurista petaurista",
    "order": "Rodentia",
@@ -3724,7 +3773,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "黃昏時在住宿周邊觀察起飛滑翔",
    "difficulty": 1,
    "sensitive": false,
-   "summary": "紅大鼯鼠，黃昏從樹洞出來滑翔覓食。",
+   "summary": "棕鼯鼠（紅大鼯鼠），黃昏從樹洞出來滑翔覓食。",
    "source_ids": [
     "src_inat_taxon_45982",
     "src_inat_place_tabin",
@@ -3737,8 +3786,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "black_flying_squirrel",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "黑飛鼠",
+   "zh_source": "src_zhwiki_black_flying_squirrel",
    "en": "Black Flying Squirrel",
    "sci": "Aeromys tephromelas",
    "order": "Rodentia",
@@ -3787,7 +3836,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "夜間車遊",
    "difficulty": 2,
    "sensitive": false,
-   "summary": "黑鼯鼠，體色深，夜行性。",
+   "summary": "黑飛鼠，體色深，夜行性。",
    "source_ids": [
     "src_inat_taxon_45991",
     "src_inat_place_tabin",
@@ -3863,8 +3912,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "pangolin",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "馬來穿山甲",
+   "zh_source": "src_zhwiki_pangolin",
    "en": "Sunda Pangolin",
    "sci": "Manis javanica",
    "order": "Pholidota",
@@ -3926,8 +3975,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "small_clawed_otter",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "亞洲小爪水獺",
+   "zh_source": "src_zhwiki_small_clawed_otter",
    "en": "Asian Small-clawed Otter",
    "sci": "Lutra cinerea",
    "order": "Carnivora",
@@ -3976,7 +4025,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "河岸觀察",
    "difficulty": 2,
    "sensitive": false,
-   "summary": "小爪水獺（常見學名 Aonyx cinereus；iNaturalist 目前歸在 Lutra cinerea），常成群活動。",
+   "summary": "亞洲小爪水獺（常見學名 Aonyx cinereus；iNaturalist 目前歸在 Lutra cinerea），常成群活動。",
    "source_ids": [
     "src_inat_taxon_1638835",
     "src_inat_place_tabin",
@@ -3989,8 +4038,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "smooth_otter",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "江獺",
+   "zh_source": "src_zhwiki_smooth_otter",
    "en": "Smooth-coated Otter",
    "sci": "Lutra perspicillata",
    "order": "Carnivora",
@@ -4052,8 +4101,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "large_treeshrew",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "大樹鼩",
+   "zh_source": "src_zhwiki_large_treeshrew",
    "en": "Large Treeshrew",
    "sci": "Tupaia tana",
    "order": "Scandentia",
@@ -4115,8 +4164,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "moonrat",
    "flagship": false,
-   "zh": null,
-   "zh_source": null,
+   "zh": "刺氏鼩蝟",
+   "zh_source": "src_zhwiki_moonrat",
    "en": "Moonrat",
    "sci": "Echinosorex gymnurus",
    "order": "Eulipotyphla",
@@ -4165,7 +4214,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "method": "夜間步行",
    "difficulty": 2,
    "sensitive": false,
-   "summary": "月鼠（大毛蝟），體味強烈，夜行性。",
+   "summary": "刺氏鼩蝟（月鼠），體味強烈，夜行性。",
    "source_ids": [
     "src_inat_taxon_1370747",
     "src_inat_place_tabin",
@@ -4179,7 +4228,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "porcupine",
    "flagship": false,
    "zh": "馬來豪豬",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_porcupine",
    "en": "East Asian Porcupine",
    "sci": "Hystrix brachyura",
    "order": "Rodentia",
@@ -4242,7 +4291,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "collared_mongoose",
    "flagship": false,
    "zh": "領獴",
-   "zh_source": "src_zhwiki",
+   "zh_source": "src_zhwiki_collared_mongoose",
    "en": "Collared Mongoose",
    "sci": "Urva semitorquata",
    "order": "Carnivora",
@@ -4717,15 +4766,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "note": "航線資訊引用薄弱，2027 年班次未查證。"
   },
   {
-   "id": "src_zhwiki",
-   "title": "中文維基百科條目名稱（臺灣正體轉換）",
-   "url": "https://zh.wikipedia.org/",
-   "type": "third_party",
-   "checked_on": "2026-11-10",
-   "reliability": "medium",
-   "note": "僅用於中文名對應。"
-  },
-  {
    "id": "src_assessment",
    "title": "本工具人工評估（觀察難度、方案評分）",
    "type": "assessment",
@@ -5113,6 +5153,276 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "checked_on": "2026-11-10",
    "reliability": "medium",
    "note": "未與 iucnredlist.org 交叉比對。"
+  },
+  {
+   "id": "src_zhwiki_orangutan",
+   "title": "中文維基百科：婆羅洲猩猩（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E5%A9%86%E7%BE%85%E6%B4%B2%E7%8C%A9%E7%8C%A9",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_pygmy_elephant",
+   "title": "中文維基百科：亞洲象（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E4%BA%9E%E6%B4%B2%E8%B1%A1",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_clouded_leopard",
+   "title": "中文維基百科：巽他雲豹（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E5%B7%BD%E4%BB%96%E9%9B%B2%E8%B1%B9",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_sun_bear",
+   "title": "中文維基百科：馬來熊（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%A6%AC%E4%BE%86%E7%86%8A",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_pigtailed_macaque",
+   "title": "中文維基百科：豚尾獼猴（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E8%B1%9A%E5%B0%BE%E7%8D%BC%E7%8C%B4",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_longtailed_macaque",
+   "title": "中文維基百科：食蟹獼猴（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%A3%9F%E8%9F%B9%E7%8D%BC%E7%8C%B4",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_proboscis_monkey",
+   "title": "中文維基百科：長鼻猴（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%95%B7%E9%BC%BB%E7%8C%B4",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_flat_headed_cat",
+   "title": "中文維基百科：扁頭豹貓（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E6%89%81%E9%A0%AD%E8%B1%B9%E8%B2%93",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_marbled_cat",
+   "title": "中文維基百科：紋貓（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E7%B4%8B%E8%B2%93",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_bay_cat",
+   "title": "中文維基百科：婆羅洲金貓（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E5%A9%86%E7%BE%85%E6%B4%B2%E9%87%91%E8%B2%93",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_banteng",
+   "title": "中文維基百科：爪哇野牛（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E7%88%AA%E5%93%87%E9%87%8E%E7%89%9B",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_bearded_pig",
+   "title": "中文維基百科：鬚豬（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%AC%9A%E8%B1%AC",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_sambar",
+   "title": "中文維基百科：水鹿（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E6%B0%B4%E9%B9%BF",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_red_muntjac",
+   "title": "中文維基百科：赤麂（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E8%B5%A4%E9%BA%82",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_lesser_mousedeer",
+   "title": "中文維基百科：小鼷鹿（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E5%B0%8F%E9%BC%B7%E9%B9%BF",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_greater_mousedeer",
+   "title": "中文維基百科：大鼷鹿（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E5%A4%A7%E9%BC%B7%E9%B9%BF",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_binturong",
+   "title": "中文維基百科：熊狸（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E7%86%8A%E7%8B%B8",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_malay_civet",
+   "title": "中文維基百科：馬來靈貓（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%A6%AC%E4%BE%86%E9%9D%88%E8%B2%93",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_otter_civet",
+   "title": "中文維基百科：獺狸貓（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E7%8D%BA%E7%8B%B8%E8%B2%93",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_banded_civet",
+   "title": "中文維基百科：縞椰子貓（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E7%B8%9E%E6%A4%B0%E5%AD%90%E8%B2%93",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_colugo",
+   "title": "中文維基百科：巽他鼯猴（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E5%B7%BD%E4%BB%96%E9%BC%AF%E7%8C%B4",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_red_giant_flying_squirrel",
+   "title": "中文維基百科：棕鼯鼠（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E6%A3%95%E9%BC%AF%E9%BC%A0",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_black_flying_squirrel",
+   "title": "中文維基百科：黑飛鼠（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%BB%91%E9%A3%9B%E9%BC%A0",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_pangolin",
+   "title": "中文維基百科：馬來穿山甲（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%A6%AC%E4%BE%86%E7%A9%BF%E5%B1%B1%E7%94%B2",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_small_clawed_otter",
+   "title": "中文維基百科：亞洲小爪水獺（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E4%BA%9E%E6%B4%B2%E5%B0%8F%E7%88%AA%E6%B0%B4%E7%8D%BA",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_smooth_otter",
+   "title": "中文維基百科：江獺（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E6%B1%9F%E7%8D%BA",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_large_treeshrew",
+   "title": "中文維基百科：大樹鼩（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E5%A4%A7%E6%A8%B9%E9%BC%A9",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_moonrat",
+   "title": "中文維基百科：刺氏鼩蝟（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E5%88%BA%E6%B0%8F%E9%BC%A9%E8%9D%9F",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_porcupine",
+   "title": "中文維基百科：馬來豪豬（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%A6%AC%E4%BE%86%E8%B1%AA%E8%B1%AC",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_zhwiki_collared_mongoose",
+   "title": "中文維基百科：領獴（臺灣正體）",
+   "url": "https://zh.wikipedia.org/zh-tw/%E9%A0%98%E7%8D%B4",
+   "type": "third_party",
+   "checked_on": "2026-11-11",
+   "reliability": "medium",
+   "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
   }
  ]
 }
@@ -5504,7 +5814,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <script id="core-js">
 "use strict";
 (function (global) {
-  const STATUS_LABEL = { confirmed: "已確認", quoted: "業者報價", public_rate: "公開牌價", estimate: "估算",
+  const STATUS_LABEL = { confirmed: "已確認", quoted: "業者報價", public_rate: "官方公開價", third_party: "第三方公開價", planned: "規劃中（未訂）", estimate: "估算",
     suggested: "建議", tbc: "待確認", demo: "示範資料", unquoted: "未報價", user: "使用者輸入" };
   const UNIT_LABEL = { per_person: "每人（整個套裝）", per_group: "每團", per_group_per_day: "每團每天",
     per_person_per_night: "每人每晚", per_room_per_night: "每房每晚", per_person_trip: "每人每趟",
@@ -5620,7 +5930,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       const { qty, text } = itemQuantity(item, ctx);
       const { price, status } = unitPrice(item, s);
       const cur = item.price_currency || "MYR";
-      let amt = price == null || qty == null ? null : price * qty;
+      const raw = price == null || qty == null ? null : price * qty;
+      const bad = raw != null && !isNum(raw);           // 計價參數錯誤（例如缺 qty 欄位）→ 不計入，不顯示 NaN
+      let amt = bad ? null : raw;
       let myr = null, twd = null;
       if (amt != null) {
         if (cur === "TWD") { twd = amt; myr = fx ? amt / fx : null; }
@@ -5631,7 +5943,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         unitLabel: UNIT_LABEL[item.unit] || item.unit, currency: cur, unitPrice: price, qty, qtyText: text,
         amountMYR: myr, amountTWD: twd, status, baseStatus: item.status, active,
         fixed: FIXED_UNITS.has(item.unit), source_ids: item.source_ids || [], includes: item.includes || [],
-        excludes: item.excludes || [], assumption: item.assumption || "", notes: item.notes || "",
+        excludes: item.excludes || [], assumption: item.assumption || "", notes: item.notes || "", paramError: bad,
         duplicate_risk: item.duplicate_risk || [], optional: item.applies === "optional" });
     }
     const act = lines.filter(l => l.active);
@@ -5644,7 +5956,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const byCategory = {};
     for (const k of Object.keys(CATEGORY_LABEL)) byCategory[k] = { myr: sum(priced.filter(l => l.category === k)), unpriced: act.filter(l => l.category === k && l.amountMYR == null).length };
     const quoted = sum(priced.filter(l => ["quoted", "confirmed"].includes(l.status)));
-    const pub = sum(priced.filter(l => l.status === "public_rate"));
+    const pub = sum(priced.filter(l => l.status === "public_rate" || l.status === "third_party"));
     const firm = quoted + pub;
     const soft = sum(priced.filter(l => ["estimate", "demo"].includes(l.status)));
     const user = sum(priced.filter(l => l.status === "user"));
@@ -5658,11 +5970,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (ctx.triples > 0) warnings.push({ level: "warn", msg: `每房超過 2 人（多出 ${ctx.triples} 人）：需向業者確認是否可三人房及加床費。` });
     if (!fx) warnings.push({ level: "error", msg: "匯率無效，無法換算 TWD。" });
     if (!fxUsd && act.some(l => l.currency === "USD")) warnings.push({ level: "error", msg: "USD 匯率無效，USD 計價項目無法換算。" });
-    const activeIds = new Set(act.map(l => l.id));
-    for (const l of act) for (const d of l.duplicate_risk) if (activeIds.has(d) && l.id < d) {
+    const activeIds = new Set(act.map(l => l.id)), seenPairs = new Set();
+    for (const l of act) for (const d of l.duplicate_risk) {
+      if (!activeIds.has(d) || d === l.id) continue;
+      const key = [l.id, d].sort().join("|"); if (seenPairs.has(key)) continue; seenPairs.add(key);
       const other = lines.find(x => x.id === d);
       warnings.push({ level: "warn", code: "duplicate", msg: `可能重複計費：「${l.name}」與「${other.name}」內容可能重疊，請向業者確認（試算仍依報價計入）。` });
     }
+    for (const l of act) if (l.status === "user" && l.unitPrice === 0) warnings.push({ level: "info", msg: `「${l.name}」使用者輸入單價為 0：請確認確實免費或已含於套裝。` });
+    for (const l of lines) if (l.paramError) warnings.push({ level: "error", msg: `「${l.name}」計價參數錯誤（數量無法計算），未計入總計。` });
     return { ctx, lines, subtotal, contingencyPct: pct, contingency, total, fx, fxUsd,
       totalTWD: fx ? total * fx : null, perPerson: ctx.pax ? total / ctx.pax : null,
       perPersonTWD: fx && ctx.pax ? total * fx / ctx.pax : null,
@@ -5739,6 +6055,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (tbc) out.push({ level: "info", code: "tbc", msg: `共有 ${tbc} 項活動標記為「待確認」。` });
     // 與報價的交叉檢查
     const ctx = computeCtx(data, state);
+    for (const it of data.costs.items) if (it.itinerary_check && it.itinerary_check.plan === state.danumPlan && !itemActive(it, state, ctx))
+      out.push({ level: "warn", code: "feasibility", day: it.itinerary_check.day, msg: it.itinerary_check.msg });
     const quotedNs = (data.costs.items.find(i => i.id === "night_safari") || {}).quoted_nights;
     if (isNum(quotedNs) && ctx.nightSafariNights !== quotedNs)
       out.push({ level: "warn", code: "quote", msg: `行程中選了 ${ctx.nightSafariNights} 晚私人夜遊，業者報價為 ${quotedNs} 晚；試算依行程選擇計算，單價沿用報價（須向業者確認）。` });
@@ -5794,15 +6112,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     basis.push(lit === "recorded" ? "文獻／官方資料有紀錄" : lit === "not_found" ? "查核來源中未見紀錄（不代表不存在）" : "文獻紀錄未查證");
     basis.push(`觀察難度（人工評估）：${["", "低", "中", "高"][difficulty] || "未評估"}`);
     const a = A || 0, b = B || 0;
-    const evidence = a >= 1 || (obscured && b >= 1) || lit === "recorded";
-    const nearOnly = !evidence && b >= 1;
+    const litStrong = lit === "recorded" && !rec.lit_weak, litWeak = lit === "recorded" && !!rec.lit_weak;
+    if (litWeak) basis[basis.length - 2] = "文獻有紀錄，但屬弱證據（年代久遠、範圍不同或二手整理）" + (rec.lit_note ? "：" + rec.lit_note : "");
+    else if (rec.lit_note) basis[basis.length - 2] += "：" + rec.lit_note;
+    // 有效證據：保護區內公開紀錄、遮蔽物種的近似範圍紀錄、可靠文獻
+    const evidence = a >= 1 || (obscured && b >= 1) || litStrong;
     let key;
-    if (difficulty >= 3) key = a >= 20 ? "recorded" : (evidence || nearOnly) ? "rare" : "insufficient";
-    else if (a >= 20 || (obscured && b >= 20 && lit === "recorded")) key = "strong";
+    if (a >= 20 && difficulty <= 2) key = "strong";          // 只有保護區範圍內的公開紀錄才能得到「較充分」
+    else if (difficulty >= 3) key = a >= 20 ? "recorded" : evidence ? "rare" : "insufficient";
     else if (evidence) key = "recorded";
-    else if (nearOnly) key = "rare";
-    else key = "insufficient";
-    const uncertainty = "研究級紀錄不代表所有真實出現；筆數不等於個體數，也不能換算成觀察成功率；無紀錄不等於不存在；近似範圍不等於保護區邊界，遮蔽座標為隨機偏移。門檻（20 筆）與難度為本工具自訂。";
+    else key = "insufficient";                                // 僅周邊近似範圍或弱文獻：不足以判斷
+    if (!evidence && (litWeak || b >= 1)) basis.push("僅有周邊近似範圍紀錄或弱文獻，不足以判斷");
+    const uncertainty = "紀錄多寡 ≠ 容易看到。研究級紀錄不代表所有真實出現；筆數不等於個體數，也不能換算成觀察成功率；無紀錄不等於不存在；近似範圍不等於保護區邊界，遮蔽座標為隨機偏移。門檻（20 筆）與難度為本工具自訂。";
     return { key, label: OBS_LABELS[key], basis, uncertainty, A, B, usedLive: liveA != null || liveB != null };
   }
 
@@ -5813,7 +6134,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (!isObj(d)) return [`${name}：不是物件`];
     switch (name) {
       case "trip":
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(d.start || "")) e.push("trip.start 格式需為 YYYY-MM-DD");
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(d.start || "") || !/^\d{4}-\d{2}-\d{2}$/.test(d.end || "")) e.push("trip.start / trip.end 格式需為 YYYY-MM-DD");
+        for (const k of ["title", "region_label"]) if (typeof d[k] !== "string") e.push(`trip.${k} 需為字串`);
+        for (const k of ["default_pax", "default_fx", "default_usd_myr"]) if (!isNum(d[k]) || d[k] <= 0) e.push(`trip.${k} 需為正數`);
         if (!Number.isInteger(d.nights) || d.nights < 1) e.push("trip.nights 需為正整數");
         if (!Array.isArray(d.segments)) e.push("trip.segments 需為陣列");
         break;
@@ -5821,13 +6144,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         if (!Array.isArray(d.days) || !d.days.length) { e.push("itinerary.days 需為非空陣列"); break; }
         d.days.forEach((x, i) => {
           if (!/^\d{4}-\d{2}-\d{2}$/.test(x.date || "")) e.push(`days[${i}].date 格式錯誤`);
+          if (!Number.isInteger(x.day)) e.push(`days[${i}].day 需為整數`);
+          if (!["tabin", "danum", "transit"].includes(x.region)) e.push(`days[${i}].region 不合法`);
+          if (!Array.isArray(x.kind)) e.push(`days[${i}].kind 需為陣列`);
+          for (const k of ["short", "weather_alt"]) if (typeof x[k] !== "string") e.push(`days[${i}].${k} 需為字串`);
+          if (x.lodging !== null && typeof x.lodging !== "string") e.push(`days[${i}].lodging 需為字串或 null`);
           if (!Array.isArray(x.activities)) e.push(`days[${i}].activities 需為陣列`);
           else x.activities.forEach((a, j) => { if (typeof a.id !== "string" || typeof a.title !== "string") e.push(`days[${i}].activities[${j}] 缺 id/title`); });
         });
         break;
       case "costs": {
         if (!Array.isArray(d.items)) { e.push("costs.items 需為陣列"); break; }
-        const units = Object.keys(UNIT_LABEL), st = ["confirmed", "quoted", "public_rate", "estimate", "demo", "unquoted"];
+        const units = Object.keys(UNIT_LABEL), st = ["confirmed", "quoted", "public_rate", "third_party", "estimate", "demo", "unquoted"];
+        const ctxKeys = ["pax", "rooms", "singles", "triples", "nightSafariNights"];
         d.items.forEach((it, i) => {
           if (typeof it.id !== "string") e.push(`items[${i}].id 缺少`);
           if (!units.includes(it.unit)) e.push(`items[${i}]（${it.id}）unit「${it.unit}」不在允許清單`);
@@ -5837,6 +6166,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
           if (!okPrice) e.push(`items[${i}]（${it.id}）price 格式錯誤`);
           if (isNum(p) && p < 0) e.push(`items[${i}]（${it.id}）price 不可為負`);
           if (it.status === "unquoted" && p != null) e.push(`items[${i}]（${it.id}）未報價項目 price 必須為 null`);
+          if (!Object.keys(CATEGORY_LABEL).includes(it.category)) e.push(`items[${i}]（${it.id}）category 不合法`);
+          const q = it.qty || {};
+          for (const k of ["nights_from", "rooms_from"]) if (q[k] != null && !ctxKeys.includes(q[k])) e.push(`items[${i}]（${it.id}）qty.${k}「${q[k]}」不合法`);
+          for (const k of ["days", "nights", "trips"]) if (q[k] != null && !(isNum(q[k]) && q[k] >= 0)) e.push(`items[${i}]（${it.id}）qty.${k} 需為非負數`);
+          if (it.price_currency != null && !["MYR", "TWD", "USD"].includes(it.price_currency)) e.push(`items[${i}]（${it.id}）price_currency 不合法`);
         });
         break;
       }
@@ -5845,10 +6179,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         d.items.forEach((s, i) => {
           if (typeof s.id !== "string" || typeof s.sci !== "string") e.push(`species[${i}] 缺 id/sci`);
           if (s.inat_taxon_id != null && !Number.isInteger(s.inat_taxon_id)) e.push(`species[${i}] inat_taxon_id 需為整數或 null`);
+          if (!isObj(s.records) || !isObj(s.records.tabin) || !isObj(s.records.danum)) e.push(`species[${i}]（${s.id}）缺 records.tabin / records.danum`);
+          if (typeof s.en !== "string") e.push(`species[${i}] en 需為字串`);
         });
         break;
       case "locations":
         if (!Array.isArray(d.pois)) { e.push("locations.pois 需為陣列"); break; }
+        if (!Array.isArray(d.areas) || !Array.isArray(d.route)) e.push("locations.areas / route 需為陣列");
+        d.pois.forEach((p, i) => { if (!["lodging", "wildlife", "transport", "landscape"].includes(p.type)) e.push(`pois[${i}] type 不合法`); if (typeof p.name !== "string") e.push(`pois[${i}] name 需為字串`); });
         d.pois.forEach((p, i) => {
           if (typeof p.id !== "string") e.push(`pois[${i}] 缺 id`);
           if (!(isNum(p.lat) && p.lat >= -90 && p.lat <= 90 && isNum(p.lng) && p.lng >= -180 && p.lng <= 180)) e.push(`pois[${i}]（${p.id}）座標錯誤`);
@@ -5858,7 +6196,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         if (!Array.isArray(d.items)) e.push("sources.items 需為陣列");
         break;
       case "essentials":
-        if (!Array.isArray(d.checklist)) e.push("essentials.checklist 需為陣列");
+        for (const k of ["checklist", "risks", "ethics", "night"]) if (!Array.isArray(d[k])) e.push(`essentials.${k} 需為陣列`);
         break;
       default: e.push(`未知資料集 ${name}`);
     }
@@ -5899,7 +6237,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
 
   /* ---------- CSV ---------- */
-  function csvCell(v) { const s = v == null ? "" : String(v); return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }
+  function csvCell(v) {
+    let s = v == null ? "" : String(v);
+    if (typeof v === "string" && /^[=+\-@\t\r]/.test(s)) s = "'" + s;   // 防止試算表公式注入
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  }
   function budgetCSV(b, sources) {
     const srcName = id => { const s = sources.find(x => x.id === id); return s ? s.title : id; };
     const rows = [["分類", "項目", "計價單位", "幣別", "單價", "數量", "金額(MYR)", "金額(TWD)", "資料狀態", "是否計入", "來源", "假設／備註"]];
@@ -5957,7 +6299,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   const fmtTWD = v => v == null ? "—" : "NT$ " + n0(v);
   const fmtPct = v => v == null ? "—" : (v * 100).toFixed(0) + "%";
   function badge(status, text) { return h("span", { class: "badge b-" + status }, text || C.STATUS_LABEL[status] || status); }
-  function iucnBadge(code) { const c = code || "null"; return h("span", { class: "iucn iucn-" + c, title: "IUCN 紅色名錄等級" }, code || "未查證"); }
+  function iucnBadge(code) { const c = code || "null"; return h("span", { class: "iucn iucn-" + c, title: "IUCN 紅色名錄等級（經 iNaturalist 轉載，未與 IUCN 官網交叉核對）" }, code || "未查證"); }
   /** 只允許 https 連結；其餘一律不輸出為連結 */
   function safeUrl(u) { try { const x = new URL(u); return x.protocol === "https:" ? x.href : null; } catch (e) { return null; } }
   function extLink(url, text) { const u = safeUrl(url); return u ? h("a", { href: u, target: "_blank", rel: "noopener noreferrer" }, text || u) : h("span", { class: "dim" }, text || "（無連結）"); }
@@ -5984,7 +6326,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   /* ================= 使用者狀態（LocalStorage） ================= */
   function defaultState(data) {
     return { v: 1, pax: data.trip.default_pax, fx: data.trip.default_fx, fxUsd: data.trip.default_usd_myr, danumPlan: "brl", rooms: 2, scenario: "mid",
-      contingencyPct: 10, includeFlights: false, includeExtras: true, optionalOn: {}, overrides: {}, lastNight: "ld",
+      contingencyPct: 10, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {}, lastNight: "ld",
       targets: data.species.items.filter(s => s.flagship).map(s => s.id), activity: {}, dayNotes: {}, checklist: {},
       weights: { budget: 3, wildlife: 4, comfort: 2, flex: 2, risk: 3 }, gasUrl: "", dataSource: "local",
       selectedDay: 1, dayFilter: "all", spFilter: { area: "all", flags: [], difficulty: "all", q: "" }, tab: "dashboard" };
@@ -6041,9 +6383,22 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
   /** 更新狀態並重繪目前分頁 */
   function update(mutator, opts) {
+    const ae = document.activeElement, fid = ae && ae.id;
+    const sel = ae && typeof ae.selectionStart === "number" ? [ae.selectionStart, ae.selectionEnd] : null;
     mutator(App.state);
     saveState();
-    if (!opts || opts.render !== false) renderActive();
+    if (!opts || opts.render !== false) {
+      renderActive();
+      // 重繪後把焦點還原到同一個控制項（鍵盤操作不中斷）
+      if (fid) { const el = document.getElementById(fid); if (el && el !== ae) { el.focus({ preventScroll: true }); if (sel && el.setSelectionRange) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) { } } }
+      announce();
+    }
+  }
+  /** 以常駐的 aria-live 區域朗讀最新總額（面板重繪不影響） */
+  let announceTimer = null;
+  function announce() {
+    clearTimeout(announceTimer);
+    announceTimer = setTimeout(() => { const lr = document.getElementById("live-region"); if (!lr) return; const b = C.computeBudget(D(), S()); lr.textContent = `已估價合計 ${fmtMYR(b.total)}，每人 ${fmtMYR(b.perPerson)}，未估價 ${b.unpriced.length} 項。`; }, 400);
   }
 
   /* ================= 分頁導覽 ================= */
@@ -6134,7 +6489,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       kpi("已排定住宿夜數", `${ln.planned} / ${ln.total} 晚`, `${ln.tbd} 晚待規劃；已取得訂房確認 ${ln.booked} 晚`),
       kpi("尚未確認項目", `${pend.total} 項`, `活動 ${pend.tbcActs}｜未報價費用 ${pend.unpriced}｜住宿 ${pend.lodgingTbd}`),
       kpi("Tabin／Danum 停留", "5D4N ／ 3D2N", `Danum 方案：${S().danumPlan === "brl" ? "BRL" : "DVFC"}`),
-      kpi("目前估算總費用", fmtMYR(b.total), `${fmtTWD(b.totalTWD)}｜含預備金 ${b.contingencyPct}%`, "amber"),
+      kpi("已估價總費用", fmtMYR(b.total), `${fmtTWD(b.totalTWD)}｜含預備金 ${b.contingencyPct}%｜不含 ${b.unpriced.length} 項未報價｜業者報價部分 ${fmtMYR(b.completeness.quoted)}`, "amber"),
       kpi("每人平均", fmtMYR(b.perPerson), fmtTWD(b.perPersonTWD), "amber"),
       kpi("業者報價占比", fmtPct(b.completeness.quotedShare), `第三方／公開價 ${fmtPct(b.completeness.pubShare)}｜估算與示範 ${fmtPct(b.completeness.softShare)}｜${b.unpriced.length} 項未估價不計入`),
       kpi("目標物種", `${nT} 種`, `資料庫共 ${nSp} 種哺乳類（可自訂）`)));
@@ -6163,7 +6518,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
           h("button", { class: "btn", type: "button", onclick: () => selectTab("itinerary", true) }, "每日行程"),
           h("button", { class: "btn", type: "button", onclick: () => selectTab("wildlife", true) }, "目標物種"),
           h("button", { class: "btn", type: "button", onclick: () => selectTab("map", true) }, "生態地圖")))));
-    P.append(h("p", { class: "small dim", style: "margin-top:14px" }, "狀態標籤：", ["quoted", "public_rate", "confirmed", "estimate", "tbc", "demo", "unquoted"].map(s => [badge(s), " "]), "。示範資料僅供功能展示，不是報價。"));
+    P.append(h("p", { class: "small dim", style: "margin-top:14px" }, "狀態標籤：", ["quoted", "public_rate", "third_party", "confirmed", "estimate", "planned", "tbc", "demo", "unquoted"].map(s => [badge(s), " "]), "。示範資料僅供功能展示，不是報價。"));
   }
 
   /* ================= 每日行程 Itinerary ================= */
@@ -6179,7 +6534,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const shown = days.filter(d => dayMatches(d, f));
     if (!shown.some(d => d.day === S().selectedDay) && shown.length) S().selectedDay = shown[0].day;
     const checks = allChecks();
-    const segBtn = (val, label) => h("button", { type: "button", "aria-pressed": f === val, onclick: () => update(s => { s.dayFilter = val; }) }, label);
+    const segBtn = (val, label) => h("button", { type: "button", id: "df-" + val, "aria-pressed": f === val, onclick: () => update(s => { s.dayFilter = val; }) }, label);
     P.append(h("div", { class: "section-head" },
       h("div", null, h("h2", null, "每日行程"), h("p", { class: "muted small" }, "交通時間未經查證者不填寫確切時間；「建議」為規劃建議，不是已確認的預約。")),
       h("div", { class: "seg", role: "group", "aria-label": "篩選日期" }, segBtn("all", "全部"), segBtn("tabin", "Tabin"), segBtn("danum", "Danum"), segBtn("transit", "交通日"))));
@@ -6188,7 +6543,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("summary", { style: "cursor:pointer" }, h("b", null, "行程品質檢查"), ` — 錯誤 ${errN}、注意 ${warnN}、提醒 ${checks.length - errN - warnN}`),
       h("div", { style: "margin-top:8px" }, checks.length ? checks.map(c => msg(c.level, c.msg)) : msg("ok", "全部通過"))));
     P.append(h("div", { class: "daystrip", role: "group", "aria-label": "選擇日期" }, shown.map(d =>
-      h("button", { class: "daybtn", type: "button", "aria-pressed": d.day === S().selectedDay, onclick: () => update(s => { s.selectedDay = d.day; }) },
+      h("button", { class: "daybtn", type: "button", id: "daybtn-" + d.day, "aria-pressed": d.day === S().selectedDay, onclick: () => update(s => { s.selectedDay = d.day; }) },
         h("span", { class: "d" }, `Day ${d.day}`), " ", h("span", { class: "w" }, `${d.date.slice(5).replace("-", "/")}（${C.weekdayZh(d.date)}）`),
         h("span", { class: "r region-" + d.region }, d.short)))));
     const day = days.find(d => d.day === S().selectedDay) || days[0];
@@ -6264,7 +6619,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("input", { id, type: "number", inputmode: "decimal", min, max, step, value: val, onchange: e => { const v = Number(e.target.value); if (Number.isFinite(v) && v >= min && v <= max) update(x => { x[key] = v; }); else { e.target.value = val; } } }),
       help ? h("div", { class: "small dim" }, help) : null);
     const seg = (label, key, opts) => h("div", { class: "field" }, h("div", { class: "small muted", style: "margin-bottom:3px" }, label),
-      h("div", { class: "seg", role: "group", "aria-label": label }, opts.map(([v, t]) => h("button", { type: "button", "aria-pressed": s[key] === v, onclick: () => update(x => { x[key] = v; }) }, t))));
+      h("div", { class: "seg", role: "group", "aria-label": label }, opts.map(([v, t]) => h("button", { type: "button", id: `seg-${key}-${v}`, "aria-pressed": s[key] === v, onclick: () => update(x => { x[key] = v; }) }, t))));
     const controls = h("div", { class: "card" }, h("h3", null, "試算條件"),
       h("div", { class: "grid g2" },
         numField("in-pax", "總人數", s.pax, 1, 20, 1, "pax"),
@@ -6272,15 +6627,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         numField("in-fx", "匯率：1 MYR = ? TWD", s.fx, 0.1, 100, 0.01, "fx", "試算值，非即時匯率"),
         numField("in-fxusd", "匯率：1 USD = ? MYR", s.fxUsd, 0.1, 100, 0.01, "fxUsd", "Danum 第三方價格為 USD；試算值"),
         h("div", { class: "field" }, h("label", { for: "in-cont" }, `預備金比例：${s.contingencyPct}%`),
-          h("input", { id: "in-cont", type: "range", min: 0, max: 30, step: 1, value: s.contingencyPct, oninput: e => update(x => { x.contingencyPct = Number(e.target.value); }) }))),
+          h("input", { id: "in-cont", type: "range", min: 0, max: 30, step: 1, value: s.contingencyPct,
+            oninput: e => { e.target.previousElementSibling.textContent = `預備金比例：${e.target.value}%`; },
+            onchange: e => update(x => { x.contingencyPct = Number(e.target.value); }) }))),
       h("div", { class: "row", style: "margin-top:8px" }, seg("Danum 方案", "danumPlan", [["brl", "BRL"], ["dvfc", "DVFC"]]), seg("預算情境（只影響估算／示範項目）", "scenario", [["low", "低"], ["mid", "中"], ["high", "高"]])),
       h("div", { style: "margin-top:8px" },
-        h("label", { class: "check" }, h("input", { type: "checkbox", checked: s.includeFlights, onchange: e => update(x => { x.includeFlights = e.target.checked; }) }), "納入國際與國內機票（示範資料，請自填實際票價）"),
-        h("label", { class: "check" }, h("input", { type: "checkbox", checked: s.includeExtras, onchange: e => update(x => { x.includeExtras = e.target.checked; }) }), "納入其他費用（緩衝晚住宿、非套裝餐食、保險、稅費、個人支出）"),
+        h("label", { class: "check" }, h("input", { type: "checkbox", id: "cb-flights", checked: s.includeFlights, onchange: e => update(x => { x.includeFlights = e.target.checked; }) }), "納入國際與國內機票（示範資料，請自填實際票價）"),
+        h("label", { class: "check" }, h("input", { type: "checkbox", id: "cb-extras", checked: s.includeExtras, onchange: e => update(x => { x.includeExtras = e.target.checked; }) }), "納入其他費用（緩衝晚住宿、非套裝餐食、保險、稅費、個人支出）"),
         h("div", { class: "small muted", style: "margin-top:6px" }, "可選額外活動："),
         D().costs.items.filter(i => i.applies === "optional").map(i => h("label", { class: "check" },
-          h("input", { type: "checkbox", checked: i.id in s.optionalOn ? s.optionalOn[i.id] : !!i.default_on, onchange: e => update(x => { x.optionalOn[i.id] = e.target.checked; }) }),
-          i.name, " ", badge(i.status)))),
+          h("input", { type: "checkbox", id: "cb-opt-" + i.id, checked: i.id in s.optionalOn ? s.optionalOn[i.id] : !!i.default_on, onchange: e => update(x => { x.optionalOn[i.id] = e.target.checked; }) }),
+          i.name, " ", badge(i.status), i.when === "plan_brl" ? "（僅 BRL）" : i.when === "plan_dvfc" ? "（僅 DVFC）" : ""))),
       h("p", { class: "small muted", style: "margin-top:8px" }, `私人夜遊晚數由「每日行程」中夜間活動的選擇決定：目前 ${b.ctx.nightSafariNights} 晚。`),
       Object.keys(s.overrides).length ? h("button", { class: "btn small", type: "button", onclick: () => update(x => { x.overrides = {}; }) }, `清除 ${Object.keys(s.overrides).length} 筆自訂單價`) : null);
     const C4 = ["#D97706", "#5DBB82", "#7DB3E0", "#C49BE8"];
@@ -6291,9 +6648,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("span", { style: `width:${(b.completeness.quotedShare || 0) * 100}%;background:#4C7DA6` }), h("span", { style: `width:${(b.completeness.pubShare || 0) * 100}%;background:#4A9494` }), h("span", { style: `width:${(b.completeness.softShare || 0) * 100}%;background:repeating-linear-gradient(45deg,#A86A12 0 5px,#7a4d0d 5px 10px)` }), h("span", { style: `width:${(b.completeness.userShare || 0) * 100}%;background:#8E887E` }));
     const results = h("div", { class: "card" }, h("h3", null, "試算結果"),
       h("div", { class: "grid g2" },
-        h("div", null, h("div", { class: "small muted" }, `團體總費用（${S().pax} 人，含預備金）`), h("div", { class: "big-total", "aria-live": "polite" }, fmtMYR(b.total)), h("div", { class: "num" }, fmtTWD(b.totalTWD))),
+        h("div", null, h("div", { class: "small muted" }, `已估價合計（${S().pax} 人，含預備金）`), h("div", { class: "big-total" }, fmtMYR(b.total)), h("div", { class: "num" }, fmtTWD(b.totalTWD)),
+          h("div", { class: "small", style: "color:#F7C97E" }, `不含 ${b.unpriced.length} 項未報價；估算與示範占 ${fmtPct(b.completeness.softShare)}`)),
         h("div", null, h("div", { class: "small muted" }, "每人平均"), h("div", { class: "big-total" }, fmtMYR(b.perPerson)), h("div", { class: "num" }, fmtTWD(b.perPersonTWD)))),
       h("table", { style: "margin-top:10px" }, h("tbody", null,
+        h("tr", null, h("th", null, "其中：業者報價合計（Tabin，當地業者 A）"), h("td", { class: "r num" }, fmtMYR(b.completeness.quoted)), h("td", { class: "r num" }, fmtTWD(b.fx ? b.completeness.quoted * b.fx : null))),
         h("tr", null, h("th", null, "已估價小計"), h("td", { class: "r num" }, fmtMYR(b.subtotal)), h("td", { class: "r num" }, fmtTWD(b.fx ? b.subtotal * b.fx : null))),
         h("tr", null, h("th", null, `預備金 ${b.contingencyPct}%`), h("td", { class: "r num" }, fmtMYR(b.contingency)), h("td", { class: "r num" }, fmtTWD(b.fx ? b.contingency * b.fx : null))),
         h("tr", null, h("th", null, "固定成本（每團、每天計價）"), h("td", { class: "r num" }, fmtMYR(b.fixed)), h("td", { class: "r small" }, b.ctx.pax ? `每人分攤 ${fmtMYR(b.fixed / b.ctx.pax)}` : "")),
@@ -6344,8 +6703,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const priceCell = h("td", { class: "r num" }, l.unitPrice == null ? h("span", { class: "unq" }, "未報價") : `${{ TWD: "NT$", USD: "US$" }[l.currency] || "RM"} ${n0(l.unitPrice)}`);
     const edit = h("button", { class: "btn small ghost", type: "button", "aria-label": `編輯 ${l.name} 單價`, onclick: () => {
       clear(priceCell).append(h("input", { type: "number", min: 0, step: 1, "aria-label": `${l.name} 單價（${l.currency}）`, value: l.unitPrice == null ? "" : l.unitPrice, style: "width:110px",
-        onkeydown: e => { if (e.key === "Enter") e.target.blur(); if (e.key === "Escape") renderBudget(); },
-        onblur: e => { const v = e.target.value.trim(); update(x => { if (v === "") delete x.overrides[l.id]; else if (Number(v) >= 0) x.overrides[l.id] = Number(v); }); } }));
+        onkeydown: e => { if (e.key === "Enter") e.target.blur(); if (e.key === "Escape") { e.target.dataset.cancel = "1"; renderBudget(); } },
+        onblur: e => { if (e.target.dataset.cancel) return; const v = e.target.value.trim(); update(x => { if (v === "") delete x.overrides[l.id]; else if (Number(v) >= 0) x.overrides[l.id] = Number(v); }); } }));
       priceCell.querySelector("input").focus(); } }, "編輯");
     tr.append(h("td", null, info, l.duplicate_risk.length ? h("div", { class: "small", style: "color:#F7C97E" }, "⚠ 可能與其他項目重疊") : null),
       h("td", { class: "small" }, l.unitLabel), priceCell, h("td", { class: "small" }, l.qtyText),
@@ -6373,6 +6732,13 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         localStorage.setItem(INAT_CACHE_KEY, JSON.stringify(cache));
       } catch (e) { /* 空間不足時只保留記憶體快取 */ }
     }
+    /** 只保留本工具需要的欄位：避免快取塞滿 LocalStorage，也不保存觀測座標 */
+    function slim(data) {
+      if (!data || !Array.isArray(data.results)) return data;
+      return { total_results: data.total_results, results: data.results.map(r => ({ id: r.id, observed_on: r.observed_on, name: r.name, rank: r.rank,
+        preferred_common_name: r.preferred_common_name, threatened: r.threatened,
+        default_photo: r.default_photo ? { medium_url: r.default_photo.medium_url, attribution: r.default_photo.attribution, license_code: r.default_photo.license_code } : undefined })) };
+    }
     function buildUrl(path, params) { const u = new URL(BASE + path); for (const [k, v] of Object.entries(params || {})) if (v != null) u.searchParams.set(k, v); return u.href; }
     async function doFetch(u) {
       for (let attempt = 0; attempt < 4; attempt++) {
@@ -6383,7 +6749,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         try { res = await fetch(u, { signal: ctl.signal, headers: { Accept: "application/json" } }); }
         catch (e) { clearTimeout(tm); throw new Error(e.name === "AbortError" ? "連線逾時（15 秒）" : "網路連線失敗（可能離線或被阻擋）"); }
         clearTimeout(tm);
-        if (res.status === 429) { const ra = Number(res.headers.get("Retry-After")); await sleep(Number.isFinite(ra) && ra > 0 ? ra * 1000 : 2000 * Math.pow(2, attempt)); continue; }
+        if (res.status === 429) {
+          if (attempt === 3) break;
+          const ra = Number(res.headers.get("Retry-After"));
+          await sleep(Math.min(60000, Number.isFinite(ra) && ra > 0 ? ra * 1000 : 2000 * Math.pow(2, attempt)));   // 最多等 60 秒
+          continue;
+        }
         if (!res.ok) throw new Error("HTTP " + res.status);
         return await res.json();
       }
@@ -6394,7 +6765,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       if (!force && c && Date.now() - c.t < TTL) return Promise.resolve({ data: c.data, fetchedAt: c.t, from: "cache" });
       if (inflight.has(u)) return inflight.get(u);
       chain = chain.then(() => doFetch(u), () => doFetch(u));
-      const p = chain.then(data => { cache[u] = { t: Date.now(), data }; persist(); return { data, fetchedAt: Date.now(), from: "live" }; })
+      const p = chain.then(full => { const data = slim(full); cache[u] = { t: Date.now(), data }; persist(); return { data, fetchedAt: Date.now(), from: "live" }; })
         .catch(err => { if (c) return { data: c.data, fetchedAt: c.t, from: "stale", error: err.message }; throw err; })
         .finally(() => inflight.delete(u));
       inflight.set(u, p);
@@ -6524,17 +6895,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     for (const p of pois) {
       const t = POI_TYPE[p.type];
       const mk = L.circleMarker([p.lat, p.lng], { radius: 9, color: p.approximate ? "#ffffff" : "#1E2922", weight: 2, dashArray: p.approximate ? "3 3" : null, fillColor: t.color, fillOpacity: .95 })
-        .bindPopup(() => poiPopup(p), { maxWidth: 300 }).bindTooltip(p.name + (p.approximate ? "（近似）" : ""));
+        .bindPopup(() => poiPopup(p), { maxWidth: 300 }).bindTooltip(h("span", null, p.name + (p.approximate ? "（近似）" : "")));
       M.markers[p.id] = mk;
       if (App.mapVisible[p.type]) M.groups[p.type].addLayer(mk);
     }
     M.route.clearLayers();
     const r = resolveRoute();
     if (r.length > 1) L.polyline(r.map(p => [p.lat, p.lng]), { color: "#F2B45A", weight: 3, dashArray: "8 8", opacity: .9 })
-      .bindTooltip("行程順序示意連線（直線，非實際道路／交通時間）", { sticky: true }).addTo(M.route);
+      .bindTooltip(h("span", null, "行程順序示意連線（直線，非實際道路／交通時間）"), { sticky: true }).addTo(M.route);
     M.areas.clearLayers();
     for (const a of D().locations.areas) if (a.bbox) L.rectangle([[a.bbox.swlat, a.bbox.swlng], [a.bbox.nelat, a.bbox.nelng]], { color: "#9BD3A8", weight: 1.5, dashArray: "4 6", fill: false })
-      .bindTooltip(`${a.name}：iNaturalist 查詢用${a.bbox_is_approximate ? "近似範圍" : "範圍"}（不等於保護區實際邊界）`, { sticky: true }).addTo(M.areas);
+      .bindTooltip(h("span", null, `${a.name}：iNaturalist 近似查詢範圍（不等於保護區實際邊界）`), { sticky: true }).addTo(M.areas);
   }
   function focusPoi(id) {
     const p = C.poiById(D(), id); if (!p) return;
@@ -6561,7 +6932,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const s = S(), f = s.spFilter;
     P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "目標物種"),
       h("p", { class: "muted small" }, "人工維護的生態資料與 iNaturalist 即時查詢結果分開顯示。「只在某地有紀錄」不等於特有種，也不等於另一地不存在。"))));
-    const chip = (key, label) => h("button", { class: "chip", type: "button", "aria-pressed": f.flags.includes(key), onclick: () => update(x => { const a = x.spFilter.flags; const i = a.indexOf(key); i >= 0 ? a.splice(i, 1) : a.push(key); }) }, label);
+    const chip = (key, label) => h("button", { class: "chip", type: "button", id: "chip-" + key, "aria-pressed": f.flags.includes(key), onclick: () => update(x => { const a = x.spFilter.flags; const i = a.indexOf(key); i >= 0 ? a.splice(i, 1) : a.push(key); }) }, label);
     const areaSel = h("select", { id: "sp-area", onchange: e => update(x => { x.spFilter.area = e.target.value; }) },
       [["all", "全部"], ["tabin", "Tabin 有紀錄"], ["danum", "Danum 有紀錄"], ["both", "兩地皆有紀錄"], ["insufficient", "目前資料不足"]].map(([v, t]) => h("option", { value: v, selected: f.area === v ? true : null }, t)));
     const diffSel = h("select", { id: "sp-diff", onchange: e => update(x => { x.spFilter.difficulty = e.target.value; }) },
@@ -6621,7 +6992,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         h("div", { class: "small muted" }, `${ACT_LABEL[sp.activity] || "未查證"}｜難度 ${["", "低", "中", "高"][sp.difficulty] || "未評估"}${sp.sensitive ? "｜敏感物種" : ""}`),
         h("div", { class: "row", style: "margin-top:auto;padding-top:6px" },
           h("button", { class: "btn small", type: "button", onclick: () => openSpecies(sp.id) }, "詳細與 iNat 紀錄"),
-          h("button", { class: "star", type: "button", "aria-pressed": isT, "aria-label": `${isT ? "移出" : "加入"}我的目標：${speciesName(sp)}`, onclick: () => update(x => { const i = x.targets.indexOf(sp.id); i >= 0 ? x.targets.splice(i, 1) : x.targets.push(sp.id); }) }, isT ? "★ 目標" : "☆ 加入"))));
+          h("button", { class: "star", type: "button", id: "star-" + sp.id, "aria-pressed": isT, "aria-label": `${isT ? "移出" : "加入"}我的目標：${speciesName(sp)}`, onclick: () => update(x => { const i = x.targets.indexOf(sp.id); i >= 0 ? x.targets.splice(i, 1) : x.targets.push(sp.id); }) }, isT ? "★ 目標" : "☆ 加入"))));
   }
   function liveBlock(taxonId, area, rerender, mode) {
     const L2 = App.live[taxonId] && App.live[taxonId][mode === "bbox" ? area + ":bbox" : area];
@@ -6650,7 +7021,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       const lt = spLabel(sp, "tabin"), ld = spLabel(sp, "danum");
       const lbl = (area, L2) => { const rec = sp.records[area] || {}, sn = rec.inat_snapshot || {};
         return h("div", { class: "obs-label" }, h("b", { class: "region-" + area }, AREA_LABEL[area], "："), L2.label, h("ul", { class: "small", style: "margin:4px 0 0;padding-left:18px" }, L2.basis.map(x => h("li", null, x))),
-          h("div", { class: "small" }, "文獻／業者依據：", rec.lit_source ? sourceLine([rec.lit_source]) : h("span", { class: "dim" }, "無")),
+          h("div", { class: "small" }, "文獻／官方依據：", (rec.lit_sources && rec.lit_sources.length) || rec.lit_source ? sourceLine(rec.lit_sources && rec.lit_sources.length ? rec.lit_sources : [rec.lit_source]) : h("span", { class: "dim" }, "無"), rec.lit_weak ? h("span", { class: "badge b-estimate", style: "margin-left:4px" }, "弱證據") : null),
           sn.latest ? h("div", { class: "small dim" }, `快照：保護區範圍最近觀測 ${sn.latest}`) : null,
           rec.inat_bbox_snapshot && rec.inat_bbox_snapshot.latest ? h("div", { class: "small dim" }, `快照：近似範圍最近觀測 ${rec.inat_bbox_snapshot.latest}`) : null); };
       dlg.append(h("div", { class: "dlg-head" }, h("div", { style: "flex:1" }, h("h2", { id: "dlg-species-title", style: "margin:0" }, speciesName(sp), " ", iucnBadge(sp.iucn && sp.iucn.status)), h("div", { class: "sci" }, sp.sci, "｜", sp.en)),
@@ -6659,7 +7030,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
           h("div", { class: "grid g2" }, photoBox(sp), h("dl", { class: "kv" },
             h("dt", null, "中文名"), h("dd", null, sp.zh || "無可靠對應（以英文名為準）", sp.zh_source ? h("div", { class: "small" }, sourceLine([sp.zh_source])) : null),
             h("dt", null, "分類"), h("dd", null, [sp.order, sp.family].filter(Boolean).join(" › ") || "—"),
-            h("dt", null, "IUCN"), h("dd", null, sp.iucn && sp.iucn.status ? `${sp.iucn.status}（查核 ${sp.iucn.checked_on || "—"}）` : "未查證", sp.iucn && sp.iucn.source_id ? h("div", null, sourceLine([sp.iucn.source_id])) : null),
+            h("dt", null, "IUCN"), h("dd", null, sp.iucn && sp.iucn.status ? `${sp.iucn.status}（經 iNaturalist 轉載，未與 IUCN 官網交叉核對；評估年份未記錄；查核 ${sp.iucn.checked_on || "—"}）` : "未查證", sp.iucn && sp.iucn.source_id ? h("div", null, sourceLine([sp.iucn.source_id])) : null),
             h("dt", null, "活動時段"), h("dd", null, ACT_LABEL[sp.activity] || "未查證"),
             h("dt", null, "常見棲地"), h("dd", null, sp.habitat || "—"),
             h("dt", null, "觀察方法"), h("dd", null, sp.method || "—"),
@@ -6738,7 +7109,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const weighted = p => { let sw = 0, acc = 0; for (const c of crit) { const v = score(p, c.key), w = s.weights[c.key]; if (v == null || !w) continue; sw += w; acc += w * v; } return sw ? acc / sw : null; };
     const wbox = h("div", { class: "card weights" }, h("h3", null, "我的優先順序（權重 0–5）"),
       crit.map(c => h("div", { class: "field" }, h("label", { for: "w-" + c.key }, `${c.label}：${s.weights[c.key]}`),
-        h("input", { id: "w-" + c.key, type: "range", min: 0, max: 5, step: 1, value: s.weights[c.key], oninput: e => update(x => { x.weights[c.key] = Number(e.target.value); }) }),
+        h("input", { id: "w-" + c.key, type: "range", min: 0, max: 5, step: 1, value: s.weights[c.key],
+          oninput: e => { e.target.previousElementSibling.textContent = `${c.label}：${e.target.value}`; },
+          onchange: e => update(x => { x.weights[c.key] = Number(e.target.value); }) }),
         h("div", { class: "small dim" }, c.desc))));
     const st = h("table", null, h("thead", null, h("tr", null, h("th", null, "準則"), h("th", { class: "r" }, "權重"), plans.map(p => h("th", { class: "r" }, cp.options[p].name.split("（")[0])))),
       h("tbody", null, crit.map(c => h("tr", null, h("td", null, c.label, h("div", { class: "small dim" }, plans.map(p => c.key === "budget" ? null : `${p.toUpperCase()}：${(cp.options[p].scores[c.key] || {}).why || "—"}`).filter(Boolean).join("｜") || "依目前試算總價計算")),
@@ -6771,7 +7144,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       const n = cat.items.filter(i => s.checklist[i.id]).length;
       grid.append(h("fieldset", { class: "card", style: "margin:0" }, h("legend", { class: "sr-only" }, cat.title),
         h("h3", null, cat.title, h("span", { class: "small muted" }, `${n}/${cat.items.length}`)),
-        cat.items.map(i => h("label", { class: "check" }, h("input", { type: "checkbox", checked: !!s.checklist[i.id], onchange: e => update(x => { x.checklist[i.id] = e.target.checked; }) }),
+        cat.items.map(i => h("label", { class: "check" }, h("input", { type: "checkbox", id: "ck-" + i.id, checked: !!s.checklist[i.id], onchange: e => update(x => { x.checklist[i.id] = e.target.checked; }) }),
           h("span", null, i.critical ? h("b", { style: "color:#FFB39C" }, "［必要］") : null, i.text, i.status ? [" ", badge(i.status)] : null, i.source_ids ? h("div", null, sourceLine(i.source_ids)) : null)))));
     }
     P.append(grid);
@@ -6802,7 +7175,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     for (const [k, val] of Object.entries(v.accepted || {})) { App.data[k] = val; App.origin[k] = "remote"; }
     // 試算表版 costs 可不含方案比較區塊：沿用內建的 compare
     if (App.origin.costs === "remote" && !(App.data.costs.compare && App.data.costs.compare.options)) App.data.costs = Object.assign({}, App.data.costs, { compare: App.local.costs.compare });
-    App.remote = { status: stale ? "stale" : v.ok ? "ok" : "invalid", errors: v.errors, ignored: v.ignored, updated_at: v.updated_at, fetchedAt };
+    // 合併後的跨資料集參照必須完整，否則整份回退本機資料
+    const refErr = v.ok ? C.validateReferences(App.data) : [];
+    if (refErr.length) {
+      App.data = App.local; App.origin = Object.fromEntries(C.DATASETS.map(k => [k, "local"]));
+      App.remote = { status: "invalid", errors: v.errors.concat(refErr.map(x => "合併後參照錯誤：" + x)), ignored: v.ignored, updated_at: v.updated_at, fetchedAt };
+      return Object.assign({}, v, { ok: false });
+    }
+    App.remote = { status: stale ? "stale" : !v.ok ? "invalid" : v.errors.length ? "partial" : "ok", errors: v.errors, ignored: v.ignored, updated_at: v.updated_at, fetchedAt };
     return v;
   }
   async function loadRemote(interactive) {
@@ -6818,7 +7198,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       if (cached && cached.url === url) { applyRemote(cached.env, cached.t, true); App.remote.errors = [e.message]; }
       else { App.data = App.local; App.origin = Object.fromEntries(C.DATASETS.map(k => [k, "local"])); App.remote = { status: "error", errors: [e.message] }; }
     }
-    App.state = sanitizeState(App.state, App.data);
     updatePill(); renderActive();
     if (interactive) renderSettings();
   }
@@ -6829,6 +7208,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (r.status === "loading") { cls = "loading"; txt = "資料：遠端讀取中…"; }
     else if (S().dataSource === "remote") {
       if (r.status === "ok") { cls = "remote"; txt = `資料：遠端 GAS（${remoteN} 個資料集）`; }
+      else if (r.status === "partial") { cls = "err"; txt = `資料：遠端部分採用（${remoteN} 個，其餘本機）`; }
       else if (r.status === "stale") { cls = "err"; txt = "資料：遠端快取（已過期）"; }
       else if (r.status === "invalid") { cls = "err"; txt = "資料：遠端格式錯誤，使用本機"; }
       else if (r.status === "error") { cls = "err"; txt = "資料：遠端失敗，使用本機"; }
@@ -6894,7 +7274,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("div", { class: "dlg-body stack" },
         h("h3", null, "目前資料來源"),
         h("table", null, h("tbody", null, C.DATASETS.map(k => h("tr", null, h("th", null, k), h("td", null, App.origin[k] === "remote" ? badge("live", "遠端資料") : badge("user", "本機內建資料")))))),
-        r.status !== "idle" && s.dataSource === "remote" ? h("div", null, msg(r.status === "ok" ? "ok" : "warn", `遠端狀態：${{ ok: "讀取成功", stale: "更新失敗，使用上次成功的遠端快取（資料過期）", invalid: "格式驗證失敗，已回退本機資料", error: "連線失敗，已回退本機資料", loading: "讀取中" }[r.status] || r.status}${r.fetchedAt ? `｜取得時間 ${fmtTime(r.fetchedAt)}` : ""}${r.updated_at ? `｜資料更新時間 ${r.updated_at}` : ""}`),
+        r.status !== "idle" && s.dataSource === "remote" ? h("div", null, msg(r.status === "ok" ? "ok" : "warn", `遠端狀態：${{ ok: "讀取成功", partial: "部分資料集驗證失敗，這些資料集使用本機版本", stale: "更新失敗，使用上次成功的遠端快取（資料過期）", invalid: "格式驗證失敗，已回退本機資料", error: "連線失敗，已回退本機資料", loading: "讀取中" }[r.status] || r.status}${r.fetchedAt ? `｜取得時間 ${fmtTime(r.fetchedAt)}` : ""}${r.updated_at ? `｜資料更新時間 ${r.updated_at}` : ""}`),
           (r.errors || []).map(e => msg("error", e)), r.ignored && r.ignored.length ? msg("info", "已忽略未知資料集：" + r.ignored.join("、")) : null) : null,
         h("h3", null, "Google Apps Script 遠端資料"),
         h("p", { class: "small muted" }, "GAS Web App 必須部署為「執行身分：我」「存取權：任何人」，回傳格式見 docs/02-資料結構說明.md。驗證失敗的資料集會保留本機版本。"),
