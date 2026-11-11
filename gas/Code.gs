@@ -43,7 +43,7 @@ var ALLOWED = {
   applies: ["always", "brl", "dvfc", "flights", "extras", "optional"],
   price_currency: ["MYR", "TWD", "USD"],
   when: ["singles", "plan_brl", "plan_dvfc"],
-  qty_from: ["pax", "rooms", "singles", "triples", "nightSafariNights"],
+  qty_from: ["pax", "rooms", "singles", "triples", "activity_count"],
   dataset: ["costs", "trip", "itinerary", "species", "locations", "sources", "essentials"]
 };
 
@@ -72,7 +72,7 @@ var COSTS_HEADERS = [
   { name: "qty_days", kind: "number", note: "天數（per_group_per_day、per_person_day）" },
   { name: "qty_nights", kind: "number", note: "晚數（per_person_per_night、per_room_per_night）" },
   { name: "qty_trips", kind: "number", note: "趟數（per_person_trip）" },
-  { name: "qty_nights_from", kind: "list:qty_from", note: "晚數改由計算情境取得（例如 nightSafariNights）" },
+  { name: "qty_nights_from", kind: "list:qty_from", note: "晚數改由計算情境取得（activity_count＝行程中選到此項目的活動數）" },
   { name: "qty_rooms_from", kind: "list:qty_from", note: "房數改由計算情境取得（例如 singles）" },
   { name: "quoted_nights", kind: "number", note: "報價晚數（與行程不符時提醒）" },
   { name: "includes", kind: "text", note: "包含項目，以 ; 分隔" },
@@ -89,7 +89,7 @@ var JSON_HEADERS = [
 
 /* ===================== 公開端點（唯讀） ===================== */
 function doGet(e) {
-  var out = { schema: "ecotrip2027/1", updated_at: new Date().toISOString(), data: {} };
+  var out = { schema: "ecotrip/1", updated_at: new Date().toISOString(), data: {} };
   var errors = [];
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -107,7 +107,7 @@ function doGet(e) {
       }
     }
   } catch (err) {
-    out = { schema: "ecotrip2027/1", error: String(err), data: {} };
+    out = { schema: "ecotrip/1", error: String(err), data: {} };
   }
   if (errors.length) out.errors = errors;
   // ContentService 回傳 JSON；以「任何人」部署時瀏覽器可跨網域讀取（GET，不要加自訂 header）。

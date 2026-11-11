@@ -151,7 +151,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--amber);width:18px;heig
 .daybtn[aria-pressed="true"]{border-color:var(--amber);background:#3A2B10}
 .daybtn .d{font-weight:800}.daybtn .w{font-size:.75rem;color:var(--muted)}
 .daybtn .r{display:block;font-size:.72rem;margin-top:2px}
-.region-tabin{color:#9BD3A8}.region-danum{color:#8FC6E8}.region-transit{color:#E8C48F}
+.region-c0{color:#9BD3A8}.region-c1{color:#8FC6E8}.region-c2{color:#E8C48F}.region-c3{color:#E2C8F7}.region-c4{color:#F7C97E}.region-c5{color:#A9E0E0}
 .timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);margin-left:8px}
 .timeline>li{position:relative;padding:0 0 12px 18px}
 .timeline>li::before{content:"";position:absolute;left:-7px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--forest);border:2px solid var(--amber)}
@@ -310,7 +310,43 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   }
  ],
- "default_usd_myr": 4.2
+ "default_usd_myr": 4.2,
+ "currency": {
+  "base": "MYR",
+  "home": "TWD",
+  "symbols": { "MYR": "RM", "TWD": "NT$", "USD": "US$" },
+  "default_rates": { "USD": 4.2 }
+ },
+ "regions": { "tabin": "Tabin", "danum": "Danum Valley", "transit": "交通／轉運" },
+ "choices": [
+  {
+   "id": "danum_choice",
+   "label": "Danum 方案",
+   "default": "brl",
+   "compare_category": "danum",
+   "options": [
+    { "key": "brl", "label": "BRL", "lodging": "brl" },
+    { "key": "dvfc", "label": "DVFC", "lodging": "dvfc" }
+   ]
+  },
+  {
+   "id": "last_night_choice",
+   "label": "最後一晚住宿",
+   "default": "ld",
+   "options": [
+    { "key": "ld", "label": "Lahad Datu（2/6 從 LDU 出發）", "lodging": "ld_hotel" },
+    { "key": "kk", "label": "Kota Kinabalu（2/5 先飛 KK）", "lodging": "kk_hotel" },
+    { "key": "tbd", "label": "尚未決定", "lodging": null }
+   ]
+  }
+ ],
+ "storage_prefix": "ecotrip2027",
+ "transit_region": "transit",
+ "legacy_state": { "danumPlan": ["choices", "danum_choice"], "lastNight": ["choices", "last_night_choice"], "fxUsd": ["rates", "USD"] },
+ "default_rooms": 2,
+ "pax_rules": [
+  { "below": 2, "level": "warn", "msg": "Tabin 報價條件為「至少 2 人同房」，1 人價格未報價。" }
+ ]
 }
 </script>
 
@@ -1183,6 +1219,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <script type="application/json" id="data-costs">
 {
  "currency": "MYR",
+ "quoted_label": "Tabin，當地業者 A",
+ "toggle_labels": {
+  "flights": "納入國際與國內機票（示範資料，請自填實際票價）",
+  "extras": "納入其他費用（緩衝晚住宿、非套裝餐食、保險、稅費、個人支出）"
+ },
+ "categories": {
+  "group_fixed": "團體固定成本",
+  "per_person": "按人計價成本",
+  "danum": "Danum 住宿套裝",
+  "other": "其他費用"
+ },
  "items": [
   {
    "id": "private_guide",
@@ -1205,6 +1252,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "tabin_base"
    ],
    "assumption": "全團一位嚮導，4 天；對應哪 4 天待確認。",
+   "days_check": {
+    "segment": "tabin",
+    "msg": "Tabin 套裝涵蓋 {span} 個日曆天，私人嚮導／車輛報價為 {days} 天：須確認是哪 {days} 天。"
+   },
    "source_ids": [
     "src_quote_a",
     "src_tabin_official"
@@ -1302,9 +1353,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "category": "per_person",
    "unit": "per_person_per_night",
    "qty": {
-    "nights_from": "nightSafariNights"
+    "nights_from": "activity_count"
    },
    "quoted_nights": 3,
+   "count_label": "私人夜遊",
    "price": 130,
    "status": "quoted",
    "applies": "always",
@@ -1664,29 +1716,35 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
  ],
  "compare": {
+  "choice": "danum_choice",
   "criteria": [
    {
     "key": "budget",
+    "default_weight": 3,
     "label": "預算",
     "desc": "依目前試算總價自動計算"
    },
    {
     "key": "wildlife",
+    "default_weight": 4,
     "label": "生態觀察時間",
     "desc": "在 Danum 可用於觀察的時段與導覽安排"
    },
    {
     "key": "comfort",
+    "default_weight": 2,
     "label": "住宿舒適度",
     "desc": "房型、衛浴、餐飲"
    },
    {
     "key": "flex",
+    "default_weight": 2,
     "label": "行程彈性",
     "desc": "活動是否能依天候與目標調整"
    },
    {
     "key": "risk",
+    "default_weight": 3,
     "label": "旅遊風險（越高越低風險）",
     "desc": "接送銜接、資訊完整度、取消彈性"
    }
@@ -4360,6 +4418,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "key": "tabin",
    "name": "Tabin Wildlife Reserve",
+   "short": "Tabin",
    "inat_place_id": 191532,
    "place_usable": true,
    "place_name": "Tabin Wildlife Reserve (Taman Hidupan Liar)",
@@ -4378,6 +4437,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "key": "danum",
    "name": "Danum Valley Conservation Area",
+   "short": "Danum",
    "inat_place_id": 191493,
    "place_usable": true,
    "place_name": "Danum Valley Conservation Area (Kawasan Pemuliharaan)",
@@ -5819,7 +5879,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   const UNIT_LABEL = { per_person: "每人（整個套裝）", per_group: "每團", per_group_per_day: "每團每天",
     per_person_per_night: "每人每晚", per_room_per_night: "每房每晚", per_person_trip: "每人每趟",
     per_person_day: "每人每天", per_room: "每房（整個套裝）", percent: "百分比" };
-  const CATEGORY_LABEL = { group_fixed: "團體固定成本", per_person: "按人計價成本", danum: "Danum 住宿套裝", other: "其他費用" };
+  const BUILTIN_APPLIES = ["always", "flights", "extras", "optional"];
+  const CTX_KEYS = ["pax", "rooms", "singles", "triples", "activity_count"];
+  const ENVELOPE_SCHEMA = "ecotrip/1";
+  /** 費用分類（鍵與顯示名稱）由資料決定：costs.categories */
+  function categoryLabels(data) { return (data.costs && data.costs.categories) || {}; }
+  function currencyOf(data) { const c = (data.trip && data.trip.currency) || {}; return { base: c.base || null, home: c.home || null, symbols: c.symbols || {}, defaultRates: c.default_rates || {} }; }
   const FIXED_UNITS = new Set(["per_group", "per_group_per_day"]);
   const WEEKDAY = ["日", "一", "二", "三", "四", "五", "六"];
 
@@ -5830,11 +5895,23 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   function weekdayZh(s) { return WEEKDAY[parseISODate(s).getUTCDay()]; }
   function toMinutes(hhmm) { if (typeof hhmm !== "string" || !/^\d{2}:\d{2}$/.test(hhmm)) return null; const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; }
 
-  /** 解析某天的住宿 id（處理 Danum 方案與最後一晚選擇） */
-  function resolveLodging(id, state) {
-    if (id === "danum_choice") return state.danumPlan === "dvfc" ? "dvfc" : "brl";
-    if (id === "last_night_choice") return state.lastNight === "kk" ? "kk_hotel" : state.lastNight === "ld" ? "ld_hotel" : null;
-    return id == null ? null : id;
+  /* ---------- 選擇題：trip.choices = [{id, label, default, options:[{key, label, lodging}]}] ---------- */
+  function choiceDefs(data) { return (data.trip && data.trip.choices) || []; }
+  function choiceDef(data, id) { return choiceDefs(data).find(c => c.id === id) || null; }
+  /** 某個選擇題目前選到的選項 key（使用者設定優先，否則用預設值） */
+  function choiceValue(data, state, id) {
+    const def = choiceDef(data, id); if (!def) return null;
+    const v = state && state.choices ? state.choices[id] : undefined;
+    return def.options.some(o => o.key === v) ? v : def.default;
+  }
+  /** 是否有任何選擇題目前選到這個選項 key */
+  function optionSelected(data, state, key) { return choiceDefs(data).some(c => choiceValue(data, state, c.id) === key); }
+  /** 解析住宿 id：若是選擇題的 id，回傳目前選項對應的住宿地點（未決定時為 null） */
+  function resolveLodging(id, state, data) {
+    if (id == null) return null;
+    const def = choiceDef(data, id); if (!def) return id;
+    const opt = def.options.find(o => o.key === choiceValue(data, state, id));
+    return opt && opt.lodging ? opt.lodging : null;
   }
   function poiById(data, id) { return (data.locations.pois || []).find(p => p.id === id) || null; }
 
@@ -5863,31 +5940,29 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const rooms = Math.max(0, Math.floor(Number(state.rooms) || 0));
     const singles = Math.max(0, Math.min(rooms, 2 * rooms - pax));      // 單人入住房數
     const triples = Math.max(0, pax - 2 * rooms);                       // 超過兩人同房的人數
-    let nightSafariNights = 0;
-    for (const day of data.itinerary.days) for (const a of day.activities) if (activityCostRef(a, state) === "night_safari") nightSafariNights++;
-    return { pax, rooms, singles, triples, nightSafariNights };
+    const activityCount = {};                                           // 行程中目前選到各費用項目的活動數
+    for (const day of data.itinerary.days) for (const a of day.activities) { const ref = activityCostRef(a, state); if (ref) activityCount[ref] = (activityCount[ref] || 0) + 1; }
+    return { pax, rooms, singles, triples, activityCount };
   }
 
-  function itemActive(item, s, ctx) {
+  function itemActive(item, s, ctx, data) {
     let on;
     switch (item.applies) {
       case "always": on = true; break;
-      case "brl": case "dvfc": on = s.danumPlan === item.applies; break;
       case "flights": on = !!s.includeFlights; break;
       case "extras": on = !!s.includeExtras; break;
       case "optional": on = s.optionalOn && item.id in s.optionalOn ? !!s.optionalOn[item.id] : !!item.default_on; break;
-      default: on = false;
+      default: on = optionSelected(data, s, item.applies);   // 其他值視為選擇題的選項 key：選到該選項才計入
     }
     if (on && item.when === "singles") on = ctx.singles > 0;
-    if (on && item.when === "plan_brl") on = s.danumPlan === "brl";
-    if (on && item.when === "plan_dvfc") on = s.danumPlan === "dvfc";
+    else if (on && typeof item.when === "string" && item.when.indexOf("plan_") === 0) on = optionSelected(data, s, item.when.slice(5));
     return on;
   }
 
   function itemQuantity(item, ctx) {
     const q = item.qty || {};
     const days = isNum(q.days) ? q.days : 1;
-    const nights = q.nights_from ? ctx[q.nights_from] : (isNum(q.nights) ? q.nights : 1);
+    const nights = q.nights_from === "activity_count" ? (ctx.activityCount[item.id] || 0) : q.nights_from ? ctx[q.nights_from] : (isNum(q.nights) ? q.nights : 1);
     const trips = isNum(q.trips) ? q.trips : 1;
     const rooms = q.rooms_from ? ctx[q.rooms_from] : ctx.rooms;
     switch (item.unit) {
@@ -5917,59 +5992,60 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    * 計算預算。回傳所有明細行與彙總；未報價的項目 amount = null，不會變成 0。
    * @param {object} data   內建或遠端資料 {costs, itinerary, ...}
    * @param {object} state  使用者設定
-   * @param {object} patch  臨時覆寫（例如比較 BRL/DVFC、低中高情境）
+   * @param {object} patch  臨時覆寫（例如比較不同方案、低中高情境）
    */
   function computeBudget(data, state, patch) {
     const s = Object.assign({}, state, patch || {});
     const fx = isNum(Number(s.fx)) && Number(s.fx) > 0 ? Number(s.fx) : null;
-    const fxUsd = isNum(Number(s.fxUsd)) && Number(s.fxUsd) > 0 ? Number(s.fxUsd) : null; // 1 USD = ? MYR
+    const money = currencyOf(data), catLabels = categoryLabels(data);
+    const rateOf = cur => { const r = Number(s.rates && s.rates[cur]); return isNum(r) && r > 0 ? r : null; };   // 1 外幣 = ? 本位幣
     const ctx = computeCtx(data, s);
     const lines = [];
     for (const item of data.costs.items) {
-      const active = itemActive(item, s, ctx);
+      const active = itemActive(item, s, ctx, data);
       const { qty, text } = itemQuantity(item, ctx);
       const { price, status } = unitPrice(item, s);
-      const cur = item.price_currency || "MYR";
+      const cur = item.price_currency || money.base;
       const raw = price == null || qty == null ? null : price * qty;
       const bad = raw != null && !isNum(raw);           // 計價參數錯誤（例如缺 qty 欄位）→ 不計入，不顯示 NaN
       let amt = bad ? null : raw;
-      let myr = null, twd = null;
+      let inBase = null, inHome = null;
       if (amt != null) {
-        if (cur === "TWD") { twd = amt; myr = fx ? amt / fx : null; }
-        else if (cur === "USD") { myr = fxUsd ? amt * fxUsd : null; twd = myr != null && fx ? myr * fx : null; }
-        else { myr = amt; twd = fx ? amt * fx : null; }
+        if (cur === money.base) { inBase = amt; inHome = fx ? amt * fx : null; }
+        else if (cur === money.home) { inHome = amt; inBase = fx ? amt / fx : null; }
+        else { const r = rateOf(cur); inBase = r ? amt * r : null; inHome = inBase != null && fx ? inBase * fx : null; }
       }
       lines.push({ id: item.id, name: item.name, category: item.category, unit: item.unit,
         unitLabel: UNIT_LABEL[item.unit] || item.unit, currency: cur, unitPrice: price, qty, qtyText: text,
-        amountMYR: myr, amountTWD: twd, status, baseStatus: item.status, active,
+        amountBase: inBase, amountHome: inHome, status, baseStatus: item.status, active,
         fixed: FIXED_UNITS.has(item.unit), source_ids: item.source_ids || [], includes: item.includes || [],
         excludes: item.excludes || [], assumption: item.assumption || "", notes: item.notes || "", paramError: bad,
         duplicate_risk: item.duplicate_risk || [], optional: item.applies === "optional" });
     }
     const act = lines.filter(l => l.active);
-    const priced = act.filter(l => l.amountMYR != null);
-    const sum = arr => arr.reduce((a, l) => a + l.amountMYR, 0);
+    const priced = act.filter(l => l.amountBase != null);
+    const sum = arr => arr.reduce((a, l) => a + l.amountBase, 0);
     const subtotal = sum(priced);
     const pct = isNum(Number(s.contingencyPct)) ? Math.max(0, Number(s.contingencyPct)) : 0;
     const contingency = subtotal * pct / 100;
     const total = subtotal + contingency;
     const byCategory = {};
-    for (const k of Object.keys(CATEGORY_LABEL)) byCategory[k] = { myr: sum(priced.filter(l => l.category === k)), unpriced: act.filter(l => l.category === k && l.amountMYR == null).length };
+    for (const k of Object.keys(catLabels)) byCategory[k] = { base: sum(priced.filter(l => l.category === k)), unpriced: act.filter(l => l.category === k && l.amountBase == null).length };
     const quoted = sum(priced.filter(l => ["quoted", "confirmed"].includes(l.status)));
     const pub = sum(priced.filter(l => l.status === "public_rate" || l.status === "third_party"));
     const firm = quoted + pub;
     const soft = sum(priced.filter(l => ["estimate", "demo"].includes(l.status)));
     const user = sum(priced.filter(l => l.status === "user"));
-    const unpriced = act.filter(l => l.amountMYR == null);
+    const unpriced = act.filter(l => l.amountBase == null);
     const warnings = [];
     if (ctx.pax < 1) warnings.push({ level: "error", msg: "人數至少需 1 人。" });
-    if (ctx.pax < 2) warnings.push({ level: "warn", msg: "Tabin 報價條件為「至少 2 人同房」，1 人價格未報價。" });
+    for (const r of (data.trip.pax_rules || [])) if (ctx.pax < r.below) warnings.push({ level: r.level || "warn", msg: r.msg });
     if (ctx.rooms < 1) warnings.push({ level: "error", msg: "房間數至少需 1 間。" });
     if (ctx.rooms > ctx.pax && ctx.pax > 0) warnings.push({ level: "error", msg: `房間數（${ctx.rooms}）多於人數（${ctx.pax}），會出現空房。` });
     if (ctx.singles > 0) warnings.push({ level: "warn", msg: `有 ${ctx.singles} 間為單人入住：報價以兩人同房為準，單人房差額尚未報價，未計入。` });
     if (ctx.triples > 0) warnings.push({ level: "warn", msg: `每房超過 2 人（多出 ${ctx.triples} 人）：需向業者確認是否可三人房及加床費。` });
-    if (!fx) warnings.push({ level: "error", msg: "匯率無效，無法換算 TWD。" });
-    if (!fxUsd && act.some(l => l.currency === "USD")) warnings.push({ level: "error", msg: "USD 匯率無效，USD 計價項目無法換算。" });
+    if (money.home && !fx) warnings.push({ level: "error", msg: `匯率無效，無法換算 ${money.home}。` });
+    for (const cur of new Set(act.map(l => l.currency))) if (cur !== money.base && cur !== money.home && !rateOf(cur)) warnings.push({ level: "error", msg: `${cur} 匯率無效，${cur} 計價項目無法換算。` });
     const activeIds = new Set(act.map(l => l.id)), seenPairs = new Set();
     for (const l of act) for (const d of l.duplicate_risk) {
       if (!activeIds.has(d) || d === l.id) continue;
@@ -5979,9 +6055,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     }
     for (const l of act) if (l.status === "user" && l.unitPrice === 0) warnings.push({ level: "info", msg: `「${l.name}」使用者輸入單價為 0：請確認確實免費或已含於套裝。` });
     for (const l of lines) if (l.paramError) warnings.push({ level: "error", msg: `「${l.name}」計價參數錯誤（數量無法計算），未計入總計。` });
-    return { ctx, lines, subtotal, contingencyPct: pct, contingency, total, fx, fxUsd,
-      totalTWD: fx ? total * fx : null, perPerson: ctx.pax ? total / ctx.pax : null,
-      perPersonTWD: fx && ctx.pax ? total * fx / ctx.pax : null,
+    return { ctx, lines, subtotal, contingencyPct: pct, contingency, total, fx, currency: money, categoryLabels: catLabels,
+      totalHome: fx ? total * fx : null, perPerson: ctx.pax ? total / ctx.pax : null,
+      perPersonHome: fx && ctx.pax ? total * fx / ctx.pax : null,
       fixed: sum(priced.filter(l => l.fixed)), variable: sum(priced.filter(l => !l.fixed)),
       byCategory, unpriced, warnings,
       completeness: { firm, quoted, pub, soft, user, firmShare: subtotal ? firm / subtotal : null,
@@ -5990,13 +6066,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         unpricedCount: unpriced.length, activeCount: act.length } };
   }
 
-  function compareDanum(data, state) {
-    const brl = computeBudget(data, state, { danumPlan: "brl" });
-    const dvfc = computeBudget(data, state, { danumPlan: "dvfc" });
-    const danumOnly = b => b.lines.filter(l => l.active && l.category === "danum");
-    const sumOrNull = arr => arr.some(l => l.amountMYR == null) ? null : arr.reduce((a, l) => a + l.amountMYR, 0);
-    return { brl, dvfc, brlDanum: sumOrNull(danumOnly(brl)), dvfcDanum: sumOrNull(danumOnly(dvfc)),
-      diffTotal: brl.total - dvfc.total, comparable: brl.unpriced.length === dvfc.unpriced.length };
+  /** 比較某個選擇題的各選項：每個選項各算一次預算；categoryTotal 為該選擇題對應費用分類（compare_category）的小計 */
+  function compareChoice(data, state, choiceId) {
+    const def = choiceDef(data, choiceId); if (!def) return null;
+    const sumOrNull = arr => arr.some(l => l.amountBase == null) ? null : arr.reduce((a, l) => a + l.amountBase, 0);
+    const options = {};
+    for (const o of def.options) {
+      const budget = computeBudget(data, state, { choices: Object.assign({}, state.choices, { [choiceId]: o.key }) });
+      options[o.key] = { key: o.key, label: o.label || o.key, budget, categoryTotal: def.compare_category ? sumOrNull(budget.lines.filter(l => l.active && l.category === def.compare_category)) : null };
+    }
+    const list = Object.values(options);
+    return { choice: def, options, comparable: list.every(x => x.budget.unpriced.length === list[0].budget.unpriced.length),
+      allPriced: list.every(x => x.categoryTotal != null) };
   }
 
   function scenarios(data, state) {
@@ -6017,7 +6098,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const regionCount = {}; let unbooked = 0, noLodging = 0;
     days.forEach((d, i) => {
       if (i === days.length - 1) return; // 返程日無住宿
-      const lid = resolveLodging(d.lodging, state);
+      const lid = resolveLodging(d.lodging, state, data);
       if (!lid) { noLodging++; out.push({ level: "warn", code: "lodging", day: d.day, msg: `Day ${d.day}（${d.date}）當晚住宿待確認。` }); return; }
       const poi = poiById(data, lid);
       if (!poi) { out.push({ level: "error", code: "ref", day: d.day, msg: `Day ${d.day} 住宿 id「${lid}」不存在於地點資料。` }); return; }
@@ -6033,7 +6114,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (unbooked) out.push({ level: "info", code: "unbooked", msg: `${trip.nights} 晚中有 ${unbooked + noLodging} 晚尚未取得訂房確認（報價不等於訂房）。` });
     // 轉場連續性：今晚住宿 = 明天的前一晚住宿
     for (let i = 0; i < days.length - 1; i++) {
-      const tonight = resolveLodging(days[i].lodging, state), next = resolveLodging(days[i + 1].lodging_prev, state);
+      const tonight = resolveLodging(days[i].lodging, state, data), next = resolveLodging(days[i + 1].lodging_prev, state, data);
       if (tonight && next && tonight !== next) out.push({ level: "error", code: "continuity", day: days[i + 1].day, msg: `Day ${days[i + 1].day} 的前一晚住宿（${next}）與 Day ${days[i].day} 當晚住宿（${tonight}）不一致。` });
     }
     // 時間衝突、轉場強度、未確認
@@ -6055,22 +6136,27 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (tbc) out.push({ level: "info", code: "tbc", msg: `共有 ${tbc} 項活動標記為「待確認」。` });
     // 與報價的交叉檢查
     const ctx = computeCtx(data, state);
-    for (const it of data.costs.items) if (it.itinerary_check && it.itinerary_check.plan === state.danumPlan && !itemActive(it, state, ctx))
+    for (const it of data.costs.items) if (it.itinerary_check && optionSelected(data, state, it.itinerary_check.plan) && !itemActive(it, state, ctx, data))
       out.push({ level: "warn", code: "feasibility", day: it.itinerary_check.day, msg: it.itinerary_check.msg });
-    const quotedNs = (data.costs.items.find(i => i.id === "night_safari") || {}).quoted_nights;
-    if (isNum(quotedNs) && ctx.nightSafariNights !== quotedNs)
-      out.push({ level: "warn", code: "quote", msg: `行程中選了 ${ctx.nightSafariNights} 晚私人夜遊，業者報價為 ${quotedNs} 晚；試算依行程選擇計算，單價沿用報價（須向業者確認）。` });
-    const guideItem = data.costs.items.find(i => i.id === "private_guide");
-    const guideDays = days.filter(d => d.region === "tabin" || (d.segment_days || []).includes("tabin")).length;
-    if (guideItem && guideItem.qty && isNum(guideItem.qty.days) && guideDays > guideItem.qty.days)
-      out.push({ level: "info", code: "quote", msg: `Tabin 套裝涵蓋 ${guideDays} 個日曆天，私人嚮導／車輛報價為 ${guideItem.qty.days} 天：須確認是哪 ${guideItem.qty.days} 天。` });
+    // 報價晚數 vs 行程選擇（費用項目的 qty.nights_from = "activity_count" 且有 quoted_nights）
+    for (const it of data.costs.items) {
+      if (!isNum(it.quoted_nights) || !it.qty || it.qty.nights_from !== "activity_count") continue;
+      const n = ctx.activityCount[it.id] || 0;
+      if (n !== it.quoted_nights) out.push({ level: "warn", code: "quote", msg: `行程中選了 ${n} 晚${it.count_label || it.name}，業者報價為 ${it.quoted_nights} 晚；試算依行程選擇計算，單價沿用報價（須向業者確認）。` });
+    }
+    // 報價天數 vs 該區段涵蓋的日曆天（費用項目的 days_check = {segment, msg}，msg 可用 {span}、{days}）
+    for (const it of data.costs.items) {
+      const dc = it.days_check; if (!dc || !it.qty || !isNum(it.qty.days)) continue;
+      const span = days.filter(d => d.region === dc.segment || (d.segment_days || []).includes(dc.segment)).length;
+      if (span > it.qty.days) out.push({ level: "info", code: "quote", msg: String(dc.msg).replace(/\{span\}/g, span).replace(/\{days\}/g, it.qty.days) });
+    }
     return out;
   }
 
   function lodgingNightsSummary(data, state) {
     const days = data.itinerary.days; let planned = 0, tbd = 0, booked = 0;
     for (let i = 0; i < days.length - 1; i++) {
-      const lid = resolveLodging(days[i].lodging, state);
+      const lid = resolveLodging(days[i].lodging, state, data);
       if (!lid) { tbd++; continue; }
       const st = days[i].lodging_status;
       if (st === "confirmed") booked++;
@@ -6142,10 +6228,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         break;
       case "itinerary":
         if (!Array.isArray(d.days) || !d.days.length) { e.push("itinerary.days 需為非空陣列"); break; }
+        if (d.connections != null && !Array.isArray(d.connections)) e.push("itinerary.connections 需為陣列");
         d.days.forEach((x, i) => {
           if (!/^\d{4}-\d{2}-\d{2}$/.test(x.date || "")) e.push(`days[${i}].date 格式錯誤`);
           if (!Number.isInteger(x.day)) e.push(`days[${i}].day 需為整數`);
-          if (!["tabin", "danum", "transit"].includes(x.region)) e.push(`days[${i}].region 不合法`);
+          if (typeof x.region !== "string" || !x.region) e.push(`days[${i}].region 需為字串`);
           if (!Array.isArray(x.kind)) e.push(`days[${i}].kind 需為陣列`);
           for (const k of ["short", "weather_alt"]) if (typeof x[k] !== "string") e.push(`days[${i}].${k} 需為字串`);
           if (x.lodging !== null && typeof x.lodging !== "string") e.push(`days[${i}].lodging 需為字串或 null`);
@@ -6156,7 +6243,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       case "costs": {
         if (!Array.isArray(d.items)) { e.push("costs.items 需為陣列"); break; }
         const units = Object.keys(UNIT_LABEL), st = ["confirmed", "quoted", "public_rate", "third_party", "estimate", "demo", "unquoted"];
-        const ctxKeys = ["pax", "rooms", "singles", "triples", "nightSafariNights"];
         d.items.forEach((it, i) => {
           if (typeof it.id !== "string") e.push(`items[${i}].id 缺少`);
           if (!units.includes(it.unit)) e.push(`items[${i}]（${it.id}）unit「${it.unit}」不在允許清單`);
@@ -6166,11 +6252,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
           if (!okPrice) e.push(`items[${i}]（${it.id}）price 格式錯誤`);
           if (isNum(p) && p < 0) e.push(`items[${i}]（${it.id}）price 不可為負`);
           if (it.status === "unquoted" && p != null) e.push(`items[${i}]（${it.id}）未報價項目 price 必須為 null`);
-          if (!Object.keys(CATEGORY_LABEL).includes(it.category)) e.push(`items[${i}]（${it.id}）category 不合法`);
+          if (typeof it.category !== "string" || !it.category) e.push(`items[${i}]（${it.id}）category 需為字串`);
           const q = it.qty || {};
-          for (const k of ["nights_from", "rooms_from"]) if (q[k] != null && !ctxKeys.includes(q[k])) e.push(`items[${i}]（${it.id}）qty.${k}「${q[k]}」不合法`);
+          for (const k of ["nights_from", "rooms_from"]) if (q[k] != null && !CTX_KEYS.includes(q[k])) e.push(`items[${i}]（${it.id}）qty.${k}「${q[k]}」不合法`);
           for (const k of ["days", "nights", "trips"]) if (q[k] != null && !(isNum(q[k]) && q[k] >= 0)) e.push(`items[${i}]（${it.id}）qty.${k} 需為非負數`);
-          if (it.price_currency != null && !["MYR", "TWD", "USD"].includes(it.price_currency)) e.push(`items[${i}]（${it.id}）price_currency 不合法`);
+          if (it.price_currency != null && !/^[A-Z]{3}$/.test(it.price_currency)) e.push(`items[${i}]（${it.id}）price_currency 需為三碼幣別`);
         });
         break;
       }
@@ -6179,7 +6265,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         d.items.forEach((s, i) => {
           if (typeof s.id !== "string" || typeof s.sci !== "string") e.push(`species[${i}] 缺 id/sci`);
           if (s.inat_taxon_id != null && !Number.isInteger(s.inat_taxon_id)) e.push(`species[${i}] inat_taxon_id 需為整數或 null`);
-          if (!isObj(s.records) || !isObj(s.records.tabin) || !isObj(s.records.danum)) e.push(`species[${i}]（${s.id}）缺 records.tabin / records.danum`);
+          if (!isObj(s.records) || Object.values(s.records).some(r => !isObj(r))) e.push(`species[${i}]（${s.id}）缺 records，或 records 內容不是物件`);
           if (typeof s.en !== "string") e.push(`species[${i}] en 需為字串`);
         });
         break;
@@ -6197,16 +6283,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         break;
       case "essentials":
         for (const k of ["checklist", "risks", "ethics", "night"]) if (!Array.isArray(d[k])) e.push(`essentials.${k} 需為陣列`);
+        if (d.tasks != null && !Array.isArray(d.tasks)) e.push("essentials.tasks 需為陣列");
+        else for (const t of d.tasks || []) { if (typeof t.id !== "string" || typeof t.title !== "string") e.push("essentials.tasks 每筆需有 id 與 title"); if (t.due != null && !/^\d{4}-\d{2}-\d{2}$/.test(t.due)) e.push(`essentials.tasks（${t.id}）due 需為 YYYY-MM-DD 或 null`); }
         break;
       default: e.push(`未知資料集 ${name}`);
     }
     return e;
   }
   const DATASETS = ["trip", "itinerary", "costs", "species", "locations", "sources", "essentials"];
-  /** GAS 回應信封：{schema:"ecotrip2027/1", updated_at, data:{<dataset>:…}} */
+  /** GAS 回應信封：{schema:"ecotrip/1", updated_at, data:{<dataset>:…}} */
   function validateEnvelope(obj) {
     if (!obj || typeof obj !== "object") return { ok: false, errors: ["回應不是 JSON 物件"] };
-    if (obj.schema !== "ecotrip2027/1") return { ok: false, errors: [`schema 應為 "ecotrip2027/1"，收到 ${JSON.stringify(obj.schema)}`] };
+    if (obj.schema !== ENVELOPE_SCHEMA) return { ok: false, errors: [`schema 應為 "${ENVELOPE_SCHEMA}"，收到 ${JSON.stringify(obj.schema)}`] };
     if (!obj.data || typeof obj.data !== "object") return { ok: false, errors: ["缺少 data 物件"] };
     const accepted = {}, errors = [], ignored = [];
     for (const k of Object.keys(obj.data)) {
@@ -6219,20 +6307,55 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 
   function validateReferences(data) {
     const out = [];
-    const poi = new Set(data.locations.pois.map(p => p.id).concat(["danum_choice", "last_night_choice"]));
+    const poiIds = new Set(data.locations.pois.map(p => p.id));
+    const choices = choiceDefs(data), optionKeys = new Set();
+    for (const c of choices) {
+      if (typeof c.id !== "string" || !Array.isArray(c.options) || !c.options.length) { out.push(`選擇題「${c.id}」缺 id 或 options`); continue; }
+      if (!c.options.some(o => o.key === c.default)) out.push(`選擇題「${c.id}」的預設值「${c.default}」不在選項中`);
+      for (const o of c.options) { optionKeys.add(o.key); if (o.lodging != null && !poiIds.has(o.lodging)) out.push(`選擇題「${c.id}」選項「${o.key}」的住宿「${o.lodging}」不存在`); }
+    }
+    const poi = new Set([...poiIds, ...choices.map(c => c.id)]);
+    const regions = data.trip.regions ? new Set(Object.keys(data.trip.regions)) : null;
+    const cats = new Set(Object.keys(categoryLabels(data))), money = currencyOf(data);
+    const currencies = new Set([money.base, money.home, ...Object.keys(money.defaultRates)].filter(Boolean));
+    const areaKeys = (data.locations.areas || []).map(a => a.key);
+    if (!money.base) out.push("trip.currency.base（本位幣）未設定");
+    for (const seg of data.trip.segments || []) if (regions && !regions.has(seg.key)) out.push(`trip.segments「${seg.key}」不在 trip.regions 中`);
+    for (const p of data.locations.pois) if (regions && p.region != null && !regions.has(p.region)) out.push(`地點 ${p.id} 的 region「${p.region}」不在 trip.regions 中`);
     const sp = new Set(data.species.items.map(s => s.id));
     const cost = new Set(data.costs.items.map(c => c.id));
     const src = new Set(data.sources.items.map(s => s.id));
     for (const d of data.itinerary.days) {
       for (const k of ["lodging", "lodging_prev"]) if (d[k] && !poi.has(d[k])) out.push(`Day ${d.day} ${k}「${d[k]}」不存在`);
+      if (regions && !regions.has(d.region)) out.push(`Day ${d.day} region「${d.region}」不在 trip.regions 中`);
       for (const a of d.activities) {
         if (a.location && !poi.has(a.location)) out.push(`${a.id} location「${a.location}」不存在`);
         for (const s of a.species || []) if (!sp.has(s)) out.push(`${a.id} species「${s}」不存在`);
         for (const o of a.options || []) if (o.cost_ref && !cost.has(o.cost_ref)) out.push(`${a.id} cost_ref「${o.cost_ref}」不存在`);
       }
     }
-    for (const it of data.costs.items) for (const s of it.source_ids || []) if (!src.has(s)) out.push(`費用 ${it.id} 來源「${s}」不存在`);
-    for (const s of data.species.items) for (const x of s.source_ids || []) if (!src.has(x)) out.push(`物種 ${s.id} 來源「${x}」不存在`);
+    const taskIds = new Set(((data.essentials && data.essentials.tasks) || []).map(t => t.id));
+    for (const t of (data.essentials && data.essentials.tasks) || []) {
+      for (const id of t.depends_on || []) if (!taskIds.has(id)) out.push(`待辦 ${t.id} 的 depends_on「${id}」不存在`);
+      for (const s of t.source_ids || []) if (!src.has(s)) out.push(`待辦 ${t.id} 來源「${s}」不存在`);
+      if (t.due && t.due > data.trip.end) out.push(`待辦 ${t.id} 的期限 ${t.due} 晚於行程結束日`);
+    }
+    for (const c of data.itinerary.connections || []) {
+      if (!data.itinerary.days.some(d => d.day === c.day)) out.push(`銜接 ${c.id} 的 day「${c.day}」不存在`);
+      if (c.option != null && !optionKeys.has(c.option)) out.push(`銜接 ${c.id} 的 option「${c.option}」不是任何選擇題的選項`);
+    }
+    for (const it of data.costs.items) {
+      for (const s of it.source_ids || []) if (!src.has(s)) out.push(`費用 ${it.id} 來源「${s}」不存在`);
+      if (!cats.has(it.category)) out.push(`費用 ${it.id} category「${it.category}」不在 costs.categories 中`);
+      if (!BUILTIN_APPLIES.includes(it.applies) && !optionKeys.has(it.applies)) out.push(`費用 ${it.id} applies「${it.applies}」不是內建值，也不是任何選擇題的選項`);
+      if (it.when != null && it.when !== "singles" && !(String(it.when).indexOf("plan_") === 0 && optionKeys.has(String(it.when).slice(5)))) out.push(`費用 ${it.id} when「${it.when}」不合法`);
+      if (it.price_currency != null && !currencies.has(it.price_currency)) out.push(`費用 ${it.id} 幣別「${it.price_currency}」未在 trip.currency 中設定`);
+      if (it.itinerary_check && !optionKeys.has(it.itinerary_check.plan)) out.push(`費用 ${it.id} itinerary_check.plan「${it.itinerary_check.plan}」不是任何選擇題的選項`);
+    }
+    for (const s of data.species.items) {
+      for (const x of s.source_ids || []) if (!src.has(x)) out.push(`物種 ${s.id} 來源「${x}」不存在`);
+      for (const a of areaKeys) if (!s.records || !s.records[a]) out.push(`物種 ${s.id} 缺 records.${a}`);
+    }
     return out;
   }
 
@@ -6244,20 +6367,86 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
   function budgetCSV(b, sources) {
     const srcName = id => { const s = sources.find(x => x.id === id); return s ? s.title : id; };
-    const rows = [["分類", "項目", "計價單位", "幣別", "單價", "數量", "金額(MYR)", "金額(TWD)", "資料狀態", "是否計入", "來源", "假設／備註"]];
-    for (const l of b.lines) rows.push([CATEGORY_LABEL[l.category], l.name, l.unitLabel, l.currency, l.unitPrice == null ? "未報價" : l.unitPrice,
-      l.qtyText, l.amountMYR == null ? "未報價" : l.amountMYR.toFixed(2), l.amountTWD == null ? "未報價" : l.amountTWD.toFixed(0),
+    const base = b.currency.base, home = b.currency.home;
+    const rows = [["分類", "項目", "計價單位", "幣別", "單價", "數量", `金額(${base})`, `金額(${home})`, "資料狀態", "是否計入", "來源", "假設／備註"]];
+    for (const l of b.lines) rows.push([b.categoryLabels[l.category], l.name, l.unitLabel, l.currency, l.unitPrice == null ? "未報價" : l.unitPrice,
+      l.qtyText, l.amountBase == null ? "未報價" : l.amountBase.toFixed(2), l.amountHome == null ? "未報價" : l.amountHome.toFixed(0),
       STATUS_LABEL[l.status] || l.status, l.active ? "是" : "否", l.source_ids.map(srcName).join("；"), [l.assumption, l.notes].filter(Boolean).join("；")]);
-    rows.push([], ["小計（已估價）", "", "", "MYR", "", "", b.subtotal.toFixed(2), b.fx ? (b.subtotal * b.fx).toFixed(0) : ""]);
-    rows.push([`預備金 ${b.contingencyPct}%`, "", "", "MYR", "", "", b.contingency.toFixed(2), b.fx ? (b.contingency * b.fx).toFixed(0) : ""]);
-    rows.push(["總計", "", "", "MYR", "", "", b.total.toFixed(2), b.totalTWD == null ? "" : b.totalTWD.toFixed(0)]);
-    rows.push(["每人平均", "", "", "MYR", "", `${b.ctx.pax} 人`, b.perPerson == null ? "" : b.perPerson.toFixed(2), b.perPersonTWD == null ? "" : b.perPersonTWD.toFixed(0)]);
+    rows.push([], ["小計（已估價）", "", "", base, "", "", b.subtotal.toFixed(2), b.fx ? (b.subtotal * b.fx).toFixed(0) : ""]);
+    rows.push([`預備金 ${b.contingencyPct}%`, "", "", base, "", "", b.contingency.toFixed(2), b.fx ? (b.contingency * b.fx).toFixed(0) : ""]);
+    rows.push(["總計", "", "", base, "", "", b.total.toFixed(2), b.totalHome == null ? "" : b.totalHome.toFixed(0)]);
+    rows.push(["每人平均", "", "", base, "", `${b.ctx.pax} 人`, b.perPerson == null ? "" : b.perPerson.toFixed(2), b.perPersonHome == null ? "" : b.perPersonHome.toFixed(0)]);
     rows.push(["未估價項目數", "", "", "", "", "", b.unpriced.length, "", "未估價項目不計入總計，不代表免費"]);
     return "﻿" + rows.map(r => r.map(csvCell).join(",")).join("\r\n");
   }
 
-  global.EcoCore = { STATUS_LABEL, UNIT_LABEL, CATEGORY_LABEL, OBS_LABELS, WEEKDAY, DATASETS, isNum, addDaysISO, weekdayZh,
-    resolveLodging, poiById, activityChoice, activityStatus, activityCostRef, computeCtx, computeBudget, compareDanum,
+  /* ---------- 待辦與期限（essentials.tasks） ---------- */
+  function daysBetween(a, b) { return Math.round((parseISODate(b) - parseISODate(a)) / 86400000); }
+  /**
+   * 依期限排序的待辦。due = null 表示期限未知（例如業者尚未告知訂金期限），不會被當成「沒有期限」。
+   * due_kind："external" 對方規定的期限；"self" 自訂目標日。完成狀態存在 state.checklist["task:<id>"]。
+   */
+  function taskList(data, state, today) {
+    const tasks = (data.essentials && data.essentials.tasks) || [];
+    const isDone = t => !!(state && state.checklist && state.checklist["task:" + t.id]);
+    const byId = new Map(tasks.map(t => [t.id, t]));
+    const out = tasks.map(t => {
+      const due = /^\d{4}-\d{2}-\d{2}$/.test(t.due || "") ? t.due : null;
+      const daysLeft = due && today ? daysBetween(today, due) : null;
+      return { id: t.id, title: t.title, due, due_kind: due ? (t.due_kind === "external" ? "external" : "self") : "unknown", due_basis: t.due_basis || "",
+        consequence: t.consequence || "", done: isDone(t), daysLeft, overdue: daysLeft != null && daysLeft < 0 && !isDone(t),
+        blocked_by: (t.depends_on || []).filter(id => byId.has(id) && !isDone(byId.get(id))).map(id => byId.get(id).title), source_ids: t.source_ids || [] };
+    });
+    const rank = x => (x.done ? 2 : 0) + (x.due ? 0 : 1);          // 未完成且有期限 → 未完成但期限未知 → 已完成
+    return out.sort((a, b) => rank(a) - rank(b) || (a.due || "").localeCompare(b.due || ""));
+  }
+
+  /* ---------- 銜接餘裕（itinerary.connections） ---------- */
+  const fmtHHMM = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
+  /**
+   * 每段銜接：路程合計、最晚出發時間（期限 − 路程 − 緩衝）、以及在假設出發時間下的餘裕。
+   * status：ok 餘裕足夠且出發時間已確認｜assumed 餘裕足夠但出發時間未確認｜tight 餘裕小於緩衝｜miss 趕不上｜insufficient 資料不足
+   * 缺少的資料會列在 missing，不會用猜的數字補上。
+   */
+  function connections(data, state) {
+    const out = [];
+    for (const c of (data.itinerary.connections || [])) {
+      if (c.option && !optionSelected(data, state, c.option)) continue;
+      const legs = c.legs || [], missing = (c.missing || []).slice();
+      for (const l of legs) if (!isNum(l.duration_h)) missing.push(`「${l.label}」的車程或航程時間`);
+      const totalMin = legs.length && legs.every(l => isNum(l.duration_h)) ? Math.round(legs.reduce((a, l) => a + l.duration_h * 60, 0)) : null;
+      const dl = c.deadline ? toMinutes(c.deadline.time) : null, dep = c.depart ? toMinutes(c.depart.time) : null;
+      const buffer = isNum(c.buffer_min) ? c.buffer_min : 30;
+      if (dl == null) missing.push(c.deadline && c.deadline.label ? `${c.deadline.label}的確切時間` : "必須抵達的期限時間");
+      if (dep == null) missing.push(c.depart && c.depart.label ? `${c.depart.label}的確切時間` : "出發時間");
+      const depUnconfirmed = dep != null && c.depart.status !== "confirmed";
+      if (depUnconfirmed) missing.push("出發時間尚未取得對方確認");
+      const latest = totalMin != null && dl != null ? dl - totalMin - buffer : null;
+      const arrive = totalMin != null && dep != null ? dep + totalMin : null;
+      const slack = arrive != null && dl != null ? dl - arrive : null;
+      const status = slack == null ? "insufficient" : slack < 0 ? "miss" : slack < buffer ? "tight" : depUnconfirmed ? "assumed" : "ok";
+      out.push({ id: c.id, day: c.day, title: c.title, totalMin, buffer_min: buffer, deadline: dl != null ? c.deadline.time : null, deadline_label: (c.deadline && c.deadline.label) || "",
+        depart: dep != null ? c.depart.time : null, arrive: arrive != null && arrive >= 0 && arrive < 1440 ? fmtHHMM(arrive) : null, latestDepart: latest != null && latest >= 0 ? fmtHHMM(latest) : null,
+        slackMin: slack, status, missing, basis: [c.basis].concat(legs.map(l => l.basis ? `${l.label}：${l.basis}` : null)).filter(Boolean).join("；") });
+    }
+    return out;
+  }
+
+  /* ---------- 旅程後回填：實際花費對照試算 ---------- */
+  function actualsSummary(budget, actuals) {
+    actuals = actuals || {};
+    const lines = budget.lines.filter(l => l.active || isNum(actuals[l.id])).map(l => {
+      const actual = isNum(actuals[l.id]) ? actuals[l.id] : null;
+      return { id: l.id, name: l.name, status: l.status, planned: l.active ? l.amountBase : null, actual, diff: actual != null && l.active && l.amountBase != null ? actual - l.amountBase : null };
+    });
+    const filled = lines.filter(l => l.actual != null);
+    return { lines, filled: filled.length, actualTotal: filled.reduce((a, l) => a + l.actual, 0),
+      plannedForFilled: filled.reduce((a, l) => a + (l.planned || 0), 0), unplannedFilled: filled.filter(l => l.planned == null).length };
+  }
+
+  global.EcoCore = { taskList, connections, actualsSummary, STATUS_LABEL, UNIT_LABEL, OBS_LABELS, WEEKDAY, DATASETS, BUILTIN_APPLIES, CTX_KEYS, ENVELOPE_SCHEMA, isNum, addDaysISO, weekdayZh,
+    categoryLabels, currencyOf, choiceDefs, choiceDef, choiceValue, optionSelected, itemActive,
+    resolveLodging, poiById, activityChoice, activityStatus, activityCostRef, computeCtx, computeBudget, compareChoice,
     scenarios, checkItinerary, lodgingNightsSummary, observabilityLabel, validateDataset, validateEnvelope,
     validateReferences, budgetCSV, toMinutes };
 })(typeof window !== "undefined" ? window : globalThis);
@@ -6270,8 +6459,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 "use strict";
 (function () {
   const C = window.EcoCore;
-  const LS_KEY = "ecotrip2027.v1";
-  const INAT_CACHE_KEY = "ecotrip2027.inat.v1";
+  // 儲存鍵的前綴由行程資料決定（trip.storage_prefix），不同行程的設定互不干擾
+  const EMBED_TRIP = JSON.parse(document.getElementById("data-trip").textContent);
+  const PREFIX = EMBED_TRIP.storage_prefix || ("ecotrip." + EMBED_TRIP.id);
+  const LS_KEY = PREFIX + ".v1";
+  const INAT_CACHE_KEY = PREFIX + ".inat.v1";
 
   /* ================= DOM 與格式化工具 ================= */
   function h(tag, attrs, ...kids) {
@@ -6295,8 +6487,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   const $ = s => document.querySelector(s);
   function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); return el; }
   const n0 = v => Math.round(v).toLocaleString("en-US");
-  const fmtMYR = v => v == null ? "未報價" : "RM " + n0(v);
-  const fmtTWD = v => v == null ? "—" : "NT$ " + n0(v);
+  const money = () => C.currencyOf(D());
+  const curSym = c => money().symbols[c] || c || "";
+  const fmtBase = v => v == null ? "未報價" : curSym(money().base) + " " + n0(v);     // 本位幣
+  const fmtHome = v => v == null ? "—" : curSym(money().home) + " " + n0(v);          // 旅客的結算幣別（沒有設定時顯示 —）
+  const hasHome = () => !!money().home;
   const fmtPct = v => v == null ? "—" : (v * 100).toFixed(0) + "%";
   function badge(status, text) { return h("span", { class: "badge b-" + status }, text || C.STATUS_LABEL[status] || status); }
   function iucnBadge(code) { const c = code || "null"; return h("span", { class: "iucn iucn-" + c, title: "IUCN 紅色名錄等級（經 iNaturalist 轉載，未與 IUCN 官網交叉核對）" }, code || "未查證"); }
@@ -6308,8 +6503,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   const TYPE_LABEL = { transfer: "交通", walk: "步行", night: "夜間觀察", rest: "休息", meal: "用餐", boat: "乘船", landscape: "地景", flight: "航班", other: "其他" };
   const SLOT_LABEL = { dawn: "清晨", morning: "上午", afternoon: "下午", evening: "傍晚", night: "晚間" };
   const NEED_LABEL = { booking: "需預約", guide: "需嚮導陪同", extra_cost: "額外付費", permit: "需許可／入園費", flight: "需訂機票" };
-  const REGION_LABEL = { tabin: "Tabin", danum: "Danum Valley", transit: "交通／轉運" };
-  const AREA_LABEL = { tabin: "Tabin", danum: "Danum" };
+  // 區域與觀測範圍的名稱、顏色都來自資料（trip.regions、locations.areas）
+  const regionKeys = () => Object.keys(D().trip.regions || {});
+  const regionLabel = k => (D().trip.regions || {})[k] || k;
+  const regionClass = k => "region-c" + Math.max(0, regionKeys().indexOf(k)) % 6;
+  const areas = () => D().locations.areas || [];
+  const areaKeys = () => areas().map(a => a.key);
+  const areaLabel = k => { const a = areas().find(x => x.key === k); return a ? (a.short || a.name) : k; };
+  const choices = () => C.choiceDefs(D());
+  const choiceVal = id => C.choiceValue(D(), S(), id);
+  const choiceOpt = id => { const d = C.choiceDef(D(), id); return d ? d.options.find(o => o.key === choiceVal(id)) || null : null; };
+  /** 需要並列比較的選擇題（有 compare_category 的那些）；多數行程只有 0 或 1 個 */
+  const compareChoices = () => choices().filter(c => c.compare_category);
 
   /* ================= 資料載入 ================= */
   function readEmbedded() {
@@ -6325,26 +6530,36 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 
   /* ================= 使用者狀態（LocalStorage） ================= */
   function defaultState(data) {
-    return { v: 1, pax: data.trip.default_pax, fx: data.trip.default_fx, fxUsd: data.trip.default_usd_myr, danumPlan: "brl", rooms: 2, scenario: "mid",
-      contingencyPct: 10, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {}, lastNight: "ld",
-      targets: data.species.items.filter(s => s.flagship).map(s => s.id), activity: {}, dayNotes: {}, checklist: {},
-      weights: { budget: 3, wildlife: 4, comfort: 2, flex: 2, risk: 3 }, gasUrl: "", dataSource: "local",
+    const ch = {}; for (const c of C.choiceDefs(data)) ch[c.id] = c.default;
+    const w = {}; for (const c of ((data.costs.compare || {}).criteria || [])) w[c.key] = Number.isInteger(c.default_weight) ? c.default_weight : 3;
+    return { v: 1, pax: data.trip.default_pax, fx: data.trip.default_fx, rates: Object.assign({}, C.currencyOf(data).defaultRates), choices: ch,
+      rooms: data.trip.default_rooms || Math.ceil(data.trip.default_pax / 2), scenario: "mid",
+      contingencyPct: 10, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {},
+      targets: data.species.items.filter(s => s.flagship).map(s => s.id), activity: {}, dayNotes: {}, checklist: {}, actuals: {}, riskLog: {},
+      weights: w, gasUrl: "", dataSource: "local",
       selectedDay: 1, dayFilter: "all", spFilter: { area: "all", flags: [], difficulty: "all", q: "" }, tab: "dashboard" };
   }
   /** 合併已存設定並做型別防護（匯入 JSON 也走這裡） */
   function sanitizeState(raw, data) {
     const d = defaultState(data);
     if (!raw || typeof raw !== "object") return d;
+    // 舊版設定鍵名轉換（對照表在 trip.legacy_state，例如 {"舊鍵": ["choices", "<選擇題 id>"]}）
+    raw = Object.assign({}, raw);
+    for (const [oldKey, path] of Object.entries(data.trip.legacy_state || {})) {
+      if (raw[oldKey] === undefined || !Array.isArray(path) || path.length !== 2) continue;
+      const box = raw[path[0]] && typeof raw[path[0]] === "object" ? Object.assign({}, raw[path[0]]) : {};
+      if (box[path[1]] === undefined) box[path[1]] = raw[oldKey];
+      raw[path[0]] = box;
+    }
     const s = Object.assign({}, d);
     const num = (v, lo, hi, def) => { const x = Number(v); return Number.isFinite(x) && x >= lo && x <= hi ? x : def; };
     s.pax = Math.floor(num(raw.pax, 1, 20, d.pax));
     s.rooms = Math.floor(num(raw.rooms, 1, 12, d.rooms));
     s.fx = num(raw.fx, 0.1, 100, d.fx);
-    s.fxUsd = num(raw.fxUsd, 0.1, 100, d.fxUsd);
+    s.rates = {}; for (const k of Object.keys(d.rates)) s.rates[k] = num(raw.rates && raw.rates[k], 0.0001, 100000, d.rates[k]);
+    s.choices = {}; for (const c of C.choiceDefs(data)) { const v = raw.choices && raw.choices[c.id]; s.choices[c.id] = c.options.some(o => o.key === v) ? v : c.default; }
     s.contingencyPct = num(raw.contingencyPct, 0, 50, d.contingencyPct);
-    s.danumPlan = raw.danumPlan === "dvfc" ? "dvfc" : "brl";
     s.scenario = ["low", "mid", "high"].includes(raw.scenario) ? raw.scenario : "mid";
-    s.lastNight = ["ld", "kk", "tbd"].includes(raw.lastNight) ? raw.lastNight : d.lastNight;
     s.includeFlights = !!raw.includeFlights; s.includeExtras = raw.includeExtras == null ? d.includeExtras : !!raw.includeExtras;
     const obj = v => v && typeof v === "object" && !Array.isArray(v) ? v : {};
     s.optionalOn = {}; for (const [k, v] of Object.entries(obj(raw.optionalOn))) s.optionalOn[k] = !!v;
@@ -6358,6 +6573,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     }
     s.dayNotes = {}; for (const [k, v] of Object.entries(obj(raw.dayNotes))) if (typeof v === "string") s.dayNotes[k] = v.slice(0, 4000);
     s.checklist = {}; for (const [k, v] of Object.entries(obj(raw.checklist))) s.checklist[k] = !!v;
+    // 旅程後回填：實際花費（本位幣）與風險是否發生
+    s.actuals = {}; for (const [k, v] of Object.entries(obj(raw.actuals))) if (Number.isFinite(Number(v)) && Number(v) >= 0 && v !== "" && v !== null) s.actuals[k] = Number(v);
+    s.riskLog = {}; for (const [k, v] of Object.entries(obj(raw.riskLog))) { const o = obj(v), r = {}; if (["yes", "no"].includes(o.happened)) r.happened = o.happened; if (typeof o.note === "string") r.note = o.note.slice(0, 2000); s.riskLog[k] = r; }
     const ids = new Set(data.species.items.map(x => x.id));
     s.targets = Array.isArray(raw.targets) ? raw.targets.filter(x => typeof x === "string" && (ids.has(x) || x.startsWith("inat:"))).slice(0, 200) : d.targets;
     s.customTargets = Array.isArray(raw.customTargets) ? raw.customTargets.filter(t => t && Number.isInteger(t.id) && typeof t.name === "string").slice(0, 100).map(t => ({ id: t.id, name: t.name.slice(0, 200), sci: String(t.sci || "").slice(0, 200), rank: String(t.rank || "").slice(0, 40) })) : [];
@@ -6365,7 +6583,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     s.gasUrl = typeof raw.gasUrl === "string" ? raw.gasUrl.slice(0, 500) : "";
     s.dataSource = raw.dataSource === "remote" ? "remote" : "local";
     s.selectedDay = Math.floor(num(raw.selectedDay, 1, 31, 1));
-    s.dayFilter = ["all", "tabin", "danum", "transit"].includes(raw.dayFilter) ? raw.dayFilter : "all";
+    s.dayFilter = raw.dayFilter === "all" || Object.keys(data.trip.regions || {}).includes(raw.dayFilter) ? raw.dayFilter : "all";
     s.tab = typeof raw.tab === "string" ? raw.tab : "dashboard";
     return s;
   }
@@ -6398,7 +6616,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   let announceTimer = null;
   function announce() {
     clearTimeout(announceTimer);
-    announceTimer = setTimeout(() => { const lr = document.getElementById("live-region"); if (!lr) return; const b = C.computeBudget(D(), S()); lr.textContent = `已估價合計 ${fmtMYR(b.total)}，每人 ${fmtMYR(b.perPerson)}，未估價 ${b.unpriced.length} 項。`; }, 400);
+    announceTimer = setTimeout(() => { const lr = document.getElementById("live-region"); if (!lr) return; const b = C.computeBudget(D(), S()); lr.textContent = `已估價合計 ${fmtBase(b.total)}，每人 ${fmtBase(b.perPerson)}，未估價 ${b.unpriced.length} 項。`; }, 400);
   }
 
   /* ================= 分頁導覽 ================= */
@@ -6410,10 +6628,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     { id: "wildlife", zh: "目標物種", short: "物種", en: "Wildlife", ico: "❦" },
     { id: "compare", zh: "方案比較", short: "比較", en: "Compare", ico: "⇄" },
     { id: "essentials", zh: "旅遊準備與風險", short: "準備", en: "Essentials", ico: "✓" }];
+  /** 沒有物種資料就不顯示物種分頁；沒有方案比較就不顯示比較分頁 */
+  const visibleTabs = () => TABS.filter(t => (t.id !== "wildlife" || D().species.items.length) && (t.id !== "compare" || (D().costs.compare && compareChoices().length)));
+  function applyTitles() {
+    const t = D().trip; document.title = t.title;
+    const h1 = document.querySelector(".brand h1"); if (!h1) return;
+    clear(h1).append(t.short_title || t.title, h("small", null, t.subtitle || `${t.start} – ${t.end}`));
+  }
   function buildTabs() {
+    applyTitles();
     for (const [listId, mobile] of [["tabs-desk", false], ["tabs-mob", true]]) {
       const list = document.getElementById(listId);
-      for (const t of TABS) {
+      for (const t of visibleTabs()) {
         list.append(h("button", { class: "tab", role: "tab", type: "button", id: (mobile ? "tm-" : "t-") + t.id, "aria-controls": "p-" + t.id,
           "aria-selected": "false", tabindex: "-1", "data-tab": t.id, onclick: () => selectTab(t.id, true) },
           mobile ? [h("span", { class: "ico", "aria-hidden": "true" }, t.ico), t.short || t.zh] : [t.zh, h("span", { class: "en" }, t.en)]));
@@ -6457,7 +6683,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     return h("span", { class: "small muted" }, "來源：", items.map((s, i) => [i ? "；" : "", s.url ? extLink(s.url, s.title) : s.title, ` (${s.checked_on || "查核日期不明"})`]));
   }
   function lodgingName(id) {
-    const rid = C.resolveLodging(id, S());
+    const rid = resolveLodging(id);
     if (!rid) return "待確認";
     const p = C.poiById(D(), rid); return p ? p.name : rid;
   }
@@ -6476,11 +6702,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const P = clear(document.getElementById("p-dashboard"));
     const t = D().trip, b = C.computeBudget(D(), S()), ln = C.lodgingNightsSummary(D(), S()), pend = pendingSummary(b);
     const checks = allChecks(), errs = checks.filter(c => c.level === "error"), warns = checks.filter(c => c.level === "warn");
-    const cmp = C.compareDanum(D(), S());
-    const nSp = D().species.items.length, nT = S().targets.length;
+    const cmps = compareChoices().map(c => C.compareChoice(D(), S(), c.id));
+    const nSp = D().species.items.length, nT = S().targets.length, spGroup = D().species.group_label || "物種";
+    const optLabels = c => c.options.map(o => o.label || o.key).join(" 和 ");
     P.append(h("div", { class: "section-head" },
       h("div", null, h("h2", null, "總覽"), h("p", { class: "muted" }, `${t.start.replace(/-/g, "/")}（${C.weekdayZh(t.start)}）– ${t.end.replace(/-/g, "/")}（${C.weekdayZh(t.end)}）｜${t.nights + 1} 天 ${t.nights} 夜｜${t.region_label}`)),
-      h("div", { class: "row" }, h("span", { class: "small muted" }, "試算情境："), badge("estimate", { low: "低", mid: "中", high: "高" }[S().scenario] + "預算"), h("span", { class: "small muted" }, `匯率 1 MYR = ${S().fx} TWD（試算值）`))));
+      h("div", { class: "row" }, h("span", { class: "small muted" }, "試算情境："), badge("estimate", { low: "低", mid: "中", high: "高" }[S().scenario] + "預算"), hasHome() ? h("span", { class: "small muted" }, `匯率 1 ${money().base} = ${S().fx} ${money().home}（試算值）`) : null)));
     // 一級風險橫幅
     for (const r of D().essentials.risks.filter(r => r.level === 1)) P.append(h("div", { class: "card alert", style: "margin-bottom:12px" }, h("h3", null, "⚠ ", r.title), h("p", null, r.impact), h("p", { class: "small" }, h("b", null, "建議行動："), r.action), sourceLine(r.source_ids)));
     const kpi = (label, value, sub, cls) => h("div", { class: "card kpi" }, h("div", { class: "label" }, label), h("div", { class: "value " + (cls || "") }, value), sub ? h("div", { class: "sub" }, sub) : null);
@@ -6488,25 +6715,38 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       kpi("旅行人數", `${S().pax} 人`, `${S().rooms} 間房${b.ctx.singles ? `（${b.ctx.singles} 間單人入住）` : ""}`),
       kpi("已排定住宿夜數", `${ln.planned} / ${ln.total} 晚`, `${ln.tbd} 晚待規劃；已取得訂房確認 ${ln.booked} 晚`),
       kpi("尚未確認項目", `${pend.total} 項`, `活動 ${pend.tbcActs}｜未報價費用 ${pend.unpriced}｜住宿 ${pend.lodgingTbd}`),
-      kpi("Tabin／Danum 停留", "5D4N ／ 3D2N", `Danum 方案：${S().danumPlan === "brl" ? "BRL" : "DVFC"}`),
-      kpi("已估價總費用", fmtMYR(b.total), `${fmtTWD(b.totalTWD)}｜含預備金 ${b.contingencyPct}%｜不含 ${b.unpriced.length} 項未報價｜業者報價部分 ${fmtMYR(b.completeness.quoted)}`, "amber"),
-      kpi("每人平均", fmtMYR(b.perPerson), fmtTWD(b.perPersonTWD), "amber"),
+      kpi((t.segments || []).map(sg => regionLabel(sg.key)).join("／") + " 停留", (t.segments || []).map(sg => sg.package || sg.nights + " 晚").join(" ／ "), compareChoices().map(c => `${c.label}：${(choiceOpt(c.id) || {}).label || "未定"}`).join("｜") || null),
+      kpi("已估價總費用", fmtBase(b.total), `${hasHome() ? fmtHome(b.totalHome) + "｜" : ""}含預備金 ${b.contingencyPct}%｜不含 ${b.unpriced.length} 項未報價｜業者報價部分 ${fmtBase(b.completeness.quoted)}`, "amber"),
+      kpi("每人平均", fmtBase(b.perPerson), hasHome() ? fmtHome(b.perPersonHome) : null, "amber"),
       kpi("業者報價占比", fmtPct(b.completeness.quotedShare), `第三方／公開價 ${fmtPct(b.completeness.pubShare)}｜估算與示範 ${fmtPct(b.completeness.softShare)}｜${b.unpriced.length} 項未估價不計入`),
-      kpi("目標物種", `${nT} 種`, `資料庫共 ${nSp} 種哺乳類（可自訂）`)));
-    // 8 個決策問題
-    const q = (n, title, answer, tab) => h("li", null, h("b", null, `${n}. ${title}`), h("div", { class: "small" }, answer, " ", h("button", { class: "btn small ghost", type: "button", onclick: () => selectTab(tab, true) }, "前往 →")));
-    const diffTxt = cmp.brlDanum != null && cmp.dvfcDanum != null ? `Danum 套裝 BRL ${fmtMYR(cmp.brlDanum)} vs DVFC ${fmtMYR(cmp.dvfcDanum)}，差 ${fmtMYR(Math.abs(cmp.brlDanum - cmp.dvfcDanum))}（${S().pax} 人）。` : "BRL 或 DVFC 有項目尚未估價，暫時無法完整比較。";
-    const spWith = D().species.items.filter(s => ["tabin", "danum"].some(a => C.observabilityLabel(s.records[a], s.difficulty, null, !!s.inat_obscured).key !== "insufficient")).length;
-    P.append(h("div", { class: "card", style: "margin-top:14px" }, h("h3", null, "這個工具要回答的 8 個問題"),
-      h("ol", { class: "stack", style: "padding-left:0;list-style:none;margin:0" },
-        q(1, "9 天行程是否合理？", errs.length ? `有 ${errs.length} 個錯誤、${warns.length} 個注意事項。` : `沒有結構錯誤；${warns.length} 個注意事項（含春節、轉場銜接）。`, "itinerary"),
-        q(2, "哪些行程與住宿仍需確認？", `${pend.lodgingTbd} 晚住宿、${pend.tbcActs} 項活動待確認；國際／國內航班皆未訂。`, "itinerary"),
-        q(3, "Tabin 和 Danum 各有哪些觀察機會？", `${spWith} / ${nSp} 種在兩地之一有紀錄依據（iNaturalist、近似範圍或文獻），其中 ${D().species.items.filter(s => ["tabin", "danum"].some(a => C.observabilityLabel(s.records[a], s.difficulty, null, !!s.inat_obscured).key === "strong")).length} 種有較充分依據。紀錄 ≠ 保證看到。`, "wildlife"),
-        q(4, "BRL 和 DVFC 值得價差嗎？", diffTxt, "compare"),
-        q(5, "人數與方案如何影響預算？", `目前每人 ${fmtMYR(b.perPerson)}；固定成本 ${fmtMYR(b.fixed)} 由全團分攤，人數越少每人越貴。`, "budget"),
-        q(6, "哪些物種有歷史觀測證據？", "每張物種卡都列出 iNaturalist 研究級筆數、文獻依據與不確定性。", "wildlife"),
-        q(7, "遇到大雨或交通延誤怎麼辦？", "每天都有雨天備案；風險表列出觸發條件與行動。", "essentials"),
-        q(8, "哪些資訊是真實、估算或未確認？", "所有數字都帶狀態標籤：業者報價／公開牌價／估算／示範資料／未報價／待確認。", "budget"))));
+      kpi("目標物種", `${nT} 種`, `資料庫共 ${nSp} 種${spGroup}（可自訂）`)));
+    // 決策問題（題目由資料組成：有幾個區域、有沒有方案比較、有沒有物種）
+    let qn = 0;
+    const q = (title, answer, tab, n = ++qn) => h("li", null, h("b", null, `${n}. ${title}`), h("div", { class: "small" }, answer, " ", h("button", { class: "btn small ghost", type: "button", onclick: () => selectTab(tab, true) }, "前往 →")));
+    const diffTxt = cmp => { const o = Object.values(cmp.options), cat = C.categoryLabels(D())[cmp.choice.compare_category] || cmp.choice.label;
+      if (!cmp.allPriced) return `${optLabels(cmp.choice)}有項目尚未估價，暫時無法完整比較。`;
+      const v = o.map(x => x.categoryTotal); return `${cat}：${o.map(x => `${x.label} ${fmtBase(x.categoryTotal)}`).join(" vs ")}，最高與最低差 ${fmtBase(Math.max(...v) - Math.min(...v))}（${S().pax} 人）。`; };
+    const obsKey = (s, a) => C.observabilityLabel(s.records[a], s.difficulty, null, !!s.inat_obscured).key;
+    const flightsTbc = D().itinerary.days.flatMap(d => d.activities).filter(a => a.type === "flight" && C.activityStatus(a, S()) === "tbc").length;
+    const spWith = D().species.items.filter(s => areaKeys().some(a => C.observabilityLabel(s.records[a], s.difficulty, null, !!s.inat_obscured).key !== "insufficient")).length;
+    const qs = [
+      q(`${t.nights + 1} 天行程是否合理？`, errs.length ? `有 ${errs.length} 個錯誤、${warns.length} 個注意事項。` : `沒有結構錯誤；${warns.length} 個注意事項。`, "itinerary"),
+      q("哪些行程與住宿仍需確認？", `${pend.lodgingTbd} 晚住宿、${pend.tbcActs} 項活動待確認${flightsTbc ? `（其中航班 ${flightsTbc} 段未訂）` : ""}。`, "itinerary"),
+      nSp ? q(`${areaKeys().map(areaLabel).join(" 和 ")} 各有哪些觀察機會？`, `${spWith} / ${nSp} 種在其中一地有紀錄依據（iNaturalist、近似範圍或文獻），其中 ${D().species.items.filter(s => areaKeys().some(a => obsKey(s, a) === "strong")).length} 種有較充分依據。紀錄 ≠ 保證看到。`, "wildlife") : null,
+      cmps.map(cmp => q(`${optLabels(cmp.choice)} 值得價差嗎？`, diffTxt(cmp), "compare")),
+      q("人數與方案如何影響預算？", `目前每人 ${fmtBase(b.perPerson)}；固定成本 ${fmtBase(b.fixed)} 由全團分攤，人數越少每人越貴。`, "budget"),
+      nSp ? q("哪些物種有歷史觀測證據？", "每張物種卡都列出 iNaturalist 研究級筆數、文獻依據與不確定性。", "wildlife") : null,
+      q("遇到天候不佳或交通延誤怎麼辦？", "每天都有備案表（徵兆、觸發條件、誰決定、額外費用）；風險表列出觸發條件與行動。", "essentials"),
+      q("哪些資訊是真實、估算或未確認？", "所有數字都帶狀態標籤：業者報價／公開牌價／估算／示範資料／未報價／待確認。", "budget")];
+    // 接下來要做的事（依期限）與銜接餘裕
+    const tasks = C.taskList(D(), S(), todayISO()), openTasks = tasks.filter(x => !x.done), conns = C.connections(D(), S());
+    P.append(h("div", { class: "grid g2", style: "margin-top:14px" },
+      h("div", { class: "card" }, h("h3", null, "接下來要做的事（依期限）"),
+        openTasks.length ? openTasks.slice(0, 6).map(taskRow) : msg("ok", "沒有未完成的待辦。"),
+        h("p", null, h("button", { class: "btn small", type: "button", onclick: () => selectTab("essentials", true) }, `查看全部 ${tasks.length} 項（未完成 ${openTasks.length}）→`))),
+      h("div", { class: "card" }, h("h3", null, "關鍵銜接的時間餘裕"), conns.length ? conns.map(connRow) : h("p", { class: "muted small" }, "這趟行程沒有定義需要計算餘裕的銜接。"))));
+    P.append(h("div", { class: "card", style: "margin-top:14px" }, h("h3", null, `這個工具要回答的 ${qn} 個問題`),
+      h("ol", { class: "stack", style: "padding-left:0;list-style:none;margin:0" }, qs)));
     // 檢查摘要
     const top = errs.concat(warns).slice(0, 6);
     P.append(h("div", { class: "grid g2", style: "margin-top:14px" },
@@ -6522,10 +6762,39 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
 
   /* ================= 每日行程 Itinerary ================= */
+  const todayISO = () => { const d = new Date(); return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())).toISOString().slice(0, 10); };
+  const optionLabel = key => { for (const c of choices()) { const o = c.options.find(x => x.key === key); if (o) return o.label || key; } return key; };
+  const resolveLodging = id => C.resolveLodging(id, S(), D());
+  /** 一筆待辦：期限、剩餘天數、逾期後果、勾選完成（存在本機） */
+  function taskRow(x) {
+    const when = x.due ? `${x.due.slice(5).replace("-", "/")}（${x.daysLeft < 0 ? "已逾期 " + -x.daysLeft + " 天" : x.daysLeft === 0 ? "今天" : "剩 " + x.daysLeft + " 天"}）` : "期限未知";
+    const lvl = x.done ? "ok" : x.due == null ? "info" : x.daysLeft < 0 ? "error" : x.daysLeft <= 14 ? "warn" : "info";
+    return h("div", { class: "msg " + lvl },
+      h("label", { class: "check", style: "padding:0" }, h("input", { type: "checkbox", id: "task-" + x.id, checked: x.done, onchange: e => update(st => { st.checklist["task:" + x.id] = e.target.checked; }) }),
+        h("span", null, h("b", null, when), x.title, " ", badge(x.due_kind === "external" ? "confirmed" : x.due == null ? "tbc" : "suggested", x.due_kind === "external" ? "對方規定" : x.due == null ? "期限待業者告知" : "自訂目標日"))),
+      h("div", { class: "small muted" }, "逾期後果：", x.consequence || "未填", x.blocked_by.length ? `｜需先完成：${x.blocked_by.join("、")}` : "", x.due_basis ? `｜期限依據：${x.due_basis}` : ""));
+  }
+  /** 一段銜接：最晚出發時間與餘裕；資料不足時列出缺哪一筆 */
+  function connRow(c) {
+    const lvl = c.status === "ok" ? "ok" : c.status === "tight" ? "warn" : c.status === "miss" ? "error" : "info";
+    const parts = [];
+    if (c.totalMin != null) parts.push(`路程合計 ${c.totalMin} 分鐘`);
+    if (c.deadline) parts.push(`必須在 ${c.deadline} 前到（${c.deadline_label}）`);
+    if (c.latestDepart) parts.push(`最晚 ${c.latestDepart} 出發（已留 ${c.buffer_min} 分鐘緩衝）`);
+    if (c.slackMin != null) parts.push(`若 ${c.depart} 出發，${c.arrive} 抵達，餘裕 ${c.slackMin} 分鐘`);
+    return h("div", { class: "msg " + lvl }, h("b", null, `Day ${c.day}`), c.title, h("div", { class: "small" }, parts.join("；") || "無法計算"),
+      c.missing.length ? h("div", { class: "small" }, h("b", null, "缺少的資料："), c.missing.join("；")) : null,
+      c.basis ? h("div", { class: "small muted" }, "依據：", c.basis) : null);
+  }
+  function contingencyTable(list) {
+    return h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, ["徵兆", "觸發條件", "誰決定", "備案", "額外費用"].map(x => h("th", null, x)))),
+      h("tbody", null, list.map(c => h("tr", null, h("td", null, c.sign), h("td", null, c.trigger), h("td", null, c.decider), h("td", null, c.fallback),
+        h("td", null, c.extra_cost && C.isNum(c.extra_cost.amount) ? `${curSym(c.extra_cost.currency || money().base)} ${n0(c.extra_cost.amount)}` : h("span", { class: "unq" }, "未報價"), c.extra_cost && c.extra_cost.note ? h("div", { class: "small muted" }, c.extra_cost.note) : null))))));
+  }
   function dayMatches(d, f) {
     if (f === "all") return true;
     const segs = d.segment_days || [];
-    if (f === "transit") return d.kind.includes("transfer") || d.kind.includes("arrival") || d.kind.includes("departure");
+    if (f === D().trip.transit_region) return d.kind.includes("transfer") || d.kind.includes("arrival") || d.kind.includes("departure");
     return d.region === f || segs.includes(f);
   }
   function renderItinerary() {
@@ -6537,7 +6806,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const segBtn = (val, label) => h("button", { type: "button", id: "df-" + val, "aria-pressed": f === val, onclick: () => update(s => { s.dayFilter = val; }) }, label);
     P.append(h("div", { class: "section-head" },
       h("div", null, h("h2", null, "每日行程"), h("p", { class: "muted small" }, "交通時間未經查證者不填寫確切時間；「建議」為規劃建議，不是已確認的預約。")),
-      h("div", { class: "seg", role: "group", "aria-label": "篩選日期" }, segBtn("all", "全部"), segBtn("tabin", "Tabin"), segBtn("danum", "Danum"), segBtn("transit", "交通日"))));
+      h("div", { class: "seg", role: "group", "aria-label": "篩選日期" }, segBtn("all", "全部"), regionKeys().map(k => segBtn(k, k === D().trip.transit_region ? "交通日" : regionLabel(k))))));
     const errN = checks.filter(c => c.level === "error").length, warnN = checks.filter(c => c.level === "warn").length;
     P.append(h("details", { class: "card", open: errN ? true : null, style: "margin-bottom:12px" },
       h("summary", { style: "cursor:pointer" }, h("b", null, "行程品質檢查"), ` — 錯誤 ${errN}、注意 ${warnN}、提醒 ${checks.length - errN - warnN}`),
@@ -6545,12 +6814,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     P.append(h("div", { class: "daystrip", role: "group", "aria-label": "選擇日期" }, shown.map(d =>
       h("button", { class: "daybtn", type: "button", id: "daybtn-" + d.day, "aria-pressed": d.day === S().selectedDay, onclick: () => update(s => { s.selectedDay = d.day; }) },
         h("span", { class: "d" }, `Day ${d.day}`), " ", h("span", { class: "w" }, `${d.date.slice(5).replace("-", "/")}（${C.weekdayZh(d.date)}）`),
-        h("span", { class: "r region-" + d.region }, d.short)))));
+        h("span", { class: "r " + regionClass(d.region) }, d.short)))));
     const day = days.find(d => d.day === S().selectedDay) || days[0];
     P.append(h("div", { class: "split wide-left", style: "margin-top:10px" },
       h("div", { class: "card" }, h("h3", null, "時間軸總覽"), h("ol", { class: "timeline" }, shown.map(d =>
         h("li", null, h("button", { class: "btn ghost", type: "button", style: "text-align:left;width:100%;border-color:" + (d.day === day.day ? "var(--amber)" : "transparent"), onclick: () => update(s => { s.selectedDay = d.day; }) },
-          h("div", null, h("b", null, `Day ${d.day}｜${d.date.slice(5).replace("-", "/")}（${C.weekdayZh(d.date)}）`), " ", h("span", { class: "small region-" + d.region }, d.short)),
+          h("div", null, h("b", null, `Day ${d.day}｜${d.date.slice(5).replace("-", "/")}（${C.weekdayZh(d.date)}）`), " ", h("span", { class: "small " + regionClass(d.region) }, d.short)),
           h("div", { class: "small muted" }, d.activities.map(a => a.title).join("・")),
           h("div", { class: "small" }, "🛏 ", d.day === days.length ? "（返程，無住宿）" : lodgingName(d.lodging))))))),
       renderDayDetail(day)));
@@ -6559,20 +6828,24 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const s = S(), last = d.day === D().itinerary.days.length;
     const card = h("article", { class: "card", "aria-labelledby": "day-title" });
     card.append(h("h2", { id: "day-title" }, `Day ${d.day}｜${d.date.replace(/-/g, "/")}（${C.weekdayZh(d.date)}）`),
-      h("div", { class: "row small", style: "margin-bottom:8px" }, h("span", { class: "region-" + d.region }, REGION_LABEL[d.region]), d.kind.map(k => h("span", { class: "tag" }, { arrival: "抵達日", transfer: "移動日", activity: "活動日", departure: "返程日" }[k]))));
-    const tonight = last ? null : C.resolveLodging(d.lodging, s);
+      h("div", { class: "row small", style: "margin-bottom:8px" }, h("span", { class: regionClass(d.region) }, regionLabel(d.region)), d.kind.map(k => h("span", { class: "tag" }, { arrival: "抵達日", transfer: "移動日", activity: "活動日", departure: "返程日" }[k]))));
+    const tonight = last ? null : resolveLodging(d.lodging);
     const lodgeRight = h("div", null, h("div", { class: "small muted" }, "當晚住宿"), h("b", null, last ? "—（返程）" : lodgingName(d.lodging)), " ", last ? null : badge(tonight ? d.lodging_status : "tbc"));
-    if (d.lodging === "last_night_choice") lodgeRight.append(h("div", { style: "margin-top:6px" }, h("label", { for: "sel-last" }, "最後一晚地點（待規劃）"),
-      h("select", { id: "sel-last", onchange: e => update(st => { st.lastNight = e.target.value; }) },
-        [["ld", "Lahad Datu（2/6 從 LDU 出發）"], ["kk", "Kota Kinabalu（2/5 先飛 KK）"], ["tbd", "尚未決定"]].map(([v, t]) => h("option", { value: v, selected: s.lastNight === v ? true : null }, t)))));
-    if (d.lodging === "danum_choice") lodgeRight.append(h("div", { class: "small" }, "依「費用試算／方案比較」選定的 Danum 方案。"));
-    card.append(h("div", { class: "lodge" }, h("div", null, h("div", { class: "small muted" }, "前一晚"), h("b", null, d.lodging_prev ? lodgingName(d.lodging_prev) : "（機上／台灣）")), h("span", { class: "arrow", "aria-hidden": "true" }, "→"), lodgeRight));
+    const lodgeChoice = C.choiceDef(D(), d.lodging);
+    if (lodgeChoice && !lodgeChoice.compare_category) lodgeRight.append(h("div", { style: "margin-top:6px" }, h("label", { for: "sel-" + lodgeChoice.id }, lodgeChoice.label + "（待規劃）"),
+      h("select", { id: "sel-" + lodgeChoice.id, onchange: e => update(st => { st.choices[lodgeChoice.id] = e.target.value; }) },
+        lodgeChoice.options.map(o => h("option", { value: o.key, selected: choiceVal(lodgeChoice.id) === o.key ? true : null }, o.label || o.key)))));
+    if (lodgeChoice && lodgeChoice.compare_category) lodgeRight.append(h("div", { class: "small" }, `依「費用試算／方案比較」選定的${lodgeChoice.label}。`));
+    card.append(h("div", { class: "lodge" }, h("div", null, h("div", { class: "small muted" }, "前一晚"), h("b", null, d.lodging_prev ? lodgingName(d.lodging_prev) : "（出發地／機上）")), h("span", { class: "arrow", "aria-hidden": "true" }, "→"), lodgeRight));
     if (d.lodging_note) card.append(h("p", { class: "small muted" }, d.lodging_note));
     const list = h("div", { class: "stack", style: "margin-top:12px" });
     for (const a of d.activities) list.append(renderActivity(a, d));
     card.append(list);
     if (d.notes && d.notes.length) card.append(h("h3", { style: "margin-top:14px" }, "當日注意事項"), h("ul", null, d.notes.map(n => h("li", null, n))));
+    for (const c of C.connections(D(), s).filter(c => c.day === d.day)) card.append(h("div", { style: "margin-top:10px" }, connRow(c)));
     card.append(h("div", { class: "msg warn", style: "margin-top:10px" }, h("b", null, "天候不佳替代安排"), d.weather_alt));
+    if (d.contingencies && d.contingencies.length) card.append(h("h3", { style: "margin-top:14px" }, "備案表（何時啟動、誰決定、多花多少）"), contingencyTable(d.contingencies));
+    card.append(h("p", { style: "margin-top:10px" }, h("button", { class: "btn small", type: "button", onclick: () => doPrintDay(d.day) }, "🖨 列印這一天的流程（一頁）")));
     card.append(h("div", { style: "margin-top:12px" }, h("label", { for: "day-note" }, "我的當日備註（存在本機瀏覽器）"),
       h("textarea", { id: "day-note", value: s.dayNotes[d.day] || "", oninput: e => update(st => { st.dayNotes[d.day] = e.target.value; }, { render: false }) })));
     return card;
@@ -6586,8 +6859,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("b", null, a.title, opt ? `：${opt.label}` : ""), badge(st), effortDots(a.effort), a.start ? h("span", { class: "small num" }, "建議 " + a.start) : null, dur ? h("span", { class: "small dim" }, dur) : null));
     const body = h("div", { class: "body" });
     if (a.detail) body.append(h("p", null, a.detail));
-    const pn = a.plan_notes && a.plan_notes[s.danumPlan];
-    if (pn) body.append(h("p", { class: "small" }, h("b", null, `${s.danumPlan.toUpperCase()}：`), pn));
+    for (const [k, pn] of Object.entries(a.plan_notes || {})) if (C.optionSelected(D(), s, k)) body.append(h("p", { class: "small" }, h("b", null, `${optionLabel(k)}：`), pn));
     if (a.needs && a.needs.length) body.append(h("div", { class: "row" }, a.needs.map(n => h("span", { class: "tag need" }, NEED_LABEL[n] || n))));
     const grid = h("div", { class: "grid g2", style: "margin-top:8px" });
     if (opt) grid.append(h("div", { class: "field" }, h("label", { for: "opt-" + a.id }, "選擇安排（會自動更新費用）"),
@@ -6601,7 +6873,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (a.species && a.species.length) body.append(h("div", { style: "margin-top:8px" }, h("div", { class: "small muted" }, "可能觀察的物種（不保證）："),
       h("div", { class: "chips" }, a.species.map(id => { const sp = speciesById(id); return sp ? h("button", { class: "chip sp", type: "button", onclick: () => openSpecies(id) }, speciesName(sp)) : null; }))));
     const row = h("div", { class: "row", style: "margin-top:8px" });
-    if (a.location) row.append(h("button", { class: "btn small", type: "button", onclick: () => goMap(C.resolveLodging(a.location, s)) }, "⌖ 在地圖查看"));
+    if (a.location) row.append(h("button", { class: "btn small", type: "button", onclick: () => goMap(resolveLodging(a.location)) }, "⌖ 在地圖查看"));
     body.append(row);
     body.append(h("div", { style: "margin-top:8px" }, h("label", { for: "note-" + a.id }, "備註"),
       h("textarea", { id: "note-" + a.id, value: (s.activity[a.id] && s.activity[a.id].note) || "", oninput: e => update(x => { (x.activity[a.id] = x.activity[a.id] || {}).note = e.target.value; }, { render: false }) })));
@@ -6612,7 +6884,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   /* ================= 費用試算 Budget ================= */
   function renderBudget() {
     const P = clear(document.getElementById("p-budget"));
-    const s = S(), b = C.computeBudget(D(), s), sc = C.scenarios(D(), s), cmp = C.compareDanum(D(), s);
+    const s = S(), b = C.computeBudget(D(), s), sc = C.scenarios(D(), s), cmps = compareChoices().map(c => C.compareChoice(D(), s, c.id));
+    const base = money().base, home = money().home, catLabel = C.categoryLabels(D()), toggles = D().costs.toggle_labels || {};
     P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "費用試算"),
       h("p", { class: "muted small" }, "依 costs 資料即時計算。未報價項目顯示「未報價」且不計入總計，不代表免費。示範資料不是報價。"))));
     const numField = (id, label, val, min, max, step, key, help) => h("div", { class: "field" }, h("label", { for: id }, label),
@@ -6624,64 +6897,68 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("div", { class: "grid g2" },
         numField("in-pax", "總人數", s.pax, 1, 20, 1, "pax"),
         numField("in-rooms", "客房數", s.rooms, 1, 12, 1, "rooms", "報價以兩人同房計；單人入住差額未報價"),
-        numField("in-fx", "匯率：1 MYR = ? TWD", s.fx, 0.1, 100, 0.01, "fx", "試算值，非即時匯率"),
-        numField("in-fxusd", "匯率：1 USD = ? MYR", s.fxUsd, 0.1, 100, 0.01, "fxUsd", "Danum 第三方價格為 USD；試算值"),
+        hasHome() ? numField("in-fx", `匯率：1 ${base} = ? ${home}`, s.fx, 0.0001, 100000, 0.01, "fx", "試算值，非即時匯率") : null,
+        Object.keys(s.rates).map(cur => h("div", { class: "field" }, h("label", { for: "in-rate-" + cur }, `匯率：1 ${cur} = ? ${base}`),
+          h("input", { id: "in-rate-" + cur, type: "number", inputmode: "decimal", min: 0.0001, max: 100000, step: 0.01, value: s.rates[cur], onchange: e => { const v = Number(e.target.value); if (Number.isFinite(v) && v > 0 && v <= 100000) update(x => { x.rates[cur] = v; }); else e.target.value = s.rates[cur]; } }),
+          h("div", { class: "small dim" }, `部分項目以 ${cur} 計價；試算值`))),
         h("div", { class: "field" }, h("label", { for: "in-cont" }, `預備金比例：${s.contingencyPct}%`),
           h("input", { id: "in-cont", type: "range", min: 0, max: 30, step: 1, value: s.contingencyPct,
             oninput: e => { e.target.previousElementSibling.textContent = `預備金比例：${e.target.value}%`; },
             onchange: e => update(x => { x.contingencyPct = Number(e.target.value); }) }))),
-      h("div", { class: "row", style: "margin-top:8px" }, seg("Danum 方案", "danumPlan", [["brl", "BRL"], ["dvfc", "DVFC"]]), seg("預算情境（只影響估算／示範項目）", "scenario", [["low", "低"], ["mid", "中"], ["high", "高"]])),
+      h("div", { class: "row", style: "margin-top:8px" }, compareChoices().map(c => h("div", { class: "field" }, h("div", { class: "small muted", style: "margin-bottom:3px" }, c.label),
+        h("div", { class: "seg", role: "group", "aria-label": c.label }, c.options.map(o => h("button", { type: "button", id: `seg-${c.id}-${o.key}`, "aria-pressed": choiceVal(c.id) === o.key, onclick: () => update(x => { x.choices[c.id] = o.key; }) }, o.label || o.key))))), seg("預算情境（只影響估算／示範項目）", "scenario", [["low", "低"], ["mid", "中"], ["high", "高"]])),
       h("div", { style: "margin-top:8px" },
-        h("label", { class: "check" }, h("input", { type: "checkbox", id: "cb-flights", checked: s.includeFlights, onchange: e => update(x => { x.includeFlights = e.target.checked; }) }), "納入國際與國內機票（示範資料，請自填實際票價）"),
-        h("label", { class: "check" }, h("input", { type: "checkbox", id: "cb-extras", checked: s.includeExtras, onchange: e => update(x => { x.includeExtras = e.target.checked; }) }), "納入其他費用（緩衝晚住宿、非套裝餐食、保險、稅費、個人支出）"),
+        h("label", { class: "check" }, h("input", { type: "checkbox", id: "cb-flights", checked: s.includeFlights, onchange: e => update(x => { x.includeFlights = e.target.checked; }) }), toggles.flights || "納入機票"),
+        h("label", { class: "check" }, h("input", { type: "checkbox", id: "cb-extras", checked: s.includeExtras, onchange: e => update(x => { x.includeExtras = e.target.checked; }) }), toggles.extras || "納入其他費用"),
         h("div", { class: "small muted", style: "margin-top:6px" }, "可選額外活動："),
         D().costs.items.filter(i => i.applies === "optional").map(i => h("label", { class: "check" },
           h("input", { type: "checkbox", id: "cb-opt-" + i.id, checked: i.id in s.optionalOn ? s.optionalOn[i.id] : !!i.default_on, onchange: e => update(x => { x.optionalOn[i.id] = e.target.checked; }) }),
-          i.name, " ", badge(i.status), i.when === "plan_brl" ? "（僅 BRL）" : i.when === "plan_dvfc" ? "（僅 DVFC）" : ""))),
-      h("p", { class: "small muted", style: "margin-top:8px" }, `私人夜遊晚數由「每日行程」中夜間活動的選擇決定：目前 ${b.ctx.nightSafariNights} 晚。`),
+          i.name, " ", badge(i.status), typeof i.when === "string" && i.when.indexOf("plan_") === 0 ? `（僅 ${optionLabel(i.when.slice(5))}）` : ""))),
+      D().costs.items.filter(i => i.qty && i.qty.nights_from === "activity_count").map(i => h("p", { class: "small muted", style: "margin-top:8px" }, `${i.count_label || i.name}的晚數由「每日行程」中活動的選擇決定：目前 ${b.ctx.activityCount[i.id] || 0} 晚。`)),
       Object.keys(s.overrides).length ? h("button", { class: "btn small", type: "button", onclick: () => update(x => { x.overrides = {}; }) }, `清除 ${Object.keys(s.overrides).length} 筆自訂單價`) : null);
-    const C4 = ["#D97706", "#5DBB82", "#7DB3E0", "#C49BE8"];
-    const cats = Object.keys(C.CATEGORY_LABEL);
-    const shareBar = h("div", { class: "bar", role: "img", "aria-label": "各類費用占比：" + cats.map(k => `${C.CATEGORY_LABEL[k]} ${b.subtotal ? (b.byCategory[k].myr / b.subtotal * 100).toFixed(0) : 0}%`).join("、") },
-      cats.map((k, i) => h("span", { style: `width:${b.subtotal ? b.byCategory[k].myr / b.subtotal * 100 : 0}%;background:${C4[i]}` })));
+    const C4 = ["#D97706", "#5DBB82", "#7DB3E0", "#C49BE8", "#F0643C", "#A9E0E0", "#D7E3B0", "#BDB6A9"];
+    const cats = Object.keys(catLabel);
+    const shareBar = h("div", { class: "bar", role: "img", "aria-label": "各類費用占比：" + cats.map(k => `${catLabel[k]} ${b.subtotal ? (b.byCategory[k].base / b.subtotal * 100).toFixed(0) : 0}%`).join("、") },
+      cats.map((k, i) => h("span", { style: `width:${b.subtotal ? b.byCategory[k].base / b.subtotal * 100 : 0}%;background:${C4[i % C4.length]}` })));
     const cBar = h("div", { class: "bar", role: "img", "aria-label": `完整度：業者報價 ${fmtPct(b.completeness.quotedShare)}，公開或第三方價 ${fmtPct(b.completeness.pubShare)}，估算或示範 ${fmtPct(b.completeness.softShare)}，使用者輸入 ${fmtPct(b.completeness.userShare)}` },
       h("span", { style: `width:${(b.completeness.quotedShare || 0) * 100}%;background:#4C7DA6` }), h("span", { style: `width:${(b.completeness.pubShare || 0) * 100}%;background:#4A9494` }), h("span", { style: `width:${(b.completeness.softShare || 0) * 100}%;background:repeating-linear-gradient(45deg,#A86A12 0 5px,#7a4d0d 5px 10px)` }), h("span", { style: `width:${(b.completeness.userShare || 0) * 100}%;background:#8E887E` }));
     const results = h("div", { class: "card" }, h("h3", null, "試算結果"),
       h("div", { class: "grid g2" },
-        h("div", null, h("div", { class: "small muted" }, `已估價合計（${S().pax} 人，含預備金）`), h("div", { class: "big-total" }, fmtMYR(b.total)), h("div", { class: "num" }, fmtTWD(b.totalTWD)),
+        h("div", null, h("div", { class: "small muted" }, `已估價合計（${S().pax} 人，含預備金）`), h("div", { class: "big-total" }, fmtBase(b.total)), h("div", { class: "num" }, fmtHome(b.totalHome)),
           h("div", { class: "small", style: "color:#F7C97E" }, `不含 ${b.unpriced.length} 項未報價；估算與示範占 ${fmtPct(b.completeness.softShare)}`)),
-        h("div", null, h("div", { class: "small muted" }, "每人平均"), h("div", { class: "big-total" }, fmtMYR(b.perPerson)), h("div", { class: "num" }, fmtTWD(b.perPersonTWD)))),
+        h("div", null, h("div", { class: "small muted" }, "每人平均"), h("div", { class: "big-total" }, fmtBase(b.perPerson)), h("div", { class: "num" }, fmtHome(b.perPersonHome)))),
       h("table", { style: "margin-top:10px" }, h("tbody", null,
-        h("tr", null, h("th", null, "其中：業者報價合計（Tabin，當地業者 A）"), h("td", { class: "r num" }, fmtMYR(b.completeness.quoted)), h("td", { class: "r num" }, fmtTWD(b.fx ? b.completeness.quoted * b.fx : null))),
-        h("tr", null, h("th", null, "已估價小計"), h("td", { class: "r num" }, fmtMYR(b.subtotal)), h("td", { class: "r num" }, fmtTWD(b.fx ? b.subtotal * b.fx : null))),
-        h("tr", null, h("th", null, `預備金 ${b.contingencyPct}%`), h("td", { class: "r num" }, fmtMYR(b.contingency)), h("td", { class: "r num" }, fmtTWD(b.fx ? b.contingency * b.fx : null))),
-        h("tr", null, h("th", null, "固定成本（每團、每天計價）"), h("td", { class: "r num" }, fmtMYR(b.fixed)), h("td", { class: "r small" }, b.ctx.pax ? `每人分攤 ${fmtMYR(b.fixed / b.ctx.pax)}` : "")),
-        h("tr", null, h("th", null, "變動成本（隨人數／房數）"), h("td", { class: "r num" }, fmtMYR(b.variable)), h("td", null)),
+        h("tr", null, h("th", null, "其中：業者報價合計" + (D().costs.quoted_label ? `（${D().costs.quoted_label}）` : "")), h("td", { class: "r num" }, fmtBase(b.completeness.quoted)), h("td", { class: "r num" }, fmtHome(b.fx ? b.completeness.quoted * b.fx : null))),
+        h("tr", null, h("th", null, "已估價小計"), h("td", { class: "r num" }, fmtBase(b.subtotal)), h("td", { class: "r num" }, fmtHome(b.fx ? b.subtotal * b.fx : null))),
+        h("tr", null, h("th", null, `預備金 ${b.contingencyPct}%`), h("td", { class: "r num" }, fmtBase(b.contingency)), h("td", { class: "r num" }, fmtHome(b.fx ? b.contingency * b.fx : null))),
+        h("tr", null, h("th", null, "固定成本（每團、每天計價）"), h("td", { class: "r num" }, fmtBase(b.fixed)), h("td", { class: "r small" }, b.ctx.pax ? `每人分攤 ${fmtBase(b.fixed / b.ctx.pax)}` : "")),
+        h("tr", null, h("th", null, "變動成本（隨人數／房數）"), h("td", { class: "r num" }, fmtBase(b.variable)), h("td", null)),
         h("tr", null, h("th", null, "未估價項目"), h("td", { class: "r" }, `${b.unpriced.length} 項`), h("td", { class: "r small unq" }, "不計入、不代表免費")))),
       h("h4", { style: "margin-top:12px" }, "各類費用占比（已估價部分）"), shareBar,
-      h("div", { class: "legend" }, cats.map((k, i) => h("span", null, h("i", { style: "background:" + C4[i] }), `${C.CATEGORY_LABEL[k]} ${fmtMYR(b.byCategory[k].myr)}${b.byCategory[k].unpriced ? `（+${b.byCategory[k].unpriced} 項未估）` : ""}`))),
+      h("div", { class: "legend" }, cats.map((k, i) => h("span", null, h("i", { style: "background:" + C4[i % C4.length] }), `${catLabel[k]} ${fmtBase(b.byCategory[k].base)}${b.byCategory[k].unpriced ? `（+${b.byCategory[k].unpriced} 項未估）` : ""}`))),
       h("h4", { style: "margin-top:12px" }, "估算完整度"), cBar,
       h("div", { class: "legend" }, h("span", null, h("i", { style: "background:#4C7DA6" }), `業者報價 ${fmtPct(b.completeness.quotedShare)}`), h("span", null, h("i", { style: "background:#4A9494" }), `公開／第三方價 ${fmtPct(b.completeness.pubShare)}`), h("span", null, h("i", { style: "background:#A86A12" }), `估算／示範 ${fmtPct(b.completeness.softShare)}`), h("span", null, h("i", { style: "background:#8E887E" }), `使用者輸入 ${fmtPct(b.completeness.userShare)}`), h("span", null, `未估價 ${b.unpriced.length} 項`)),
       b.warnings.length ? h("div", { style: "margin-top:10px" }, b.warnings.map(w => msg(w.level, w.msg))) : null);
     P.append(h("div", { class: "split wide-left" }, controls, results));
-    // 情境與 BRL/DVFC
-    const scRow = (k, t) => h("tr", { class: s.scenario === k ? "sub" : null }, h("td", null, t), h("td", { class: "r num" }, fmtMYR(sc[k].total)), h("td", { class: "r num" }, fmtTWD(sc[k].totalTWD)), h("td", { class: "r num" }, fmtMYR(sc[k].perPerson)), h("td", { class: "r num" }, fmtTWD(sc[k].perPersonTWD)));
-    const pl = (bb, name) => h("tr", { class: s.danumPlan === name.toLowerCase() ? "sub" : null }, h("td", null, name), h("td", { class: "r num" }, fmtMYR(bb.total)), h("td", { class: "r num" }, fmtMYR(bb.perPerson)), h("td", { class: "r" }, fmtPct(bb.completeness.quotedShare)), h("td", { class: "r" }, `${bb.unpriced.length} 項`));
+    // 情境與方案價差
+    const scRow = (k, t) => h("tr", { class: s.scenario === k ? "sub" : null }, h("td", null, t), h("td", { class: "r num" }, fmtBase(sc[k].total)), h("td", { class: "r num" }, fmtHome(sc[k].totalHome)), h("td", { class: "r num" }, fmtBase(sc[k].perPerson)), h("td", { class: "r num" }, fmtHome(sc[k].perPersonHome)));
+    const pl = (bb, name, on) => h("tr", { class: on ? "sub" : null }, h("td", null, name), h("td", { class: "r num" }, fmtBase(bb.total)), h("td", { class: "r num" }, fmtBase(bb.perPerson)), h("td", { class: "r" }, fmtPct(bb.completeness.quotedShare)), h("td", { class: "r" }, `${bb.unpriced.length} 項`));
     P.append(h("div", { class: "grid g2", style: "margin-top:14px" },
-      h("div", { class: "card" }, h("h3", null, "低／中／高預算情境"), h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "情境"), h("th", { class: "r" }, "總計 MYR"), h("th", { class: "r" }, "總計 TWD"), h("th", { class: "r" }, "每人 MYR"), h("th", { class: "r" }, "每人 TWD"))),
+      h("div", { class: "card" }, h("h3", null, "低／中／高預算情境"), h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "情境"), h("th", { class: "r" }, "總計 " + base), h("th", { class: "r" }, "總計 " + (home || "—")), h("th", { class: "r" }, "每人 " + base), h("th", { class: "r" }, "每人 " + (home || "—")))),
         h("tbody", null, scRow("low", "低"), scRow("mid", "中"), scRow("high", "高")))), h("p", { class: "small dim" }, "業者報價與公開牌價在三種情境中不變；只有估算與示範項目會依低中高變動。")),
-      h("div", { class: "card" }, h("h3", null, "BRL 與 DVFC 價差"), h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "方案"), h("th", { class: "r" }, "總計"), h("th", { class: "r" }, "每人"), h("th", { class: "r" }, "業者報價占比"), h("th", { class: "r" }, "未估價"))),
-        h("tbody", null, pl(cmp.brl, "BRL"), pl(cmp.dvfc, "DVFC")))),
-        h("p", null, h("b", null, "總價差："), `${fmtMYR(Math.abs(cmp.diffTotal))}（${cmp.diffTotal >= 0 ? "BRL 較高" : "DVFC 較高"}）｜每人 ${fmtMYR(Math.abs(cmp.diffTotal) / Math.max(1, s.pax))}`),
-        cmp.comparable ? null : msg("warn", "兩方案未估價項目數不同，價差可能失真。"),
-        h("button", { class: "btn small", type: "button", onclick: () => selectTab("compare", true) }, "看方案比較 →"))));
+      cmps.map(cmp => { const o = Object.values(cmp.options).slice().sort((x, y) => y.budget.total - x.budget.total), hi = o[0], lo = o[o.length - 1], diff = hi.budget.total - lo.budget.total;
+        return h("div", { class: "card" }, h("h3", null, cmp.choice.options.map(x => x.label || x.key).join(" 與 ") + " 價差"), h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "方案"), h("th", { class: "r" }, "總計"), h("th", { class: "r" }, "每人"), h("th", { class: "r" }, "業者報價占比"), h("th", { class: "r" }, "未估價"))),
+          h("tbody", null, cmp.choice.options.map(x => pl(cmp.options[x.key].budget, x.label || x.key, choiceVal(cmp.choice.id) === x.key))))),
+          h("p", null, h("b", null, "總價差："), `${fmtBase(diff)}（${hi.label} 較高）｜每人 ${fmtBase(diff / Math.max(1, s.pax))}`),
+          cmp.comparable ? null : msg("warn", "各方案未估價項目數不同，價差可能失真。"),
+          h("button", { class: "btn small", type: "button", onclick: () => selectTab("compare", true) }, "看方案比較 →")); })));
     // 明細表
-    const tbl = h("table", null, h("thead", null, h("tr", null, h("th", null, "項目"), h("th", null, "計價單位"), h("th", { class: "r" }, "單價"), h("th", null, "數量"), h("th", { class: "r" }, "金額 MYR"), h("th", { class: "r" }, "金額 TWD"), h("th", null, "狀態"))));
+    const tbl = h("table", null, h("thead", null, h("tr", null, h("th", null, "項目"), h("th", null, "計價單位"), h("th", { class: "r" }, "單價"), h("th", null, "數量"), h("th", { class: "r" }, "金額 " + base), h("th", { class: "r" }, "金額 " + (home || "—")), h("th", null, "狀態"))));
     const tb = h("tbody");
     for (const cat of cats) {
       const ls = b.lines.filter(l => l.category === cat);
       if (!ls.length) continue;
-      tb.append(h("tr", { class: "sub" }, h("td", { colspan: 4 }, C.CATEGORY_LABEL[cat]), h("td", { class: "r num" }, fmtMYR(b.byCategory[cat].myr)), h("td", { class: "r num" }, fmtTWD(b.fx ? b.byCategory[cat].myr * b.fx : null)), h("td", null)));
+      tb.append(h("tr", { class: "sub" }, h("td", { colspan: 4 }, catLabel[cat]), h("td", { class: "r num" }, fmtBase(b.byCategory[cat].base)), h("td", { class: "r num" }, fmtHome(b.fx ? b.byCategory[cat].base * b.fx : null)), h("td", null)));
       for (const l of ls) tb.append(costRow(l));
     }
     tbl.append(tb);
@@ -6700,7 +6977,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         l.assumption ? h("div", null, "假設：", l.assumption) : null,
         l.notes ? h("div", { class: "muted" }, l.notes) : null,
         sourceLine(l.source_ids)));
-    const priceCell = h("td", { class: "r num" }, l.unitPrice == null ? h("span", { class: "unq" }, "未報價") : `${{ TWD: "NT$", USD: "US$" }[l.currency] || "RM"} ${n0(l.unitPrice)}`);
+    const priceCell = h("td", { class: "r num" }, l.unitPrice == null ? h("span", { class: "unq" }, "未報價") : `${curSym(l.currency)} ${n0(l.unitPrice)}`);
     const edit = h("button", { class: "btn small ghost", type: "button", "aria-label": `編輯 ${l.name} 單價`, onclick: () => {
       clear(priceCell).append(h("input", { type: "number", min: 0, step: 1, "aria-label": `${l.name} 單價（${l.currency}）`, value: l.unitPrice == null ? "" : l.unitPrice, style: "width:110px",
         onkeydown: e => { if (e.key === "Enter") e.target.blur(); if (e.key === "Escape") { e.target.dataset.cancel = "1"; renderBudget(); } },
@@ -6708,8 +6985,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       priceCell.querySelector("input").focus(); } }, "編輯");
     tr.append(h("td", null, info, l.duplicate_risk.length ? h("div", { class: "small", style: "color:#F7C97E" }, "⚠ 可能與其他項目重疊") : null),
       h("td", { class: "small" }, l.unitLabel), priceCell, h("td", { class: "small" }, l.qtyText),
-      h("td", { class: "r num" }, l.amountMYR == null ? h("span", { class: "unq" }, "未報價") : n0(l.amountMYR)),
-      h("td", { class: "r num" }, l.amountTWD == null ? "—" : n0(l.amountTWD)),
+      h("td", { class: "r num" }, l.amountBase == null ? h("span", { class: "unq" }, "未報價") : n0(l.amountBase)),
+      h("td", { class: "r num" }, l.amountHome == null ? "—" : n0(l.amountHome)),
       h("td", null, badge(l.status), " ", edit));
     return tr;
   }
@@ -6825,10 +7102,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   /* ================= 生態地圖 Explore Map ================= */
   const POI_TYPE = { lodging: { label: "住宿", color: "#D97706" }, wildlife: { label: "生態觀察地點", color: "#5DBB82" }, transport: { label: "交通轉運", color: "#7DB3E0" }, landscape: { label: "自然地景", color: "#C49BE8" } };
   function resolveRoute() {
-    return D().locations.route.map(id => C.resolveLodging(id, S())).filter(Boolean).map(id => C.poiById(D(), id)).filter(Boolean);
+    return D().locations.route.map(id => resolveLodging(id)).filter(Boolean).map(id => C.poiById(D(), id)).filter(Boolean);
   }
   function poiPopup(p) {
-    const s = S(), days = D().itinerary.days.filter(d => d.activities.some(a => C.resolveLodging(a.location, s) === p.id) || C.resolveLodging(d.lodging, s) === p.id);
+    const s = S(), days = D().itinerary.days.filter(d => d.activities.some(a => resolveLodging(a.location) === p.id) || resolveLodging(d.lodging) === p.id);
     return h("div", null, h("h4", null, p.name), h("div", null, h("span", { class: "badge" }, POI_TYPE[p.type].label), " ", p.approximate ? h("b", { style: "color:#B3261E" }, "近似位置") : h("span", null, "座標已查核")),
       p.summary ? h("p", null, p.summary) : null,
       p.stay ? h("div", null, h("b", null, "建議停留："), p.stay) : null,
@@ -6850,7 +7127,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       for (const [k, t] of Object.entries(POI_TYPE)) filters.append(h("label", { class: "check" }, h("input", { type: "checkbox", checked: App.mapVisible[k], onchange: e => { App.mapVisible[k] = e.target.checked; refreshMapLayers(); } }), h("span", { style: `color:${t.color}` }, "●"), t.label));
       P.append(filters);
       const side = h("div", { class: "card", id: "poi-list" });
-      const mapBox = h("div", null, h("div", { id: "map", role: "region", "aria-label": "Tabin 與 Danum 生態地圖" }));
+      const mapBox = h("div", null, h("div", { id: "map", role: "region", "aria-label": "行程地圖" }));
       P.append(h("div", { class: "split", style: "margin-top:8px" }, side, mapBox));
       if (!window.L) {
         mapBox.prepend(msg("error", "Leaflet 地圖函式庫未載入（可能離線或 CDN 被阻擋）。地點資料仍列於左側清單；其他分頁不受影響。"));
@@ -6934,7 +7211,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("p", { class: "muted small" }, "人工維護的生態資料與 iNaturalist 即時查詢結果分開顯示。「只在某地有紀錄」不等於特有種，也不等於另一地不存在。"))));
     const chip = (key, label) => h("button", { class: "chip", type: "button", id: "chip-" + key, "aria-pressed": f.flags.includes(key), onclick: () => update(x => { const a = x.spFilter.flags; const i = a.indexOf(key); i >= 0 ? a.splice(i, 1) : a.push(key); }) }, label);
     const areaSel = h("select", { id: "sp-area", onchange: e => update(x => { x.spFilter.area = e.target.value; }) },
-      [["all", "全部"], ["tabin", "Tabin 有紀錄"], ["danum", "Danum 有紀錄"], ["both", "兩地皆有紀錄"], ["insufficient", "目前資料不足"]].map(([v, t]) => h("option", { value: v, selected: f.area === v ? true : null }, t)));
+      [["all", "全部"], ...areaKeys().map(k => [k, areaLabel(k) + " 有紀錄"]), ...(areaKeys().length > 1 ? [["both", "各地皆有紀錄"]] : []), ["insufficient", "目前資料不足"]].map(([v, t]) => h("option", { value: v, selected: f.area === v ? true : null }, t)));
     const diffSel = h("select", { id: "sp-diff", onchange: e => update(x => { x.spFilter.difficulty = e.target.value; }) },
       [["all", "全部難度"], ["1", "難度低"], ["2", "難度中"], ["3", "難度高"]].map(([v, t]) => h("option", { value: v, selected: f.difficulty === v ? true : null }, t)));
     const search = h("input", { id: "sp-q", type: "search", placeholder: "中文、英文或學名", value: f.q, oninput: e => { S().spFilter.q = e.target.value; saveState(); drawGrid(); } });
@@ -6949,9 +7226,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     function drawGrid() {
       const q = (S().spFilter.q || "").trim().toLowerCase();
       const list = D().species.items.filter(sp => {
-        const t = areaHasRecord(sp, "tabin"), d = areaHasRecord(sp, "danum");
-        if (f.area === "tabin" && !t) return false; if (f.area === "danum" && !d) return false;
-        if (f.area === "both" && !(t && d)) return false; if (f.area === "insufficient" && (t || d)) return false;
+        const has = areaKeys().filter(a => areaHasRecord(sp, a));
+        if (areaKeys().includes(f.area) && !has.includes(f.area)) return false;
+        if (f.area === "both" && has.length !== areaKeys().length) return false; if (f.area === "insufficient" && has.length) return false;
         if (f.difficulty !== "all" && String(sp.difficulty) !== f.difficulty) return false;
         if (f.flags.includes("concern") && !CONCERN.has(sp.iucn && sp.iucn.status)) return false;
         if (f.flags.includes("diurnal") && !["diurnal", "cathemeral", "crepuscular"].includes(sp.activity)) return false;
@@ -6982,13 +7259,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
   function speciesCard(sp) {
     const s = S(), isT = s.targets.includes(sp.id);
-    const lt = spLabel(sp, "tabin"), ld = spLabel(sp, "danum");
     return h("article", { class: "sp-card" }, photoBox(sp),
       h("div", { class: "sp-body" },
         h("div", { class: "row between" }, h("b", null, speciesName(sp)), iucnBadge(sp.iucn && sp.iucn.status)),
         h("div", { class: "small" }, sp.en), h("div", { class: "sci" }, sp.sci),
-        h("div", { class: "small" }, h("span", { class: "region-tabin" }, "Tabin："), lt.label),
-        h("div", { class: "small" }, h("span", { class: "region-danum" }, "Danum："), ld.label),
+        areaKeys().map(a => h("div", { class: "small" }, h("span", { class: regionClass(a) }, areaLabel(a) + "："), spLabel(sp, a).label)),
         h("div", { class: "small muted" }, `${ACT_LABEL[sp.activity] || "未查證"}｜難度 ${["", "低", "中", "高"][sp.difficulty] || "未評估"}${sp.sensitive ? "｜敏感物種" : ""}`),
         h("div", { class: "row", style: "margin-top:auto;padding-top:6px" },
           h("button", { class: "btn small", type: "button", onclick: () => openSpecies(sp.id) }, "詳細與 iNat 紀錄"),
@@ -6999,7 +7274,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const st = L2 ? L2.status : "idle";
     const lab = { idle: "尚未取得資料", loading: "查詢中…", live: "即時查詢成功", cache: "快取（24 小時內）", stale: "資料過期（更新失敗，顯示舊快取）", empty: "查無研究級紀錄", error: "查詢失敗" }[st];
     const bcls = { idle: "idle", loading: "idle", live: "live", cache: "cache", stale: "stale", empty: "cache", error: "error" }[st];
-    const box = h("div", { class: "card mud", style: "padding:10px 12px" }, h("div", { class: "row between" }, h("b", { class: "region-" + area }, AREA_LABEL[area], mode === "bbox" ? "・近似範圍（含遮蔽紀錄）" : "・保護區範圍"), h("span", { class: "badge b-" + bcls, role: "status" }, lab)));
+    const box = h("div", { class: "card mud", style: "padding:10px 12px" }, h("div", { class: "row between" }, h("b", { class: regionClass(area) }, areaLabel(area), mode === "bbox" ? "・近似範圍（含遮蔽紀錄）" : "・保護區範圍"), h("span", { class: "badge b-" + bcls, role: "status" }, lab)));
     if (L2 && C.isNum(L2.total)) box.append(h("dl", { class: "kv", style: "margin:6px 0 0" },
       h("dt", null, "研究級觀測筆數"), h("dd", { class: "num" }, String(L2.total)),
       h("dt", null, "最近一筆觀測日期"), h("dd", null, L2.latest || "—"),
@@ -7018,9 +7293,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const dlg = document.getElementById("dlg-species");
     const draw = () => {
       clear(dlg);
-      const lt = spLabel(sp, "tabin"), ld = spLabel(sp, "danum");
       const lbl = (area, L2) => { const rec = sp.records[area] || {}, sn = rec.inat_snapshot || {};
-        return h("div", { class: "obs-label" }, h("b", { class: "region-" + area }, AREA_LABEL[area], "："), L2.label, h("ul", { class: "small", style: "margin:4px 0 0;padding-left:18px" }, L2.basis.map(x => h("li", null, x))),
+        return h("div", { class: "obs-label" }, h("b", { class: regionClass(area) }, areaLabel(area), "："), L2.label, h("ul", { class: "small", style: "margin:4px 0 0;padding-left:18px" }, L2.basis.map(x => h("li", null, x))),
           h("div", { class: "small" }, "文獻／官方依據：", (rec.lit_sources && rec.lit_sources.length) || rec.lit_source ? sourceLine(rec.lit_sources && rec.lit_sources.length ? rec.lit_sources : [rec.lit_source]) : h("span", { class: "dim" }, "無"), rec.lit_weak ? h("span", { class: "badge b-estimate", style: "margin-left:4px" }, "弱證據") : null),
           sn.latest ? h("div", { class: "small dim" }, `快照：保護區範圍最近觀測 ${sn.latest}`) : null,
           rec.inat_bbox_snapshot && rec.inat_bbox_snapshot.latest ? h("div", { class: "small dim" }, `快照：近似範圍最近觀測 ${rec.inat_bbox_snapshot.latest}`) : null); };
@@ -7037,18 +7311,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
             h("dt", null, "觀察難度"), h("dd", null, ["", "低", "中", "高"][sp.difficulty] || "未評估", "（人工評估）"))),
           sp.summary ? h("p", { style: "margin-top:10px" }, sp.summary) : null,
           sp.sensitive ? msg("warn", "敏感物種：本工具不顯示任何觀測座標，也請勿公開目擊的精確位置。iNaturalist 對此類物種的座標通常已遮蔽，不能用來推估觀察地點。") : null,
-          h("h3", { style: "margin-top:12px" }, "觀察可能性（定性標籤）"), h("div", { class: "grid g2" }, lbl("tabin", lt), lbl("danum", ld)),
-          h("p", { class: "small dim" }, lt.uncertainty),
+          h("h3", { style: "margin-top:12px" }, "觀察可能性（定性標籤）"), h("div", { class: "grid g2" }, areaKeys().map(a => lbl(a, spLabel(sp, a)))),
+          areaKeys().length ? h("p", { class: "small dim" }, spLabel(sp, areaKeys()[0]).uncertainty) : null,
           h("h3", { style: "margin-top:12px" }, "iNaturalist 即時觀測驗證"),
           sp.inat_taxon_id ? h("p", { class: "small muted" }, `taxon_id ${sp.inat_taxon_id}｜研究級（quality_grade=research）`) : msg("warn", "此物種尚無已查證的 iNaturalist taxon_id，無法查詢。"),
           sp.inat_obscured ? msg("info", "iNaturalist 對此物種遮蔽座標：保護區範圍查詢會排除這些紀錄，因此另外查詢「近似範圍（含遮蔽紀錄）」作為參考。") : null,
-          sp.inat_taxon_id ? h("div", { class: "grid g2" }, liveBlock(sp.inat_taxon_id, "tabin", draw), liveBlock(sp.inat_taxon_id, "danum", draw),
-            sp.inat_obscured ? liveBlock(sp.inat_taxon_id, "tabin", draw, "bbox") : null, sp.inat_obscured ? liveBlock(sp.inat_taxon_id, "danum", draw, "bbox") : null) : null,
+          sp.inat_taxon_id ? h("div", { class: "grid g2" }, areaKeys().map(a => liveBlock(sp.inat_taxon_id, a, draw)),
+            sp.inat_obscured ? areaKeys().map(a => liveBlock(sp.inat_taxon_id, a, draw, "bbox")) : null) : null,
           h("p", { class: "small muted", style: "margin-top:10px" }, "資料最後查核：", sp.checked_on || "—", "｜", sourceLine(sp.source_ids))));
     };
     draw();
     if (!dlg.open) dlg.showModal();
-    if (sp.inat_taxon_id) for (const mode of sp.inat_obscured ? ["place", "bbox"] : ["place"]) for (const area of ["tabin", "danum"]) {
+    if (sp.inat_taxon_id) for (const mode of sp.inat_obscured ? ["place", "bbox"] : ["place"]) for (const area of areaKeys()) {
       const cur = App.live[sp.inat_taxon_id] && App.live[sp.inat_taxon_id][mode === "bbox" ? area + ":bbox" : area];
       if (!cur || cur.status === "idle") { queryObservations(sp.inat_taxon_id, area, false, mode).then(() => { if (dlg.open) draw(); if (App.redrawSpecies && S().tab === "wildlife") App.redrawSpecies(); }); }
     }
@@ -7069,9 +7343,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
           if (!Number.isInteger(t.id)) continue;
           const row = h("div", { class: "card mud", style: "margin-top:8px" });
           const redraw = () => { clear(row).append(h("div", { class: "row between" }, h("div", null, h("b", null, t.preferred_common_name || t.name), " ", h("span", { class: "sci" }, t.name), " ", h("span", { class: "tag" }, t.rank || "")),
-            h("div", { class: "row" }, h("button", { class: "btn small", type: "button", onclick: () => { for (const m of ["place", "bbox"]) for (const ar of ["tabin", "danum"]) queryObservations(t.id, ar, false, m).then(redraw); redraw(); } }, "查 Tabin／Danum 紀錄"),
+            h("div", { class: "row" }, h("button", { class: "btn small", type: "button", onclick: () => { for (const m of ["place", "bbox"]) for (const ar of areaKeys()) queryObservations(t.id, ar, false, m).then(redraw); redraw(); } }, `查 ${areaKeys().map(areaLabel).join("／")} 紀錄`),
               h("button", { class: "star", type: "button", "aria-pressed": S().targets.includes("inat:" + t.id), onclick: () => { update(x => { const k = "inat:" + t.id, i = x.targets.indexOf(k); if (i >= 0) { x.targets.splice(i, 1); x.customTargets = x.customTargets.filter(c => c.id !== t.id); } else { x.targets.push(k); x.customTargets.push({ id: t.id, name: t.preferred_common_name || t.name, sci: t.name, rank: t.rank || "" }); } }, { render: false }); redraw(); } }, S().targets.includes("inat:" + t.id) ? "★ 目標" : "☆ 加入目標"))),
-            App.live[t.id] ? h("div", { class: "grid g2", style: "margin-top:6px" }, liveBlock(t.id, "tabin", redraw), liveBlock(t.id, "danum", redraw), liveBlock(t.id, "tabin", redraw, "bbox"), liveBlock(t.id, "danum", redraw, "bbox")) : null); };
+            App.live[t.id] ? h("div", { class: "grid g2", style: "margin-top:6px" }, areaKeys().map(a => liveBlock(t.id, a, redraw)), areaKeys().map(a => liveBlock(t.id, a, redraw, "bbox"))) : null); };
           redraw(); out.append(row);
         }
         if (r.from === "stale") out.prepend(msg("warn", "顯示舊快取（更新失敗）。"));
@@ -7088,23 +7362,25 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   /* ================= 方案比較 Compare ================= */
   function renderCompare() {
     const P = clear(document.getElementById("p-compare"));
-    const s = S(), cp = D().costs.compare, cmp = C.compareDanum(D(), s);
-    const plans = ["brl", "dvfc"];
-    P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "方案比較：BRL vs DVFC"), h("p", { class: "muted small" }, "評分為輔助決策模型，權重與計算方式完全公開，不是客觀的旅遊品質排名。"))));
+    const s = S(), cp = D().costs.compare, cdef = cp && (C.choiceDef(D(), cp.choice) || compareChoices()[0]);
+    if (!cp || !cdef) { P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "方案比較"), h("p", { class: "muted" }, "這趟行程沒有需要並列比較的方案。")))); return; }
+    const cmp = C.compareChoice(D(), s, cdef.id);
+    const plans = cdef.options.map(o => o.key).filter(k => cp.options[k]);
+    P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "方案比較：" + plans.map(optionLabel).join(" vs ")), h("p", { class: "muted small" }, "評分為輔助決策模型，權重與計算方式完全公開，不是客觀的旅遊品質排名。"))));
     const tbl = h("table", { class: "cmp" }, h("thead", null, h("tr", null, h("th", null, "比較項目"), plans.map(p => h("th", null, cp.options[p].name)))));
     const tb = h("tbody");
-    const tot = { brl: cmp.brl, dvfc: cmp.dvfc };
-    tb.append(h("tr", null, h("th", null, "每人預估價格（全行程）"), plans.map(p => h("td", { class: "num" }, fmtMYR(tot[p].perPerson), h("div", { class: "small" }, fmtTWD(tot[p].perPersonTWD))))));
-    tb.append(h("tr", null, h("th", null, "團體總價（全行程）"), plans.map(p => h("td", { class: "num" }, fmtMYR(tot[p].total), h("div", { class: "small" }, fmtTWD(tot[p].totalTWD))))));
-    tb.append(h("tr", null, h("th", null, "Danum 套裝小計"), plans.map(p => h("td", { class: "num" }, fmtMYR(p === "brl" ? cmp.brlDanum : cmp.dvfcDanum)))));
+    const tot = {}; for (const p of plans) tot[p] = cmp.options[p].budget;
+    tb.append(h("tr", null, h("th", null, "每人預估價格（全行程）"), plans.map(p => h("td", { class: "num" }, fmtBase(tot[p].perPerson), h("div", { class: "small" }, fmtHome(tot[p].perPersonHome))))));
+    tb.append(h("tr", null, h("th", null, "團體總價（全行程）"), plans.map(p => h("td", { class: "num" }, fmtBase(tot[p].total), h("div", { class: "small" }, fmtHome(tot[p].totalHome))))));
+    tb.append(h("tr", null, h("th", null, (C.categoryLabels(D())[cdef.compare_category] || cdef.label) + "小計"), plans.map(p => h("td", { class: "num" }, fmtBase(cmp.options[p].categoryTotal)))));
     tb.append(h("tr", null, h("th", null, "費用資料完整度"), plans.map(p => h("td", null, `業者報價 ${fmtPct(tot[p].completeness.quotedShare)}｜公開／第三方 ${fmtPct(tot[p].completeness.pubShare)}｜估算 ${fmtPct(tot[p].completeness.softShare)}；未估價 ${tot[p].unpriced.length} 項`))));
     for (const r of cp.rows) tb.append(h("tr", null, h("th", null, r.label), plans.map(p => { const c = r[p] || {}; return h("td", null, c.text || "—", " ", c.status ? badge(c.status) : null, c.source_ids ? h("div", null, sourceLine(c.source_ids)) : null); })));
     tbl.append(tb);
     P.append(h("div", { class: "card scroll-x" }, tbl));
     // 加權評分
     const crit = cp.criteria;
-    const minTotal = Math.min(cmp.brl.total, cmp.dvfc.total);
-    const budgetScore = p => cmp.brlDanum == null || cmp.dvfcDanum == null ? null : +(5 * minTotal / tot[p].total).toFixed(2);
+    const minTotal = Math.min(...plans.map(p => tot[p].total));
+    const budgetScore = p => !cmp.allPriced ? null : +(5 * minTotal / tot[p].total).toFixed(2);
     const score = (p, k) => k === "budget" ? budgetScore(p) : (cp.options[p].scores[k] || {}).s ?? null;
     const weighted = p => { let sw = 0, acc = 0; for (const c of crit) { const v = score(p, c.key), w = s.weights[c.key]; if (v == null || !w) continue; sw += w; acc += w * v; } return sw ? acc / sw : null; };
     const wbox = h("div", { class: "card weights" }, h("h3", null, "我的優先順序（權重 0–5）"),
@@ -7114,14 +7390,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
           onchange: e => update(x => { x.weights[c.key] = Number(e.target.value); }) }),
         h("div", { class: "small dim" }, c.desc))));
     const st = h("table", null, h("thead", null, h("tr", null, h("th", null, "準則"), h("th", { class: "r" }, "權重"), plans.map(p => h("th", { class: "r" }, cp.options[p].name.split("（")[0])))),
-      h("tbody", null, crit.map(c => h("tr", null, h("td", null, c.label, h("div", { class: "small dim" }, plans.map(p => c.key === "budget" ? null : `${p.toUpperCase()}：${(cp.options[p].scores[c.key] || {}).why || "—"}`).filter(Boolean).join("｜") || "依目前試算總價計算")),
+      h("tbody", null, crit.map(c => h("tr", null, h("td", null, c.label, h("div", { class: "small dim" }, plans.map(p => c.key === "budget" ? null : `${optionLabel(p)}：${(cp.options[p].scores[c.key] || {}).why || "—"}`).filter(Boolean).join("｜") || "依目前試算總價計算")),
         h("td", { class: "r num" }, s.weights[c.key]), plans.map(p => h("td", { class: "r score" }, score(p, c.key) == null ? "—" : String(score(p, c.key)))))),
         h("tr", { class: "sub" }, h("td", null, "加權平均分數（1–5）"), h("td", null), plans.map(p => h("td", { class: "r score" }, weighted(p) == null ? "—" : weighted(p).toFixed(2))))));
-    const wb = weighted("brl"), wd = weighted("dvfc");
+    const ranked = plans.map(p => ({ p, w: weighted(p) })), allScored = ranked.every(x => x.w != null); ranked.sort((x, y) => (y.w || 0) - (x.w || 0));
     P.append(h("div", { class: "split wide-left", style: "margin-top:14px" }, wbox,
       h("div", { class: "card" }, h("h3", null, "加權評分結果"), h("div", { class: "scroll-x" }, st),
-        h("p", { class: "small muted" }, "計算方式：加權平均 = Σ(權重 × 分數) ÷ Σ(權重)。「預算」分數 = 5 × 兩方案中較低總價 ÷ 本方案總價（自動依試算結果更新）；其他分數為人工評估（1–5），理由列於表內，可在 costs.compare 修改。"),
-        wb != null && wd != null ? msg("info", `依你的權重，${wb >= wd ? cp.options.brl.name : cp.options.dvfc.name} 分數較高（${Math.max(wb, wd).toFixed(2)} vs ${Math.min(wb, wd).toFixed(2)}）。差距 < 0.3 時建議視為差不多，以預算與個人偏好決定。`) : msg("warn", "部分分數無法計算（價格未估價）。"),
+        h("p", { class: "small muted" }, "計算方式：加權平均 = Σ(權重 × 分數) ÷ Σ(權重)。「預算」分數 = 5 × 各方案中最低總價 ÷ 本方案總價（自動依試算結果更新）；其他分數為人工評估（1–5），理由列於表內，可在 costs.compare 修改。"),
+        allScored && ranked.length > 1 ? msg("info", `依你的權重，${cp.options[ranked[0].p].name} 分數較高（${ranked.map(x => x.w.toFixed(2)).join(" vs ")}）。差距 < 0.3 時建議視為差不多，以預算與個人偏好決定。`) : msg("warn", "部分分數無法計算（價格未估價）。"),
         h("h4", { style: "margin-top:10px" }, "優缺點與取捨"), plans.map(p => h("div", { style: "margin-top:6px" }, h("b", null, cp.options[p].name), h("ul", { class: "small" }, cp.options[p].pros.map(x => h("li", null, "＋ ", x)), cp.options[p].cons.map(x => h("li", null, "－ ", x))))))));
     P.append(h("div", { class: "card", style: "margin-top:14px" }, h("h3", null, "仍需向業者確認的問題"),
       h("ol", null, cp.questions.map(q => h("li", null, q.zh, h("div", { class: "small dim" }, q.en)))),
@@ -7135,6 +7411,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const all = E.checklist.flatMap(c => c.items), done = all.filter(i => s.checklist[i.id]).length;
     P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "旅遊準備與風險"), h("p", { class: "muted small" }, `出發前檢查清單：已完成 ${done} / ${all.length}`)),
       h("div", { class: "bar", style: "width:220px", role: "img", "aria-label": `完成 ${done} / ${all.length}` }, h("span", { style: `width:${all.length ? done / all.length * 100 : 0}%;background:var(--ok)` }))));
+    const tasks = C.taskList(D(), s, todayISO()), conns = C.connections(D(), s);
+    P.append(h("div", { class: "grid g2", style: "margin-bottom:14px" },
+      h("div", { class: "card" }, h("h3", null, "待辦與期限", h("span", { class: "small muted" }, `未完成 ${tasks.filter(x => !x.done).length} / ${tasks.length}`)),
+        h("p", { class: "small muted" }, "「自訂目標日」是規劃建議，不是業者的期限；「期限待業者告知」表示訂金、尾款或取消期限還沒拿到，拿到後請更新 essentials.tasks。勾選只存在這台裝置。"),
+        tasks.length ? tasks.map(taskRow) : h("p", { class: "muted small" }, "尚未定義待辦。")),
+      h("div", { class: "card" }, h("h3", null, "關鍵銜接的時間餘裕"),
+        h("p", { class: "small muted" }, "最晚出發時間 = 必須抵達的時間 − 路程 − 緩衝。缺資料時列出缺哪一筆，不用猜的數字補。"),
+        conns.length ? conns.map(connRow) : h("p", { class: "muted small" }, "這趟行程沒有定義需要計算餘裕的銜接。"))));
     P.append(h("div", { class: "card" }, h("h3", null, "天候與安全風險：觸發條件與備案"), h("div", { class: "scroll-x" }, h("table", null,
       h("thead", null, h("tr", null, h("th", null, "等級"), h("th", null, "風險"), h("th", null, "觸發條件"), h("th", null, "影響"), h("th", null, "可執行的備案"))),
       h("tbody", null, E.risks.map(r => h("tr", null, h("td", null, badge(r.level === 1 ? "tbc" : r.level === 2 ? "estimate" : "user", ["", "一級", "二級", "三級"][r.level])),
@@ -7151,10 +7435,28 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     P.append(h("div", { class: "grid g2", style: "margin-top:14px" },
       h("div", { class: "card" }, h("h3", null, "野生動物觀察倫理"), h("ul", null, E.ethics.map(x => h("li", null, x)))),
       h("div", { class: "card" }, h("h3", null, "夜間觀察注意事項"), h("ul", null, E.night.map(x => h("li", null, x))))));
+    // 旅程後回填：實際花費與實際發生的狀況（下一趟旅行的校正資料）
+    const b = C.computeBudget(D(), s), act = C.actualsSummary(b, s.actuals), base = money().base;
+    const actInput = l => h("input", { type: "number", min: 0, step: 1, id: "actual-" + l.id, "aria-label": `${l.name} 實際花費（${base}）`, value: l.actual == null ? "" : l.actual, style: "width:120px",
+      onchange: e => { const v = e.target.value.trim(); update(x => { if (v === "" || !(Number(v) >= 0)) delete x.actuals[l.id]; else x.actuals[l.id] = Number(v); }); } });
+    P.append(h("details", { class: "card", style: "margin-top:14px", open: act.filled || Object.keys(s.riskLog).length ? true : null },
+      h("summary", { style: "cursor:pointer" }, h("b", null, "旅程後回填：實際花費與實際狀況"), ` — 已填 ${act.filled} 項費用、${Object.values(s.riskLog).filter(r => r.happened).length} 項風險`),
+      h("p", { class: "small muted", style: "margin-top:8px" }, `回來後填入每個項目的實際總花費（${base}，全團合計）。資料只存在這台裝置；用「⚙ 資料／匯出 → 匯出規劃 JSON」保存，下一趟旅行可拿來校正估算。`),
+      h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "項目"), h("th", { class: "r" }, "試算 " + base), h("th", null, "實際 " + base), h("th", { class: "r" }, "差額"), h("th", null, "試算時的狀態"))),
+        h("tbody", null, act.lines.map(l => h("tr", null, h("td", null, l.name), h("td", { class: "r num" }, l.planned == null ? h("span", { class: "unq" }, "未估價") : n0(l.planned)), h("td", null, actInput(l)),
+          h("td", { class: "r num" }, l.diff == null ? "—" : (l.diff > 0 ? "+" : "") + n0(l.diff)), h("td", null, badge(l.status)))),
+          h("tr", { class: "sub" }, h("td", null, `已回填 ${act.filled} 項合計`), h("td", { class: "r num" }, n0(act.plannedForFilled)), h("td", { class: "num" }, n0(act.actualTotal)), h("td", { class: "r num" }, act.filled ? (act.actualTotal - act.plannedForFilled > 0 ? "+" : "") + n0(act.actualTotal - act.plannedForFilled) : "—"), h("td", { class: "small" }, act.unplannedFilled ? `其中 ${act.unplannedFilled} 項試算時未估價` : ""))))),
+      h("h4", { style: "margin-top:12px" }, "風險是否發生"),
+      E.risks.map(r => { const lg = s.riskLog[r.id] || {};
+        return h("div", { class: "row", style: "margin-top:6px;align-items:flex-start" }, h("div", { style: "flex:1;min-width:180px" }, h("b", null, r.title)),
+          h("select", { id: "risk-" + r.id, "aria-label": `${r.title} 是否發生`, style: "width:auto", onchange: e => update(x => { const o = x.riskLog[r.id] = x.riskLog[r.id] || {}; if (e.target.value) o.happened = e.target.value; else delete o.happened; }) },
+            [["", "未填"], ["yes", "發生了"], ["no", "沒發生"]].map(([v, tx]) => h("option", { value: v, selected: (lg.happened || "") === v ? true : null }, tx))),
+          h("input", { type: "text", id: "risknote-" + r.id, "aria-label": `${r.title} 實際狀況`, placeholder: "實際狀況、備案是否有用", value: lg.note || "", style: "flex:2;min-width:200px",
+            oninput: e => update(x => { (x.riskLog[r.id] = x.riskLog[r.id] || {}).note = e.target.value; }, { render: false }) })); })));
   }
 
   /* ================= GAS 遠端資料 ================= */
-  const REMOTE_CACHE_KEY = "ecotrip2027.remote.v1";
+  const REMOTE_CACHE_KEY = PREFIX + ".remote.v1";
   function gasUrlOk(u) { try { const x = new URL(u); return x.protocol === "https:" && ["script.google.com", "script.googleusercontent.com"].includes(x.hostname); } catch (e) { return false; } }
   async function fetchGas(url) {
     if (!gasUrlOk(url)) throw new Error("網址必須是 https://script.google.com/macros/s/…/exec");
@@ -7173,8 +7475,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     App.data = Object.assign({}, App.local);
     App.origin = Object.fromEntries(C.DATASETS.map(k => [k, "local"]));
     for (const [k, val] of Object.entries(v.accepted || {})) { App.data[k] = val; App.origin[k] = "remote"; }
-    // 試算表版 costs 可不含方案比較區塊：沿用內建的 compare
-    if (App.origin.costs === "remote" && !(App.data.costs.compare && App.data.costs.compare.options)) App.data.costs = Object.assign({}, App.data.costs, { compare: App.local.costs.compare });
+    // 試算表版 costs 只有費用項目：分類名稱、方案比較、開關文字沿用內建
+    if (App.origin.costs === "remote") { const merged = Object.assign({}, App.data.costs);
+      for (const k of ["compare", "categories", "quoted_label", "toggle_labels"]) if (merged[k] == null || (k === "compare" && !merged[k].options)) merged[k] = App.local.costs[k];
+      App.data.costs = merged; }
     // 合併後的跨資料集參照必須完整，否則整份回退本機資料
     const refErr = v.ok ? C.validateReferences(App.data) : [];
     if (refErr.length) {
@@ -7223,26 +7527,32 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
   function stamp() { const d = new Date(); return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}-${String(d.getHours()).padStart(2, "0")}${String(d.getMinutes()).padStart(2, "0")}`; }
-  function exportCSV() { download(`ecotrip2027-budget-${stamp()}.csv`, "text/csv;charset=utf-8", C.budgetCSV(C.computeBudget(D(), S()), D().sources.items)); }
+  function exportCSV() { download(`${PREFIX}-budget-${stamp()}.csv`, "text/csv;charset=utf-8", C.budgetCSV(C.computeBudget(D(), S()), D().sources.items)); }
   function resolvedItinerary() {
     const s = S();
     return D().itinerary.days.map(d => ({ day: d.day, date: d.date, region: d.region, lodging: d.day === D().itinerary.days.length ? null : lodgingName(d.lodging), lodging_status: d.lodging_status, user_note: s.dayNotes[d.day] || "",
       activities: d.activities.map(a => { const opt = a.options && a.options.length ? a.options[C.activityChoice(a, s)] : null; return { id: a.id, slot: a.slot, title: a.title, choice: opt ? opt.label : null, status: C.activityStatus(a, s), note: (s.activity[a.id] && s.activity[a.id].note) || "" }; }) }));
   }
+  const EXPORT_SCHEMA = "ecotrip-export/1";
   function exportJSON() {
     const b = C.computeBudget(D(), S());
-    const out = { schema: "ecotrip2027-export/1", exported_at: new Date().toISOString(), data_origin: App.origin, state: S(),
-      computed: { pax: b.ctx.pax, rooms: b.ctx.rooms, danumPlan: S().danumPlan, scenario: S().scenario, fx: b.fx, subtotal_myr: b.subtotal, contingency_myr: b.contingency, total_myr: b.total, total_twd: b.totalTWD, per_person_myr: b.perPerson, per_person_twd: b.perPersonTWD, unpriced: b.unpriced.map(l => l.id),
-        lines: b.lines.filter(l => l.active).map(l => ({ id: l.id, name: l.name, unit: l.unit, unit_price: l.unitPrice, currency: l.currency, qty: l.qty, amount_myr: l.amountMYR, status: l.status })) },
+    const act = C.actualsSummary(b, S().actuals);
+    const out = { schema: EXPORT_SCHEMA, trip_id: D().trip.id, exported_at: new Date().toISOString(), data_origin: App.origin, state: S(),
+      computed: { pax: b.ctx.pax, rooms: b.ctx.rooms, choices: S().choices, scenario: S().scenario, fx: b.fx, base_currency: money().base, home_currency: money().home,
+        subtotal_base: b.subtotal, contingency_base: b.contingency, total_base: b.total, total_home: b.totalHome, per_person_base: b.perPerson, per_person_home: b.perPersonHome, unpriced: b.unpriced.map(l => l.id),
+        lines: b.lines.filter(l => l.active).map(l => ({ id: l.id, name: l.name, unit: l.unit, unit_price: l.unitPrice, currency: l.currency, qty: l.qty, amount_base: l.amountBase, status: l.status })) },
+      actuals: { filled: act.filled, actual_total_base: act.actualTotal, planned_for_filled_base: act.plannedForFilled, lines: act.lines.filter(l => l.actual != null) },
+      risk_log: S().riskLog, tasks: C.taskList(D(), S(), todayISO()), connections: C.connections(D(), S()),
       itinerary: resolvedItinerary(), checks: allChecks() };
-    download(`ecotrip2027-plan-${stamp()}.json`, "application/json", JSON.stringify(out, null, 2));
+    download(`${PREFIX}-plan-${stamp()}.json`, "application/json", JSON.stringify(out, null, 2));
   }
   function importJSON(file, out) {
     const r = new FileReader();
     r.onload = () => {
       try {
         const obj = JSON.parse(r.result);
-        if (!obj || obj.schema !== "ecotrip2027-export/1" || typeof obj.state !== "object") throw new Error("不是本工具匯出的規劃檔（schema 不符）");
+        if (!obj || ![EXPORT_SCHEMA].concat(D().trip.legacy_export_schemas || []).includes(obj.schema) || typeof obj.state !== "object") throw new Error("不是本工具匯出的規劃檔（schema 不符）");
+        if (obj.trip_id && obj.trip_id !== D().trip.id) throw new Error(`這份規劃檔屬於另一趟行程（${obj.trip_id}）`);
         if (!confirm("匯入會取代目前瀏覽器中的所有設定與備註，確定嗎？")) return;
         App.state = sanitizeState(obj.state, App.data); saveState(); renderActive();
         clear(out).append(msg("ok", `已匯入（檔案匯出時間 ${obj.exported_at || "不明"}）。`));
@@ -7254,16 +7564,40 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
   function doPrint() {
     const pv = clear(document.getElementById("print-view")), s = S(), b = C.computeBudget(D(), s), t = D().trip;
-    pv.append(h("h1", null, t.title), h("p", null, `${t.start} – ${t.end}｜${s.pax} 人｜${s.rooms} 房｜Danum：${s.danumPlan.toUpperCase()}｜情境：${{ low: "低", mid: "中", high: "高" }[s.scenario]}｜匯率 ${s.fx}｜列印時間 ${fmtTime(Date.now())}`),
+    pv.append(h("h1", null, t.title), h("p", null, `${t.start} – ${t.end}｜${s.pax} 人｜${s.rooms} 房${compareChoices().map(c => `｜${c.label}：${(choiceOpt(c.id) || {}).label || "未定"}`).join("")}｜情境：${{ low: "低", mid: "中", high: "高" }[s.scenario]}｜匯率 ${s.fx}｜列印時間 ${fmtTime(Date.now())}`),
       h("p", null, "狀態說明：業者報價／公開牌價／估算／示範資料／未報價／待確認。示範資料不是報價；未報價項目不計入總計。"));
     pv.append(h("h2", null, "每日行程"), h("table", null, h("thead", null, h("tr", null, h("th", null, "Day"), h("th", null, "日期"), h("th", null, "區域"), h("th", null, "活動"), h("th", null, "當晚住宿"))),
-      h("tbody", null, resolvedItinerary().map(d => h("tr", null, h("td", null, d.day), h("td", null, `${d.date}（${C.weekdayZh(d.date)}）`), h("td", null, REGION_LABEL[d.region]),
+      h("tbody", null, resolvedItinerary().map(d => h("tr", null, h("td", null, d.day), h("td", null, `${d.date}（${C.weekdayZh(d.date)}）`), h("td", null, regionLabel(d.region)),
         h("td", null, d.activities.map(a => h("div", null, `${SLOT_LABEL[a.slot] || a.slot}｜${a.title}${a.choice ? "：" + a.choice : ""} [${C.STATUS_LABEL[a.status]}]${a.note ? "｜備註：" + a.note : ""}`)), d.user_note ? h("div", null, "當日備註：" + d.user_note) : null),
         h("td", null, d.lodging || "—", d.lodging ? ` [${C.STATUS_LABEL[d.lodging_status] || d.lodging_status}]` : ""))))));
-    pv.append(h("h2", null, "費用摘要"), h("p", null, `總計 ${fmtMYR(b.total)}（${fmtTWD(b.totalTWD)}），每人 ${fmtMYR(b.perPerson)}（${fmtTWD(b.perPersonTWD)}），含預備金 ${b.contingencyPct}%；未估價 ${b.unpriced.length} 項。`),
-      h("table", null, h("thead", null, h("tr", null, h("th", null, "項目"), h("th", null, "單位"), h("th", null, "數量"), h("th", null, "金額 MYR"), h("th", null, "狀態"))),
-        h("tbody", null, b.lines.filter(l => l.active).map(l => h("tr", null, h("td", null, l.name), h("td", null, l.unitLabel), h("td", null, l.qtyText), h("td", null, l.amountMYR == null ? "未報價" : n0(l.amountMYR)), h("td", null, C.STATUS_LABEL[l.status]))))));
+    pv.append(h("h2", null, "費用摘要"), h("p", null, `總計 ${fmtBase(b.total)}（${fmtHome(b.totalHome)}），每人 ${fmtBase(b.perPerson)}（${fmtHome(b.perPersonHome)}），含預備金 ${b.contingencyPct}%；未估價 ${b.unpriced.length} 項。`),
+      h("table", null, h("thead", null, h("tr", null, h("th", null, "項目"), h("th", null, "單位"), h("th", null, "數量"), h("th", null, "金額 " + money().base), h("th", null, "狀態"))),
+        h("tbody", null, b.lines.filter(l => l.active).map(l => h("tr", null, h("td", null, l.name), h("td", null, l.unitLabel), h("td", null, l.qtyText), h("td", null, l.amountBase == null ? "未報價" : n0(l.amountBase)), h("td", null, C.STATUS_LABEL[l.status]))))));
     pv.append(h("h2", null, "檢查與待確認事項"), h("ul", null, allChecks().map(c => h("li", null, `[${{ error: "錯誤", warn: "注意", info: "提醒" }[c.level]}] ${c.msg}`))));
+    window.print();
+  }
+  /** 單日流程（一頁）：現場用。電話與訂位代號留空白手寫，不存進公開網站。 */
+  function doPrintDay(dayNo) {
+    const pv = clear(document.getElementById("print-view")), s = S(), t = D().trip;
+    const d = resolvedItinerary().find(x => x.day === dayNo), raw = D().itinerary.days.find(x => x.day === dayNo); if (!d || !raw) return;
+    const prev = raw.lodging_prev ? lodgingName(raw.lodging_prev) : "（出發地／機上）";
+    pv.append(h("h1", null, `Day ${d.day}｜${d.date}（${C.weekdayZh(d.date)}）｜${raw.short}`),
+      h("p", null, `${t.title}｜${regionLabel(raw.region)}｜${s.pax} 人｜列印時間 ${fmtTime(Date.now())}`),
+      h("p", null, h("b", null, "住宿："), `${prev} → ${d.lodging || "—（返程）"}`, d.lodging ? ` [${C.STATUS_LABEL[d.lodging_status] || d.lodging_status}]` : ""));
+    pv.append(h("h2", null, "流程"), h("table", null, h("thead", null, h("tr", null, ["時段", "時間", "活動", "狀態", "需要", "✓"].map(x => h("th", null, x)))),
+      h("tbody", null, raw.activities.map(a => { const r = d.activities.find(x => x.id === a.id) || {};
+        return h("tr", null, h("td", null, SLOT_LABEL[a.slot] || a.slot), h("td", null, a.start || "未定", C.isNum(a.duration_h) ? `（約 ${a.duration_h} 小時）` : ""),
+          h("td", null, a.title, r.choice ? "：" + r.choice : "", r.note ? h("div", null, "備註：" + r.note) : null), h("td", null, C.STATUS_LABEL[r.status || a.status]),
+          h("td", null, (a.needs || []).map(n => NEED_LABEL[n] || n).join("、")), h("td", null, "☐")); }))));
+    const conns = C.connections(D(), s).filter(c => c.day === dayNo);
+    if (conns.length) pv.append(h("h2", null, "銜接時間"), h("ul", null, conns.map(c => h("li", null, c.title, "：",
+      [c.deadline ? `${c.deadline} 前到（${c.deadline_label}）` : null, c.latestDepart ? `最晚 ${c.latestDepart} 出發` : null, c.slackMin != null ? `${c.depart} 出發則餘裕 ${c.slackMin} 分鐘` : null].filter(Boolean).join("；") || "資料不足",
+      c.missing.length ? `｜尚缺：${c.missing.join("；")}` : ""))));
+    if (raw.contingencies && raw.contingencies.length) pv.append(h("h2", null, "備案"), contingencyTable(raw.contingencies));
+    else pv.append(h("h2", null, "備案"), h("p", null, raw.weather_alt));
+    if (raw.notes && raw.notes.length) pv.append(h("h2", null, "注意事項"), h("ul", null, raw.notes.map(n => h("li", null, n))));
+    if (d.user_note) pv.append(h("h2", null, "我的備註"), h("p", null, d.user_note));
+    pv.append(h("h2", null, "聯絡與訂位（請手寫，不要存進公開網站）"), h("table", null, h("tbody", null, ["接送／業者電話", "當晚住宿電話", "訂位代號", "緊急聯絡人", "保險公司／保單號碼"].map(x => h("tr", null, h("th", { style: "width:32%" }, x), h("td", { style: "height:22pt" }, ""))))));
     window.print();
   }
   function renderSettings() {

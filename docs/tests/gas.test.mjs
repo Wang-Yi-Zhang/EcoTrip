@@ -101,7 +101,7 @@ t("下拉允許值與網站驗證一致（unit / status / category / 幣別 / qt
   const { ctx } = makeEnv();
   const units = Object.keys(C.UNIT_LABEL).filter(u => u !== "percent");
   assert.deepEqual([...ctx.ALLOWED.unit].sort(), units.sort());
-  assert.deepEqual([...ctx.ALLOWED.category].sort(), Object.keys(C.CATEGORY_LABEL).sort());
+  assert.deepEqual([...ctx.ALLOWED.category].sort(), Object.keys(C.categoryLabels(data)).sort());
   assert.deepEqual([...ctx.ALLOWED.dataset].sort(), [...C.DATASETS].sort());
   // status：網站接受的每個值都能從下拉選到，且下拉沒有網站不接受的值
   const bad = J(data.costs); for (const s of ctx.ALLOWED.status) { bad.items[0].status = s; bad.items[0].price = s === "unquoted" ? null : 1; assert.deepEqual(J(C.validateDataset("costs", bad)), [], s); }
@@ -125,15 +125,15 @@ t("往返測試：內建 costs 寫入試算表 → doGet → 通過網站驗證�
   assert.equal(env.errors, undefined, JSON.stringify(env.errors));
   const v = C.validateEnvelope(env);
   assert.equal(v.ok, true, JSON.stringify(v.errors)); assert.ok(v.accepted.costs);
-  const merged = { ...data, costs: { ...v.accepted.costs, compare: data.costs.compare } };
+  const merged = { ...data, costs: { ...v.accepted.costs, compare: data.costs.compare, categories: data.costs.categories } };
   assert.deepEqual(J(C.validateReferences(merged)), []);
-  for (const st of [{ pax: 4, rooms: 2 }, { pax: 3, rooms: 2, danumPlan: "dvfc" }, { pax: 6, rooms: 3, includeExtras: true, includeFlights: true, scenario: "high" }]) {
-    const s = { fx: 7.2, fxUsd: 4.2, danumPlan: "brl", scenario: "mid", contingencyPct: 10, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {}, activity: {}, lastNight: "ld", ...st };
+  for (const st of [{ pax: 4, rooms: 2 }, { pax: 3, rooms: 2, choices: { danum_choice: "dvfc", last_night_choice: "ld" } }, { pax: 6, rooms: 3, includeExtras: true, includeFlights: true, scenario: "high" }]) {
+    const s = { fx: 7.2, rates: { USD: 4.2 }, choices: { danum_choice: "brl", last_night_choice: "ld" }, scenario: "mid", contingencyPct: 10, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {}, activity: {}, ...st };
     const a = C.computeBudget(data, s), b = C.computeBudget(merged, s);
     assert.ok(Math.abs(a.total - b.total) < 1e-6, `${JSON.stringify(st)}: ${a.total} vs ${b.total}`);
     assert.equal(a.unpriced.length, b.unpriced.length);
   }
-  assert.ok(C.checkItinerary(merged, { danumPlan: "brl", optionalOn: { brl_private_transfer: false }, activity: {}, lastNight: "ld" }).some(c => c.code === "feasibility"));
+  assert.ok(C.checkItinerary(merged, { choices: { danum_choice: "brl", last_night_choice: "ld" }, optionalOn: { brl_private_transfer: false }, activity: {} }).some(c => c.code === "feasibility"));
 });
 t("json 工作表：略過表頭列；壞 JSON 回報錯誤但不影響其他資料集", () => {
   const { ctx, sheets } = makeEnv();
