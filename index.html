@@ -314,10 +314,20 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  "currency": {
   "base": "MYR",
   "home": "TWD",
-  "symbols": { "MYR": "RM", "TWD": "NT$", "USD": "US$" },
-  "default_rates": { "USD": 4.2 }
+  "symbols": {
+   "MYR": "RM",
+   "TWD": "NT$",
+   "USD": "US$"
+  },
+  "default_rates": {
+   "USD": 4.2
+  }
  },
- "regions": { "tabin": "Tabin", "danum": "Danum Valley", "transit": "交通／轉運" },
+ "regions": {
+  "tabin": "Tabin",
+  "danum": "Danum Valley",
+  "transit": "交通／轉運"
+ },
  "choices": [
   {
    "id": "danum_choice",
@@ -325,8 +335,16 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "default": "brl",
    "compare_category": "danum",
    "options": [
-    { "key": "brl", "label": "BRL", "lodging": "brl" },
-    { "key": "dvfc", "label": "DVFC", "lodging": "dvfc" }
+    {
+     "key": "brl",
+     "label": "BRL",
+     "lodging": "brl"
+    },
+    {
+     "key": "dvfc",
+     "label": "DVFC",
+     "lodging": "dvfc"
+    }
    ]
   },
   {
@@ -334,18 +352,52 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "label": "最後一晚住宿",
    "default": "ld",
    "options": [
-    { "key": "ld", "label": "Lahad Datu（2/6 從 LDU 出發）", "lodging": "ld_hotel" },
-    { "key": "kk", "label": "Kota Kinabalu（2/5 先飛 KK）", "lodging": "kk_hotel" },
-    { "key": "tbd", "label": "尚未決定", "lodging": null }
+    {
+     "key": "ld",
+     "label": "Lahad Datu（2/6 從 LDU 出發）",
+     "lodging": "ld_hotel"
+    },
+    {
+     "key": "kk",
+     "label": "Kota Kinabalu（2/5 先飛 KK）",
+     "lodging": "kk_hotel"
+    },
+    {
+     "key": "tbd",
+     "label": "尚未決定",
+     "lodging": null
+    }
    ]
   }
  ],
  "storage_prefix": "ecotrip2027",
  "transit_region": "transit",
- "legacy_state": { "danumPlan": ["choices", "danum_choice"], "lastNight": ["choices", "last_night_choice"], "fxUsd": ["rates", "USD"] },
+ "legacy_state": {
+  "danumPlan": [
+   "choices",
+   "danum_choice"
+  ],
+  "lastNight": [
+   "choices",
+   "last_night_choice"
+  ],
+  "fxUsd": [
+   "rates",
+   "USD"
+  ]
+ },
  "default_rooms": 2,
  "pax_rules": [
-  { "below": 2, "level": "warn", "msg": "Tabin 報價條件為「至少 2 人同房」，1 人價格未報價。" }
+  {
+   "below": 2,
+   "level": "warn",
+   "msg": "Tabin 報價條件為「至少 2 人同房」，1 人價格未報價。"
+  }
+ ],
+ "short_title": "2027 沙巴雨林生態探索規劃",
+ "subtitle": "Tabin Wildlife Reserve × Danum Valley｜1/29–2/6 9 天 8 夜",
+ "legacy_export_schemas": [
+  "ecotrip2027-export/1"
  ]
 }
 </script>
@@ -415,7 +467,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "航班延誤時，這一晚是整趟行程的第一道緩衝。",
     "若國際航班當天無法接上國內線，需改在 KK 過夜並通知 Tabin 業者延後接送。"
    ],
-   "weather_alt": "大雨或航班延誤：直接入住休息；若當天無法抵達 LDU，於轉機城市過夜，隔天早班機到 LDU，並請業者調整 Day 2 接送時間（會壓縮 Day 2 下午活動）。"
+   "weather_alt": "大雨或航班延誤：直接入住休息；若當天無法抵達 LDU，於轉機城市過夜，隔天早班機到 LDU，並請業者調整 Day 2 接送時間（會壓縮 Day 2 下午活動）。",
+   "contingencies": [
+    {
+     "sign": "國際段延誤或取消通知",
+     "trigger": "預計落地時間已趕不上當天最後一班往 LDU 的國內線（班表未訂，待填）",
+     "decider": "團員聯絡人（出發前指定一位）",
+     "fallback": "在轉機城市過夜，改搭隔天最早班機到 LDU，並通知 Tabin 業者延後 Day 2 接送",
+     "extra_cost": {
+      "amount": null,
+      "note": "轉機城市一晚住宿與可能的改票費；Lahad Datu 已訂住宿能否退費未知"
+     }
+    }
+   ]
   },
   {
    "day": 2,
@@ -514,7 +578,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "交通日：避免安排高強度步行。",
     "下雨時林道泥濘，準備防螞蝗襪。"
    ],
-   "weather_alt": "大雨：取消下午步行，改在度假村周邊或河岸觀景處觀察；夜遊視道路狀況由嚮導決定改期或縮短。"
+   "weather_alt": "大雨：取消下午步行，改在度假村周邊或河岸觀景處觀察；夜遊視道路狀況由嚮導決定改期或縮短。",
+   "contingencies": [
+    {
+     "sign": "持續大雨、林道積水",
+     "trigger": "嚮導判斷步道或車道不安全",
+     "decider": "Tabin 嚮導",
+     "fallback": "下午步行改在度假村周邊或河岸觀景處；夜遊改期或縮短",
+     "extra_cost": {
+      "amount": null,
+      "note": "私人夜遊取消或改期是否退費、能否順延，報價信未說明"
+     }
+    }
+   ]
   },
   {
    "day": 3,
@@ -629,7 +705,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "Lipad 行程體力需求較高，前一晚注意休息。"
    ],
-   "weather_alt": "大雨或道路泥濘：Lipad 改到 Day 4 或 Day 5 上午；改為度假村周邊短步道或觀景點守候。"
+   "weather_alt": "大雨或道路泥濘：Lipad 改到 Day 4 或 Day 5 上午；改為度假村周邊短步道或觀景點守候。",
+   "contingencies": [
+    {
+     "sign": "前一晚大雨、道路泥濘",
+     "trigger": "往 Lipad 的道路無法通行，或觀景塔未開放",
+     "decider": "Tabin 嚮導",
+     "fallback": "Lipad 改到 Day 4 或 Day 5 上午；當天改度假村周邊短步道或觀景點守候",
+     "extra_cost": {
+      "amount": null,
+      "note": "改期是否另計費用，未向業者確認"
+     }
+    }
+   ]
   },
   {
    "day": 4,
@@ -746,7 +834,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "Tabin 中段：依前兩天目擊回報調整搜尋重點。"
    ],
-   "weather_alt": "大雨：車輛搜尋改為短程；午後放晴再出發。夜遊依道路安全由嚮導決定。"
+   "weather_alt": "大雨：車輛搜尋改為短程；午後放晴再出發。夜遊依道路安全由嚮導決定。",
+   "contingencies": [
+    {
+     "sign": "上午大雨",
+     "trigger": "嚮導判斷車道不適合長程搜尋",
+     "decider": "Tabin 嚮導",
+     "fallback": "車輛搜尋改短程，午後放晴再出發；夜遊依道路安全決定",
+     "extra_cost": {
+      "amount": null,
+      "note": "私人車輛按天計價（RM270／天），縮短或取消是否退費未知"
+     }
+    }
+   ]
   },
   {
    "day": 5,
@@ -853,7 +953,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "報價私人嚮導、車輛各 4 天、私人夜遊 3 晚：需確認對應哪幾天。"
    ],
-   "weather_alt": "此日本身就是雨天備用日。"
+   "weather_alt": "此日本身就是雨天備用日。",
+   "contingencies": [
+    {
+     "sign": "前幾天有活動因天候取消",
+     "trigger": "Day 3–4 有未完成的活動（例如 Lipad）",
+     "decider": "團員與嚮導討論",
+     "fallback": "用上午彈性時段補做；晚上視體力決定是否加購第 4 晚私人夜遊",
+     "extra_cost": {
+      "amount": null,
+      "note": "加購第 4 晚私人夜遊：信中單價 RM130／人／晚，第 4 晚是否同價未確認"
+     }
+    }
+   ]
   },
   {
    "day": 6,
@@ -963,7 +1075,30 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "DVFC 官方交通日為週一、三、五；2/3（三）可行，但時刻未查證。",
     "若同日轉場不可行，備案是在 Lahad Datu 多住一晚、Danum 縮短為 1 晚（會改變費用與夜數，需重新報價）。"
    ],
-   "weather_alt": "大雨導致道路延誤：與兩家業者保持聯絡；最壞情況在 Lahad Datu 過夜，隔天一早進 Danum。"
+   "weather_alt": "大雨導致道路延誤：與兩家業者保持聯絡；最壞情況在 Lahad Datu 過夜，隔天一早進 Danum。",
+   "contingencies": [
+    {
+     "sign": "出發前一晚大雨，或業者通知路況差",
+     "trigger": "從 Tabin 出發的時間晚於銜接計算的最晚出發時間",
+     "decider": "團員聯絡人（出發前指定一位），與兩家業者確認後決定",
+     "fallback": "改用 Danum 的非排程私人接送（下午出發）",
+     "extra_cost": {
+      "amount": 198,
+      "currency": "USD",
+      "note": "BRL 第三方資料：4–6 人廂型車單程。DVFC 為 USD 111／輛（1–3 人），4 人可能需 2 輛。兩者都已預設納入試算"
+     }
+    },
+    {
+     "sign": "道路中斷，或兩段路都嚴重延誤",
+     "trigger": "無法在當天抵達 Danum（業者是否接受天黑後進場未確認）",
+     "decider": "團員聯絡人（出發前指定一位）",
+     "fallback": "在 Lahad Datu 過夜，隔天一早進 Danum（Danum 剩 1 晚）",
+     "extra_cost": {
+      "amount": null,
+      "note": "Lahad Datu 一晚住宿；Danum 少住一晚能否退費未知，需重新報價"
+     }
+    }
+   ]
   },
   {
    "day": 7,
@@ -1082,7 +1217,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "Danum 只有 1 個完整活動日，若天候不佳，觀察時間會明顯壓縮。"
    ],
-   "weather_alt": "大雨：步道可能封閉，改為設施周邊短步行、觀景處或延後至雨停；樹冠步道於雷雨時不開放（依現場規定）。"
+   "weather_alt": "大雨：步道可能封閉，改為設施周邊短步行、觀景處或延後至雨停；樹冠步道於雷雨時不開放（依現場規定）。",
+   "contingencies": [
+    {
+     "sign": "雷雨",
+     "trigger": "步道封閉，或樹冠步道因雷雨關閉",
+     "decider": "Danum 現場嚮導或管理單位",
+     "fallback": "改設施周邊短步行、觀景處，或延後至雨停",
+     "extra_cost": {
+      "amount": null,
+      "note": "套裝內活動取消是否補償，未向業者確認"
+     }
+    }
+   ]
   },
   {
    "day": 8,
@@ -1176,7 +1323,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "除夕：交通與餐飲需求高。",
     "這一晚是回程前的最後緩衝。"
    ],
-   "weather_alt": "道路延誤：若選 KK 而趕不上國內線，改住 Lahad Datu，隔天一早飛 BKI 再轉國際線（需確認轉機時間）。"
+   "weather_alt": "道路延誤：若選 KK 而趕不上國內線，改住 Lahad Datu，隔天一早飛 BKI 再轉國際線（需確認轉機時間）。",
+   "contingencies": [
+    {
+     "sign": "Danum 回程延誤",
+     "trigger": "（最後一晚選 KK 時）抵達 LDU 的時間趕不上當天國內線",
+     "decider": "團員聯絡人（出發前指定一位）",
+     "fallback": "改住 Lahad Datu，隔天最早班機飛 BKI 再接國際線",
+     "extra_cost": {
+      "amount": null,
+      "note": "Lahad Datu 一晚住宿與國內線改票費；KK 已訂住宿能否退費未知；除夕當天選擇有限"
+     }
+    }
+   ]
   },
   {
    "day": 9,
@@ -1210,7 +1369,130 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "農曆新年初一。"
    ],
-   "weather_alt": "航班取消：聯絡航空公司與旅遊保險；春節期間改票選擇有限。"
+   "weather_alt": "航班取消：聯絡航空公司與旅遊保險；春節期間改票選擇有限。",
+   "contingencies": [
+    {
+     "sign": "航班取消或大幅延誤通知",
+     "trigger": "國內段延誤，使轉機時間低於航空公司最短轉機時間（未查證）",
+     "decider": "團員聯絡人（出發前指定一位）",
+     "fallback": "聯絡航空公司改票並通知保險公司；春節期間可能要多留 1 晚以上",
+     "extra_cost": {
+      "amount": null,
+      "note": "額外住宿與改票費；是否理賠依保單條款"
+     }
+    }
+   ]
+  }
+ ],
+ "connections": [
+  {
+   "id": "c-d6-brl",
+   "day": 6,
+   "option": "brl",
+   "title": "Tabin → Lahad Datu，銜接 BRL 排程車",
+   "buffer_min": 30,
+   "depart": {
+    "time": "07:00",
+    "status": "tbc",
+    "label": "從 Tabin 出發（已列入向業者確認的問題，尚未回覆）"
+   },
+   "legs": [
+    {
+     "label": "Tabin → Lahad Datu",
+     "duration_h": 1.5,
+     "basis": "Tabin 官方：礫石路約 1.5 小時"
+    }
+   ],
+   "deadline": {
+    "time": "09:30",
+    "label": "BRL 排程車從 Lahad Datu 出發（第三方資料）"
+   },
+   "missing": [
+    "BRL 排程車的集合地點與報到截止時間",
+    "東北季風期間這段礫石路的實際車程"
+   ],
+   "basis": "趕不上時的備案是 BRL 非排程私人接送（已預設納入試算）"
+  },
+  {
+   "id": "c-d6-dvfc",
+   "day": 6,
+   "option": "dvfc",
+   "title": "Tabin → Lahad Datu，銜接 DVFC 交通",
+   "buffer_min": 30,
+   "depart": {
+    "time": "07:00",
+    "status": "tbc",
+    "label": "從 Tabin 出發（已列入向業者確認的問題，尚未回覆）"
+   },
+   "legs": [
+    {
+     "label": "Tabin → Lahad Datu",
+     "duration_h": 1.5,
+     "basis": "Tabin 官方：礫石路約 1.5 小時"
+    }
+   ],
+   "deadline": {
+    "time": null,
+    "label": "DVFC 2/3（三）從 Lahad Datu 發車"
+   },
+   "missing": [
+    "DVFC 官方只說交通日為週一、三、五，未公布發車時刻"
+   ],
+   "basis": "趕不上時的備案是 DVFC 非排程私人接送（已預設納入試算）"
+  },
+  {
+   "id": "c-d8-kk",
+   "day": 8,
+   "option": "kk",
+   "title": "Danum → Lahad Datu，銜接 LDU → BKI 國內線",
+   "buffer_min": 90,
+   "depart": {
+    "time": null,
+    "label": "Danum 回程發車（BRL 退房 11:30；DVFC 未查證）"
+   },
+   "legs": [
+    {
+     "label": "Danum → Lahad Datu",
+     "duration_h": 2.5,
+     "basis": "官方／第三方：礫石路約 2.5 小時"
+    }
+   ],
+   "deadline": {
+    "time": null,
+    "label": "2/5 LDU → BKI 班機報到截止"
+   },
+   "missing": [
+    "航班尚未訂位，2027 年班表未查證"
+   ],
+   "basis": "緩衝 90 分鐘為規劃自訂（報到加上路況變數），非航空公司規定"
+  },
+  {
+   "id": "c-d9-ld",
+   "day": 9,
+   "option": "ld",
+   "title": "LDU → BKI 國內線，銜接返台國際線",
+   "buffer_min": 120,
+   "depart": {
+    "time": null,
+    "label": "2/6 LDU → BKI 班機起飛"
+   },
+   "legs": [
+    {
+     "label": "LDU → BKI",
+     "duration_h": null,
+     "basis": "第三方行程稱約 55 分鐘，未查證班表"
+    }
+   ],
+   "deadline": {
+    "time": null,
+    "label": "返台國際線報到截止"
+   },
+   "missing": [
+    "國內線與國際線皆未訂位",
+    "兩段是否同一張機票（不同機票時延誤不保障）",
+    "航空公司規定的最短轉機時間"
+   ],
+   "basis": "緩衝 120 分鐘為規劃自訂，非航空公司規定"
   }
  ]
 }
@@ -1312,20 +1594,20 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "tabin_base",
-   "name": "Tabin 5D4N Wildlife Safari Base Package",
+   "name": "Tabin 5D4N Wildlife Safari（報價主項）",
    "category": "per_person",
    "unit": "per_person",
    "price": 5100,
    "status": "quoted",
    "applies": "always",
    "includes": [
-    "Tabin 5 天 4 夜套裝（明細待業者提供）"
+    "5days 4 Night Tabin Wildlife Safari（信中未列包含內容）"
    ],
    "duplicate_risk": [
     "private_guide",
     "night_safari"
    ],
-   "assumption": "每人價，條件為至少 2 人同房。官方 4D3N 套裝（RM3,350 起／人）已含排程接送、導覽步行、黃昏車遊、夜遊與 Lipad 觀景塔過夜；本報價 5D4N 是否同樣包含、私人項目是加購或取代，待業者確認。",
+   "assumption": "報價信原文：RM5,100／人，min 2 pax share 1 room；信件標題為「5Days 4 night Private tours」，未列包含內容。官方 4D3N 套裝（RM3,350 起／人）已含排程接送、導覽步行、黃昏車遊、夜遊與 Lipad 觀景塔過夜；本報價的私人項目是加購還是取代，待業者確認。",
    "source_ids": [
     "src_quote_a",
     "src_tabin_official"
@@ -2007,6 +2289,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 
 <script type="application/json" id="data-species">
 {
+ "group_label": "哺乳類",
  "items": [
   {
    "id": "orangutan",
@@ -4693,9 +4976,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "src_quote_a",
    "title": "當地業者 A：Tabin 5D4N Private Tours 報價（Email）",
    "type": "operator_quote",
-   "checked_on": "待補",
+   "checked_on": "2026-11-04",
    "reliability": "high",
-   "note": "業者名稱依使用者要求不公開；信件日期待補。"
+   "note": "業者名稱依使用者要求不公開。信件日期 2026-11-04；原文共 5 行計價，逐項對照見 docs/05-報價信對照.md。信中沒有旅行日期、報價有效期、訂金與取消條款、接送起訖點、各項目包含內容。"
   },
   {
    "id": "src_tabin_official",
@@ -5863,6 +6146,135 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   "頭燈優先使用紅光或弱光，找到動物後由嚮導決定是否照射。",
   "保持安靜，手機調靜音並關閉螢幕亮光。",
   "下雨或雷雨時聽從嚮導決定是否取消。"
+ ],
+ "tasks": [
+  {
+   "id": "ask_tabin",
+   "title": "寄出 Tabin 確認問題（計價基礎、2/3 清晨出發、有效期與付款取消條款）",
+   "due": "2026-11-18",
+   "due_kind": "self",
+   "due_basis": "規劃自訂：其他決定都卡在這封回信",
+   "consequence": "無法判斷是否重複付費；Day 6 能否同日轉場不明，Danum 無法下訂",
+   "source_ids": [
+    "src_quote_a"
+   ]
+  },
+  {
+   "id": "ask_danum",
+   "title": "向 BRL、DVFC 索取 2/3–2/5 正式報價與接送時刻",
+   "due": "2026-11-18",
+   "due_kind": "self",
+   "due_basis": "規劃自訂",
+   "consequence": "BRL 目前是第三方價、DVFC 是推估價，兩方案無法比較",
+   "source_ids": [
+    "src_brl_3p",
+    "src_dvfc_3p"
+   ]
+  },
+  {
+   "id": "flights_return",
+   "title": "鎖定回程機位：2/5 或 2/6 LDU → BKI、2/6 BKI → 台灣",
+   "due": "2026-11-30",
+   "due_kind": "self",
+   "due_basis": "規劃自訂：2/6 是初一，機位最緊",
+   "consequence": "春節機位售完或票價大漲；整趟行程的結束日被迫更動",
+   "source_ids": [
+    "src_cny"
+   ]
+  },
+  {
+   "id": "decide_danum",
+   "title": "決定 Danum 方案（BRL 或 DVFC）",
+   "due": "2026-12-05",
+   "due_kind": "self",
+   "due_basis": "規劃自訂",
+   "depends_on": [
+    "ask_tabin",
+    "ask_danum"
+   ],
+   "consequence": "Danum 住宿與 Day 6 接送無法下訂",
+   "source_ids": []
+  },
+  {
+   "id": "flights_out",
+   "title": "訂去程：台灣 → BKI／KUL → LDU（1/29 抵達）",
+   "due": "2026-12-15",
+   "due_kind": "self",
+   "due_basis": "規劃自訂",
+   "depends_on": [
+    "flights_return"
+   ],
+   "consequence": "1/29 到不了 Lahad Datu，Day 2 的 Tabin 接送要延後",
+   "source_ids": []
+  },
+  {
+   "id": "book_tabin",
+   "title": "Tabin 下訂並付訂金",
+   "due": null,
+   "due_basis": "報價信沒有訂金期限與有效期，已列入確認問題",
+   "depends_on": [
+    "ask_tabin"
+   ],
+   "consequence": "報價可能失效，或 River Chalet（共 10 間）被訂走",
+   "source_ids": [
+    "src_quote_a",
+    "src_tabin_chalets"
+   ]
+  },
+  {
+   "id": "book_danum",
+   "title": "Danum 住宿下訂並付訂金（含 Day 6 接送安排）",
+   "due": null,
+   "due_basis": "尚未取得正式報價與付款條款",
+   "depends_on": [
+    "decide_danum"
+   ],
+   "consequence": "春節前後房間不足；Day 6 接送無法確認",
+   "source_ids": []
+  },
+  {
+   "id": "book_buffer",
+   "title": "訂 1/29 與 2/5 兩個緩衝晚的住宿（選可免費取消的房型）",
+   "due": "2026-12-20",
+   "due_kind": "self",
+   "due_basis": "規劃自訂：2/5 是除夕",
+   "depends_on": [
+    "flights_return"
+   ],
+   "consequence": "除夕當晚 Lahad Datu／KK 住宿選擇變少、變貴",
+   "source_ids": [
+    "src_cny"
+   ]
+  },
+  {
+   "id": "insurance",
+   "title": "投保旅遊保險（含醫療、航班延誤與取消）",
+   "due": "2027-01-15",
+   "due_kind": "self",
+   "due_basis": "規劃自訂",
+   "consequence": "延誤與改票的額外支出全部自付",
+   "source_ids": []
+  },
+  {
+   "id": "offline_pack",
+   "title": "列印 9 天的當日流程、匯出規劃 JSON、用手機開飛航模式確認網站打得開",
+   "due": "2027-01-27",
+   "due_kind": "self",
+   "due_basis": "規劃自訂：保護區內網路不穩",
+   "consequence": "現場查不到集合時間、備案與聯絡方式",
+   "source_ids": []
+  },
+  {
+   "id": "mdac",
+   "title": "每位旅客上網填寫 MDAC（入境前 3 天內才能填）",
+   "due": "2027-01-28",
+   "due_kind": "external",
+   "due_basis": "外交部領事事務局：入境前 3 天內填寫；1/29 入境，最早 1/26 可填。出發前請再核對",
+   "consequence": "入境馬來西亞時可能受阻",
+   "source_ids": [
+    "src_boca"
+   ]
+  }
  ]
 }
 </script>
@@ -6222,7 +6634,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       case "trip":
         if (!/^\d{4}-\d{2}-\d{2}$/.test(d.start || "") || !/^\d{4}-\d{2}-\d{2}$/.test(d.end || "")) e.push("trip.start / trip.end 格式需為 YYYY-MM-DD");
         for (const k of ["title", "region_label"]) if (typeof d[k] !== "string") e.push(`trip.${k} 需為字串`);
-        for (const k of ["default_pax", "default_fx", "default_usd_myr"]) if (!isNum(d[k]) || d[k] <= 0) e.push(`trip.${k} 需為正數`);
+        for (const k of ["default_pax", "default_fx"]) if (!isNum(d[k]) || d[k] <= 0) e.push(`trip.${k} 需為正數`);
         if (!Number.isInteger(d.nights) || d.nights < 1) e.push("trip.nights 需為正整數");
         if (!Array.isArray(d.segments)) e.push("trip.segments 需為陣列");
         break;

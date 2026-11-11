@@ -1,0 +1,89 @@
+{
+ "_note": "對照旅行（測試用假資料，不是真實報價）：刻意和沙巴行程結構不同——2 人、單一幣別（沒有結算幣別）、沒有物種、沒有方案二選一、只有一個區段。用來證明引擎不需要為新行程修改。",
+ "trip": {
+  "id": "contrast-city",
+  "title": "對照旅行：三天兩夜城市行（測試資料）",
+  "short_title": "對照旅行（測試資料）",
+  "subtitle": "3 天 2 夜｜2 人｜單一幣別",
+  "region_label": "測試用城市",
+  "start": "2028-04-10",
+  "end": "2028-04-12",
+  "nights": 2,
+  "default_pax": 2,
+  "default_rooms": 1,
+  "default_fx": 1,
+  "currency": { "base": "JPY", "home": null, "symbols": { "JPY": "¥" }, "default_rates": {} },
+  "regions": { "city": "市區", "move": "移動" },
+  "transit_region": "move",
+  "segments": [ { "key": "city", "label": "市區", "nights": 2, "check_in": "2028-04-10" } ],
+  "holidays": [],
+  "choices": [],
+  "pax_rules": []
+ },
+ "itinerary": {
+  "days": [
+   { "day": 1, "date": "2028-04-10", "region": "city", "short": "抵達", "kind": ["arrival"], "lodging_prev": null, "lodging": "hotel", "lodging_status": "confirmed",
+     "activities": [
+      { "id": "a1-train", "slot": "morning", "type": "transfer", "title": "機場 → 市區（鐵路）", "start": "09:00", "duration_h": 1.25, "effort": 1, "status": "confirmed", "location": "station", "needs": [], "species": [] },
+      { "id": "a1-eve", "slot": "evening", "type": "meal", "title": "晚間安排", "duration_h": null, "effort": 1, "status": "suggested", "location": "hotel", "needs": [], "species": [],
+        "options": [ { "label": "茶席體驗", "cost_ref": "tea" }, { "label": "自由活動", "cost_ref": null } ], "default_choice": 0 }
+     ], "notes": [], "weather_alt": "下雨改室內行程。",
+     "contingencies": [ { "sign": "列車停駛公告", "trigger": "延誤超過 60 分鐘", "decider": "旅客自行決定", "fallback": "改搭機場巴士", "extra_cost": { "amount": 3000, "currency": "JPY", "note": "兩人車資" } } ] },
+   { "day": 2, "date": "2028-04-11", "region": "city", "short": "市區", "kind": ["activity"], "lodging_prev": "hotel", "lodging": "hotel", "lodging_status": "confirmed",
+     "activities": [
+      { "id": "a2-walk", "slot": "morning", "type": "walk", "title": "市區步行", "start": "09:30", "duration_h": 3, "effort": 2, "status": "suggested", "location": "hotel", "needs": [], "species": [] },
+      { "id": "a2-eve", "slot": "evening", "type": "meal", "title": "晚間安排", "duration_h": null, "effort": 1, "status": "suggested", "location": "hotel", "needs": [], "species": [],
+        "options": [ { "label": "茶席體驗", "cost_ref": "tea" }, { "label": "自由活動", "cost_ref": null } ], "default_choice": 1 }
+     ], "notes": [], "weather_alt": "下雨改室內行程。" },
+   { "day": 3, "date": "2028-04-12", "region": "move", "short": "返程", "kind": ["departure"], "lodging_prev": "hotel", "lodging": null, "lodging_status": null,
+     "activities": [
+      { "id": "a3-train", "slot": "morning", "type": "transfer", "title": "市區 → 機場（鐵路）", "start": "09:00", "duration_h": 1.25, "effort": 1, "status": "confirmed", "location": "station", "needs": [], "species": [] }
+     ], "notes": [], "weather_alt": "提早一班車出發。" }
+  ],
+  "connections": [
+   { "id": "c-ok", "day": 3, "title": "市區 → 機場，銜接班機報到", "buffer_min": 20,
+     "depart": { "time": "09:00", "status": "confirmed", "label": "從飯店出發" },
+     "legs": [ { "label": "飯店 → 車站", "duration_h": 0.25 }, { "label": "車站 → 機場", "duration_h": 1 } ],
+     "deadline": { "time": "11:00", "label": "班機報到截止" } },
+   { "id": "c-tight", "day": 3, "title": "晚一班車的情況", "buffer_min": 20,
+     "depart": { "time": "09:35", "status": "confirmed", "label": "從飯店出發" },
+     "legs": [ { "label": "飯店 → 機場", "duration_h": 1.25 } ],
+     "deadline": { "time": "11:00", "label": "班機報到截止" } },
+   { "id": "c-miss", "day": 3, "title": "再晚一班車的情況", "buffer_min": 20,
+     "depart": { "time": "10:00", "status": "confirmed", "label": "從飯店出發" },
+     "legs": [ { "label": "飯店 → 機場", "duration_h": 1.25 } ],
+     "deadline": { "time": "11:00", "label": "班機報到截止" } }
+  ]
+ },
+ "costs": {
+  "currency": "JPY",
+  "categories": { "stay": "住宿", "move": "交通", "food": "餐飲與體驗" },
+  "items": [
+   { "id": "hotel", "name": "飯店", "category": "stay", "unit": "per_room_per_night", "qty": { "nights": 2 }, "price": 12000, "status": "confirmed", "applies": "always", "source_ids": [] },
+   { "id": "rail", "name": "鐵路周遊券", "category": "move", "unit": "per_person", "price": 5000, "status": "public_rate", "applies": "always", "source_ids": [] },
+   { "id": "dinner", "name": "第一晚晚餐（包場）", "category": "food", "unit": "per_group", "price": 8000, "status": "estimate", "applies": "always", "assumption": "測試用估算", "source_ids": [] },
+   { "id": "tea", "name": "茶席體驗", "category": "food", "unit": "per_person_per_night", "qty": { "nights_from": "activity_count" }, "quoted_nights": 2, "count_label": "茶席", "price": 1500, "status": "quoted", "applies": "always", "source_ids": [] },
+   { "id": "museum", "name": "美術館門票", "category": "food", "unit": "per_person", "price": null, "status": "unquoted", "applies": "optional", "default_on": true, "source_ids": [] }
+  ]
+ },
+ "species": { "items": [] },
+ "locations": {
+  "areas": [],
+  "pois": [
+   { "id": "hotel", "name": "飯店", "type": "lodging", "region": "city", "lat": 35.0, "lng": 135.75, "approximate": true, "source_ids": [] },
+   { "id": "station", "name": "車站", "type": "transport", "region": "move", "lat": 34.99, "lng": 135.76, "approximate": true, "source_ids": [] }
+  ],
+  "route": ["station", "hotel", "station"]
+ },
+ "sources": { "items": [] },
+ "essentials": {
+  "checklist": [ { "title": "出發前", "items": [ { "id": "passport", "text": "護照", "critical": true } ] } ],
+  "risks": [ { "id": "r-rain", "level": 3, "title": "下雨", "trigger": "降雨", "impact": "步行行程縮短", "action": "改室內行程" } ],
+  "ethics": [], "night": [],
+  "tasks": [
+   { "id": "t-flight", "title": "訂機票", "due": "2028-02-01", "due_kind": "external", "consequence": "票價上漲" },
+   { "id": "t-hotel", "title": "訂飯店", "due": "2028-03-01", "due_kind": "self", "depends_on": ["t-flight"], "consequence": "沒有房間" },
+   { "id": "t-unknown", "title": "確認美術館票價", "due": null, "consequence": "預算少一項" }
+  ]
+ }
+}
