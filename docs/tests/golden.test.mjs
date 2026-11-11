@@ -82,7 +82,7 @@ if (process.argv.includes("--update") || !existsSync(file)) {
   mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text);
   console.log(`已寫入黃金檔（${Object.keys(cases).length} 組設定，${text.length} 字元）`); process.exit(0);
 }
-const want = readFileSync(file, "utf8");
+const want = readFileSync(file, "utf8").replace(/\r\n/g, "\n");   // 不受 git 換行設定影響
 if (want === text) { console.log(`✔ 黃金檔相符（${Object.keys(cases).length} 組設定）\n\n1 passed, 0 failed`); process.exit(0); }
 const a = JSON.parse(want), diffs = [];
 (function walk(x, y, p) {

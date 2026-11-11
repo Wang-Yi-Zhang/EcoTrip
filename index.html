@@ -263,7 +263,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 
 <!-- =====================================================================
      內建資料（Mock / 本機資料）。邏輯上的 6+1 個 JSON 資料集。
-     修改方式見 docs/03-使用與維護.md。未知值一律為 null，絕不以 0 代替。
+     修改方式見 docs/03-部署與維護.md。未知值一律為 null，絕不以 0 代替。
      ===================================================================== -->
 <script type="application/json" id="data-trip">
 {
@@ -6294,6 +6294,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   const BUILTIN_APPLIES = ["always", "flights", "extras", "optional"];
   const CTX_KEYS = ["pax", "rooms", "singles", "triples", "activity_count"];
   const ENVELOPE_SCHEMA = "ecotrip/1";
+  const COST_STATUSES = ["confirmed", "quoted", "public_rate", "third_party", "estimate", "demo", "unquoted"];
   /** 費用分類（鍵與顯示名稱）由資料決定：costs.categories */
   function categoryLabels(data) { return (data.costs && data.costs.categories) || {}; }
   function currencyOf(data) { const c = (data.trip && data.trip.currency) || {}; return { base: c.base || null, home: c.home || null, symbols: c.symbols || {}, defaultRates: c.default_rates || {} }; }
@@ -6654,7 +6655,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         break;
       case "costs": {
         if (!Array.isArray(d.items)) { e.push("costs.items 需為陣列"); break; }
-        const units = Object.keys(UNIT_LABEL), st = ["confirmed", "quoted", "public_rate", "third_party", "estimate", "demo", "unquoted"];
+        const units = Object.keys(UNIT_LABEL), st = COST_STATUSES;
         d.items.forEach((it, i) => {
           if (typeof it.id !== "string") e.push(`items[${i}].id 缺少`);
           if (!units.includes(it.unit)) e.push(`items[${i}]（${it.id}）unit「${it.unit}」不在允許清單`);
@@ -6856,7 +6857,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       plannedForFilled: filled.reduce((a, l) => a + (l.planned || 0), 0), unplannedFilled: filled.filter(l => l.planned == null).length };
   }
 
-  global.EcoCore = { taskList, connections, actualsSummary, STATUS_LABEL, UNIT_LABEL, OBS_LABELS, WEEKDAY, DATASETS, BUILTIN_APPLIES, CTX_KEYS, ENVELOPE_SCHEMA, isNum, addDaysISO, weekdayZh,
+  /**
+   * 費用欄位允許值的唯一來源（試算表下拉選單 gas/Code.gs 的 ALLOWED 必須與此相同，由 docs/tests/gas.test.mjs 比對）。
+   * 前四項由引擎決定；後四項由行程資料決定（分類、幣別、會影響費用的選擇題選項）。
+   */
+  function allowedValues(data) {
+    const money = currencyOf(data), opts = [];
+    for (const c of choiceDefs(data)) if (c.compare_category) for (const o of c.options) opts.push(o.key);
+    return { unit: Object.keys(UNIT_LABEL).filter(u => u !== "percent"), status: COST_STATUSES.slice(), qty_from: CTX_KEYS.slice(), dataset: DATASETS.slice(),
+      category: Object.keys(categoryLabels(data)), price_currency: [...new Set([money.base, money.home, ...Object.keys(money.defaultRates)].filter(Boolean))],
+      applies: BUILTIN_APPLIES.concat(opts), when: ["singles"].concat(opts.map(k => "plan_" + k)) };
+  }
+
+  global.EcoCore = { allowedValues, COST_STATUSES, taskList, connections, actualsSummary, STATUS_LABEL, UNIT_LABEL, OBS_LABELS, WEEKDAY, DATASETS, BUILTIN_APPLIES, CTX_KEYS, ENVELOPE_SCHEMA, isNum, addDaysISO, weekdayZh,
     categoryLabels, currencyOf, choiceDefs, choiceDef, choiceValue, optionSelected, itemActive,
     resolveLodging, poiById, activityChoice, activityStatus, activityCostRef, computeCtx, computeBudget, compareChoice,
     scenarios, checkItinerary, lodgingNightsSummary, observabilityLabel, validateDataset, validateEnvelope,
@@ -7131,7 +7144,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       kpi("已估價總費用", fmtBase(b.total), `${hasHome() ? fmtHome(b.totalHome) + "｜" : ""}含預備金 ${b.contingencyPct}%｜不含 ${b.unpriced.length} 項未報價｜業者報價部分 ${fmtBase(b.completeness.quoted)}`, "amber"),
       kpi("每人平均", fmtBase(b.perPerson), hasHome() ? fmtHome(b.perPersonHome) : null, "amber"),
       kpi("業者報價占比", fmtPct(b.completeness.quotedShare), `第三方／公開價 ${fmtPct(b.completeness.pubShare)}｜估算與示範 ${fmtPct(b.completeness.softShare)}｜${b.unpriced.length} 項未估價不計入`),
-      kpi("目標物種", `${nT} 種`, `資料庫共 ${nSp} 種${spGroup}（可自訂）`)));
+      nSp ? kpi("目標物種", `${nT} 種`, `資料庫共 ${nSp} 種${spGroup}（可自訂）`) : null));
     // 決策問題（題目由資料組成：有幾個區域、有沒有方案比較、有沒有物種）
     let qn = 0;
     const q = (title, answer, tab, n = ++qn) => h("li", null, h("b", null, `${n}. ${title}`), h("div", { class: "small" }, answer, " ", h("button", { class: "btn small ghost", type: "button", onclick: () => selectTab(tab, true) }, "前往 →")));
@@ -8062,6 +8075,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (App.state.dataSource === "remote" && App.state.gasUrl) loadRemote(false);
     window.addEventListener("hashchange", () => { const k = location.hash.slice(1); if (k !== S().tab && TABS.some(t => t.id === k)) selectTab(k, false); });
     window.addEventListener("storage", e => { if (e.key === LS_KEY) { App.state = loadState(App.data); renderActive(); } });
+    // 離線支援：以 http(s) 開啟時註冊 Service Worker（sw.js）；失敗不影響其他功能
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(e => console.warn("離線支援未啟用", e));
   }
   window.EcoApp = { App, INat, sanitizeState, defaultState, computeNow: () => C.computeBudget(D(), S()) };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();

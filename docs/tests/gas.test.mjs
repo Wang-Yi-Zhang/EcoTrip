@@ -97,7 +97,16 @@ t("既有工作表（缺欄位、順序不同、有自訂欄與資料）：只�
   assert.equal(h.length, 7 + ctx.COSTS_HEADERS.length - 6);
   assert.deepEqual(J(sh.getRange(2, 1, 1, 7).getValues()[0]), ["Tabin base", "tabin_base", "阿明負責問", 5100, "quoted", "per_person", "per_person"]);
 });
-t("下拉允許值與網站驗證一致（unit / status / category / 幣別 / qty_from）", () => {
+t("單一來源：Code.gs 的 ALLOWED 與網站 EcoCore.allowedValues(data) 逐項相同（8 個欄位）", () => {
+  const { ctx } = makeEnv(), want = J(C.allowedValues(data)), got = J(ctx.ALLOWED);
+  assert.deepEqual(Object.keys(got).sort(), Object.keys(want).sort());
+  for (const k of Object.keys(want)) assert.deepEqual([...got[k]].sort(), [...want[k]].sort(), `${k} 不一致：請執行 node tools/gas-allowed.mjs --write`);
+  // 下拉選得到的每個 applies／when／幣別，網站的參照檢查都要接受
+  for (const [field, vals] of [["applies", got.applies], ["when", got.when], ["price_currency", got.price_currency]]) for (const v of vals) {
+    const d = J(data); d.costs.items[0][field] = v; assert.deepEqual(J(C.validateReferences(d)), [], `${field}=${v}`);
+  }
+});
+t("下拉允許值與網站驗證一致（unit / status / category / 幣別/ qty_from）", () => {
   const { ctx } = makeEnv();
   const units = Object.keys(C.UNIT_LABEL).filter(u => u !== "percent");
   assert.deepEqual([...ctx.ALLOWED.unit].sort(), units.sort());

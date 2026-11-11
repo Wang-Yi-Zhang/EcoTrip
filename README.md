@@ -26,6 +26,22 @@ node docs/tests/core.test.mjs
 node docs/tests/gas.test.mjs
 ```
 
+```bash
+node docs/tests/golden.test.mjs
+```
+
+```bash
+node docs/tests/contrast.test.mjs
+```
+
+## 用在另一趟旅行
+
+程式碼不含任何沙巴的細節，行程內容都在資料裡。準備一份行程資料檔（範本：`docs/tests/fixtures/contrast-trip.json`），執行下面的指令就會產生新行程的網頁。詳見 [docs/07](docs/07-引擎通用化與用在其他旅行.md) 第 3 節。
+
+```bash
+node tools/build-trip.mjs 我的行程.json 我的行程.html
+```
+
 ## 檔案
 
 | 檔案 | 內容 |
@@ -39,6 +55,14 @@ node docs/tests/gas.test.mjs
 | [docs/向業者確認問題清單.md](docs/向業者確認問題清單.md) | 寄給 Tabin、BRL、DVFC 的中英對照問題 |
 | `gas/Code.gs` | Google Apps Script 遠端資料端點範例，含 `setupSheets()` 自動建立欄位 |
 | `docs/tests/core.test.mjs` | 核心計算與檢查邏輯的單元測試 |
+| `docs/tests/golden.test.mjs` | 黃金檔：沙巴行程在 36 組設定下的結果不得改變 |
+| `docs/tests/contrast.test.mjs` | 對照旅行（結構不同的另一趟行程）跑同一個引擎；程式碼不得含行程專有字樣 |
+| [docs/05-報價信對照.md](docs/05-報價信對照.md) | Tabin 報價信原文與費用資料逐項對照 |
+| [docs/06-旅伴三題測試與手機離線確認.md](docs/06-旅伴三題測試與手機離線確認.md) | 需要人來做的兩項驗證 |
+| [docs/07-引擎通用化與用在其他旅行.md](docs/07-引擎通用化與用在其他旅行.md) | 現行資料格式、怎麼裝另一趟旅行、最新測試結果與未完成事項 |
+| `sw.js` | 離線支援（Service Worker），要和 `index.html` 放在同一層 |
+| `tools/build-trip.mjs` | 用另一趟行程的資料檔產生網頁 |
+| `tools/gas-allowed.mjs` | 依行程資料重寫 `gas/Code.gs` 的下拉允許值 |
 | `docs/tests/gas.test.mjs` | `Code.gs` 模擬測試（假試算表，不連 Google） |
 
 ## 資料授權與限制

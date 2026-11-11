@@ -35,16 +35,17 @@
 var SHEET_COSTS = "costs";
 var SHEET_JSON = "json";
 
-// 允許值需與網站 index.html 的驗證規則一致（2026-11-11 對照）
+// 允許值的唯一來源是網站（index.html 的 EcoCore.allowedValues）。這一段由 node tools/gas-allowed.mjs --write 產生，
+// 請勿手改；docs/tests/gas.test.mjs 會比對兩邊是否相同。
 var ALLOWED = {
   category: ["group_fixed", "per_person", "danum", "other"],
   unit: ["per_person", "per_group", "per_group_per_day", "per_person_per_night", "per_room_per_night", "per_person_trip", "per_person_day", "per_room"],
-  status: ["quoted", "public_rate", "third_party", "confirmed", "estimate", "demo", "unquoted"],
-  applies: ["always", "brl", "dvfc", "flights", "extras", "optional"],
+  status: ["confirmed", "quoted", "public_rate", "third_party", "estimate", "demo", "unquoted"],
+  applies: ["always", "flights", "extras", "optional", "brl", "dvfc"],
   price_currency: ["MYR", "TWD", "USD"],
   when: ["singles", "plan_brl", "plan_dvfc"],
   qty_from: ["pax", "rooms", "singles", "triples", "activity_count"],
-  dataset: ["costs", "trip", "itinerary", "species", "locations", "sources", "essentials"]
+  dataset: ["trip", "itinerary", "costs", "species", "locations", "sources", "essentials"]
 };
 
 /**

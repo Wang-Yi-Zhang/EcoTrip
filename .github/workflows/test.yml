@@ -1,0 +1,22 @@
+name: tests
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 核心計算與行程檢查
+        run: node docs/tests/core.test.mjs
+      - name: Apps Script 模擬測試與允許值單一來源
+        run: node docs/tests/gas.test.mjs
+      - name: 黃金檔（沙巴行程結果不得改變）
+        run: node docs/tests/golden.test.mjs
+      - name: 對照旅行與專有字樣
+        run: node docs/tests/contrast.test.mjs
+      - name: 對照旅行可以產生網頁
+        run: node tools/build-trip.mjs docs/tests/fixtures/contrast-trip.json /tmp/contrast.html
