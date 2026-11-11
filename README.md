@@ -22,6 +22,10 @@ Tabin Wildlife Reserve × Danum Valley｜2027/01/29–02/06｜9 天 8 夜｜預�
 node docs/tests/core.test.mjs
 ```
 
+```bash
+node docs/tests/gas.test.mjs
+```
+
 ## 檔案
 
 | 檔案 | 內容 |
@@ -33,8 +37,9 @@ node docs/tests/core.test.mjs
 | [docs/04-測試結果.md](docs/04-測試結果.md) | 實際執行過的測試，以及尚未測試的項目 |
 | [docs/research.md](docs/research.md)、`docs/research-data.json` | 事實查證結果（附來源與查核日期） |
 | [docs/向業者確認問題清單.md](docs/向業者確認問題清單.md) | 寄給 Tabin、BRL、DVFC 的中英對照問題 |
-| `gas/Code.gs` | Google Apps Script 遠端資料端點範例 |
+| `gas/Code.gs` | Google Apps Script 遠端資料端點範例，含 `setupSheets()` 自動建立欄位 |
 | `docs/tests/core.test.mjs` | 核心計算與檢查邏輯的單元測試 |
+| `docs/tests/gas.test.mjs` | `Code.gs` 模擬測試（假試算表，不連 Google） |
 
 ## 資料授權與限制
 
