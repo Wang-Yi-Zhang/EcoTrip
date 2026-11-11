@@ -1,3 +1,10 @@
+/** @OnlyCurrentDoc */
+/*
+ * ↑ 上面這行是授權範圍標註，請保留：讓 Apps Script 只申請 spreadsheets.currentonly
+ *   （只能存取本腳本所綁定的這一份試算表），而不是存取你帳號中所有試算表的 spreadsheets 權限。
+ *   因此本腳本必須是「綁定在試算表上」的腳本，只能用 getActiveSpreadsheet()，不能用 openById()。
+ *   本端點刻意維持唯讀：請勿加入寫入呼叫或 doPost。
+ */
 /**
  * EcoTrip 2027 — Google Apps Script 遠端資料端點範例
  *
