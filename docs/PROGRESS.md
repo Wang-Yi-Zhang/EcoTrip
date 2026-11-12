@@ -4,10 +4,10 @@
 
 ## 現況
 
-- `index.html`：引擎（`core-js`）與介面（`ui-js`）不含任何行程專有內容；沙巴的細節全部在 7 個 `data-*` 區塊。
+- 網站結構：每趟旅行一個資料夾，根目錄 `index.html` 是首頁（由 `tools/build-site.mjs` 產生）。`sabah2027/index.html` 是程式碼來源：引擎（`core-js`）與介面（`ui-js`）不含任何行程專有內容；沙巴的細節全部在 7 個 `data-*` 區塊。
 - 測試 4 支，全部通過：`core`（31）、`gas`（10）、`golden`（36 組設定）、`contrast`（16）。
 - 功能：待辦與期限、銜接餘裕、每日備案表、單日列印、離線（`sw.js`）、旅程後回填。
-- 工具：`tools/build-trip.mjs`（用另一份資料產生網頁）、`tools/gas-allowed.mjs`（重寫 `Code.gs` 的下拉允許值）。
+- 工具：`tools/build-site.mjs`（產生各行程資料夾的網頁與首頁）、`tools/sheet-export.mjs`（費用貼進試算表、檢查端點）、`tools/build-trip.mjs`（單一行程產生網頁）、`tools/gas-allowed.mjs`（重寫 `Code.gs` 的下拉允許值）。
 - 報價信原文（2026-11-04）已逐項對照，數字相符，見 `docs/05`。
 
 ## 第四輪（2026-11-12）做了什麼
@@ -34,7 +34,8 @@
 ## 待使用者決定或執行
 
 - 寄出 `docs/向業者確認問題清單.md`（待辦第一項，自訂目標日 2026-11-18）。DVFC 的部分可以改問：排程車 2/3、2/5 能否預約 4 個座位、車費是否含在套裝內。
-- 建立 GitHub repo 並 push（步驟見 `docs/03`，記得連 `sw.js` 一起上傳）。
+- 建立 GitHub repo 並 push（步驟見 `docs/03`）。repo 名稱建議用通用的（例如 `trips`），這一趟的網址會是 `…/trips/sabah2027/`。
+- Google 試算表：重新貼上新版 `gas/Code.gs`、執行 `setupSheets`、發新版本，再用 `node tools/sheet-export.mjs` 產生費用資料貼入並 `--check`（步驟見 `docs/03` D.5）。
 - push 之後看 GitHub Actions 是否全綠。
 - 旅伴三題測試、手機飛航模式測試（`docs/06`）。
 - 業者回覆後：更新 `data-costs`、`essentials.tasks` 的期限、`itinerary.connections` 的出發時間與 `status`。

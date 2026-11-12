@@ -20,3 +20,5 @@ jobs:
         run: node docs/tests/contrast.test.mjs
       - name: 對照旅行可以產生網頁
         run: node tools/build-trip.mjs docs/tests/fixtures/contrast-trip.json /tmp/contrast.html
+      - name: 首頁與各行程網頁是最新的
+        run: node tools/build-site.mjs --check

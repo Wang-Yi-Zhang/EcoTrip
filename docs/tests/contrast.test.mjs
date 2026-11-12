@@ -8,7 +8,7 @@ import vm from "node:vm";
 import assert from "node:assert/strict";
 
 const here = dirname(fileURLToPath(import.meta.url)), root = join(here, "..", "..");
-const html = readFileSync(join(root, "index.html"), "utf8");
+const html = readFileSync(join(root, "sabah2027", "index.html"), "utf8");
 const coreSrc = html.match(/<script id="core-js">([\s\S]*?)<\/script>/)[1];
 const uiSrc = html.match(/<script id="ui-js">([\s\S]*?)<\/script>/)[1];
 const ctx = { globalThis: {} }; ctx.globalThis = ctx; vm.createContext(ctx); vm.runInContext(coreSrc, ctx);

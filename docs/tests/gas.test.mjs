@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const gasSrc = readFileSync(join(root, "gas", "Code.gs"), "utf8");
-const html = readFileSync(join(root, "index.html"), "utf8");
+const html = readFileSync(join(root, "sabah2027", "index.html"), "utf8");
 const coreCtx = { globalThis: {} }; coreCtx.globalThis = coreCtx; vm.createContext(coreCtx);
 vm.runInContext(html.match(/<script id="core-js">([\s\S]*?)<\/script>/)[1], coreCtx);
 const C = coreCtx.EcoCore;

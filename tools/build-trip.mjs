@@ -8,7 +8,7 @@ import vm from "node:vm";
 const [src, out] = process.argv.slice(2);
 if (!src || !out) { console.error("用法：node tools/build-trip.mjs <行程資料.json> <輸出.html>"); process.exit(2); }
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-let html = readFileSync(join(root, "index.html"), "utf8");
+let html = readFileSync(join(root, "sabah2027", "index.html"), "utf8");
 const data = JSON.parse(readFileSync(src, "utf8"));
 const ctx = { globalThis: {} }; ctx.globalThis = ctx; vm.createContext(ctx);
 vm.runInContext(html.match(/<script id="core-js">([\s\S]*?)<\/script>/)[1], ctx);

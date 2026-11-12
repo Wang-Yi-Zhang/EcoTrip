@@ -10,7 +10,7 @@ import vm from "node:vm";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..", "..");
-const html = readFileSync(join(root, "index.html"), "utf8");
+const html = readFileSync(join(root, "sabah2027", "index.html"), "utf8");
 const ctx = { globalThis: {} }; ctx.globalThis = ctx; vm.createContext(ctx);
 vm.runInContext(html.match(/<script id="core-js">([\s\S]*?)<\/script>/)[1], ctx);
 const C = ctx.EcoCore;

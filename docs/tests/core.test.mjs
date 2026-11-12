@@ -7,7 +7,7 @@ import vm from "node:vm";
 import assert from "node:assert/strict";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const html = readFileSync(join(root, "index.html"), "utf8");
+const html = readFileSync(join(root, "sabah2027", "index.html"), "utf8");
 const core = html.match(/<script id="core-js">([\s\S]*?)<\/script>/)[1];
 const ctx = { globalThis: {} }; ctx.globalThis = ctx; vm.createContext(ctx); vm.runInContext(core, ctx);
 const C = ctx.EcoCore;

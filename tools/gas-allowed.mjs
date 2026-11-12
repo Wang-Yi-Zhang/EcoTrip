@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import vm from "node:vm";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const html = readFileSync(join(root, "index.html"), "utf8");
+const html = readFileSync(join(root, "sabah2027", "index.html"), "utf8");
 const ctx = { globalThis: {} }; ctx.globalThis = ctx; vm.createContext(ctx);
 vm.runInContext(html.match(/<script id="core-js">([^]*?)<\/script>/)[1], ctx);
 const data = {};

@@ -27,7 +27,7 @@
  *
  * 注意：這個端點是公開的，任何人知道網址都能讀取，請勿放入個資、護照號碼、訂位代號。
  *
- * 維護：網站（index.html 的 validateDataset）新增欄位或允許值時，請同步更新下方常數，
+ * 維護：網站（sabah2027/index.html 的 validateDataset）新增欄位或允許值時，請同步更新下方常數，
  *       再重新執行 setupSheets() 並「管理部署作業 → 編輯 → 新版本」。
  */
 
@@ -35,7 +35,7 @@
 var SHEET_COSTS = "costs";
 var SHEET_JSON = "json";
 
-// 允許值的唯一來源是網站（index.html 的 EcoCore.allowedValues）。這一段由 node tools/gas-allowed.mjs --write 產生，
+// 允許值的唯一來源是網站（sabah2027/index.html 的 EcoCore.allowedValues）。這一段由 node tools/gas-allowed.mjs --write 產生，
 // 請勿手改；docs/tests/gas.test.mjs 會比對兩邊是否相同。
 var ALLOWED = {
   category: ["group_fixed", "per_person", "danum", "other"],
