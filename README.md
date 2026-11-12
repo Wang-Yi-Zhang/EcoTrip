@@ -1,6 +1,6 @@
 # 2027 沙巴雨林生態探索規劃系統
 
-Tabin Wildlife Reserve × Danum Valley｜2027/01/29–02/06｜9 天 8 夜｜預設 4 人
+Tabin Wildlife Reserve × Danum Valley｜2027/01/28–02/06｜10 天 9 夜｜預設 4 人
 
 每趟旅行是一個資料夾裡的單一檔案靜態網站（這一趟是 `sabah2027/index.html`），根目錄的 `index.html` 是列出所有旅行的首頁。可以直接部署到 GitHub Pages，用來協助旅伴回答以下問題：
 

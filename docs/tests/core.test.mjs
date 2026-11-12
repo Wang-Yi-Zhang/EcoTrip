@@ -91,13 +91,13 @@ t("使用者自訂單價覆寫並標為使用者輸入", () => {
   const b = C.computeBudget(data, { ...base, overrides: { fees_permits: 50 }, includeExtras: true });
   const l = line(b, "fees_permits"); assert.equal(l.status, "user"); assert.equal(l.amountBase, 200);
 });
-t("住宿夜數驗證：Tabin 4 晚、Danum 2 晚、合計 8 晚，無錯誤", () => {
+t("住宿夜數驗證：Tabin 4 晚、Danum 2 晚、合計 9 晚（含 3 個緩衝晚），無錯誤", () => {
   const errs = C.checkItinerary(data, base).filter(c => c.level === "error");
   eq(errs.map(e => e.msg), []);
-  const ln = C.lodgingNightsSummary(data, base); assert.equal(ln.total, 8);
+  const ln = C.lodgingNightsSummary(data, base); assert.equal(ln.total, 9);
 });
 t("住宿夜數驗證：把一晚 Tabin 改成 Danum → 回報夜數不符與連續性錯誤", () => {
-  const d2 = clone(data); d2.itinerary.days[4].lodging = "brl";
+  const d2 = clone(data); d2.itinerary.days[5].lodging = "brl";
   const errs = C.checkItinerary(d2, base).filter(c => c.level === "error");
   assert.ok(errs.some(e => e.code === "nights")); assert.ok(errs.some(e => e.code === "continuity"));
 });
@@ -107,16 +107,16 @@ t("日期缺漏：刪掉一天 → 回報天數與日期錯誤", () => {
   assert.ok(errs.some(e => e.code === "days")); assert.ok(errs.some(e => e.code === "date"));
 });
 t("時間衝突：同日兩活動時間重疊 → 錯誤", () => {
-  const d2 = clone(data); const acts = d2.itinerary.days[2].activities; acts[1].start = "06:30";
+  const d2 = clone(data); const acts = d2.itinerary.days[3].activities; acts[1].start = "06:30";
   assert.ok(C.checkItinerary(d2, base).some(c => c.code === "overlap"));
 });
-t("最後一晚未決定 → Day 8 住宿待確認（警告，不是假資料）", () => {
+t("最後一晚未決定 → Day 9 住宿待確認（警告，不是假資料）", () => {
   const c = C.checkItinerary(data, { ...base, choices: { danum_choice: "brl", last_night_choice: "tbd" } });
-  assert.ok(c.some(x => x.code === "lodging" && x.day === 8));
+  assert.ok(c.some(x => x.code === "lodging" && x.day === 9));
 });
-t("春節提醒出現在 Day 8、Day 9", () => {
+t("春節提醒出現在 Day 9、Day 10", () => {
   const c = C.checkItinerary(data, base).filter(x => x.code === "holiday").map(x => x.day);
-  eq(c, [8, 9]);
+  eq(c, [9, 10]);
 });
 t("觀察可能性標籤規則（含座標遮蔽）", () => {
   const L = (rec, d, live, ob) => C.observabilityLabel(rec, d, live, ob).key;
@@ -175,10 +175,10 @@ t("重複計費警告不重複、雙向成立", () => {
   assert.equal(new Set(w).size, w.length);
   assert.ok(w.some(m => m.includes("Private Vehicle")));
 });
-t("Day 6 可行性：關掉 BRL 私人接送時提出警告", () => {
+t("Day 7 可行性：關掉 BRL 私人接送時提出警告", () => {
   const on = C.checkItinerary(data, base).filter(c => c.code === "feasibility");
   const off = C.checkItinerary(data, { ...base, optionalOn: { brl_private_transfer: false } }).filter(c => c.code === "feasibility");
-  assert.equal(on.length, 0); assert.equal(off.length, 1); assert.equal(off[0].day, 6);
+  assert.equal(on.length, 0); assert.equal(off.length, 1); assert.equal(off[0].day, 7);
 });
 t("CSV 公式注入防護", () => {
   const d2 = clone(data); d2.costs.items[0].name = "=HYPERLINK(\"x\")";

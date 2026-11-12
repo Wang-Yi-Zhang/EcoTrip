@@ -70,18 +70,18 @@ t("銜接餘裕：足夠／偏緊／趕不上（手算）", () => {
   assert.equal(c["c-tight"].slackMin, 10); assert.equal(c["c-tight"].status, "tight");
   assert.equal(c["c-miss"].slackMin, -15); assert.equal(c["c-miss"].status, "miss");
 });
-t("銜接餘裕（沙巴）：Day 6 最晚 07:30 出發；出發時間未確認時不會顯示為 ok；缺資料時列出缺什麼", () => {
+t("銜接餘裕（沙巴）：Day 7 最晚 07:30 出發；出發時間未確認時不會顯示為 ok；缺資料時列出缺什麼", () => {
   const st = { ...state, pax: 4, rooms: 2, rates: { USD: 4.2 }, choices: { danum_choice: "brl", last_night_choice: "ld" } };
-  const list = C.connections(sabah, st), d6 = list.find(x => x.day === 6);
+  const list = C.connections(sabah, st), d6 = list.find(x => x.day === 7);
   assert.equal(d6.latestDepart, "07:30"); assert.equal(d6.slackMin, 60); assert.equal(d6.status, "assumed");
-  const d9 = list.find(x => x.day === 9); assert.equal(d9.status, "insufficient"); assert.ok(d9.missing.length >= 3); assert.equal(d9.latestDepart, null);
+  const d9 = list.find(x => x.day === 10); assert.equal(d9.status, "insufficient"); assert.ok(d9.missing.length >= 3); assert.equal(d9.latestDepart, null);
   const dv = C.connections(sabah, { ...st, choices: { danum_choice: "dvfc", last_night_choice: "kk" } });
-  assert.deepEqual(J(dv.map(x => x.id)), ["c-d6-dvfc", "c-d8-kk-dvfc"]);   // 需同時符合兩個選項的銜接（kk 且 dvfc）
+  assert.deepEqual(J(dv.map(x => x.id)), ["c-d2-bki", "c-d6-dvfc", "c-d8-kk-dvfc"]); dv.shift();   // 需同時符合兩個選項的銜接（kk 且 dvfc）
   // DVFC 官方排程車 15:00 發車：07:00 出發、08:30 抵達，餘裕 390 分鐘；最晚 13:00 出發
   assert.equal(dv[0].slackMin, 390); assert.equal(dv[0].latestDepart, "13:00"); assert.equal(dv[0].status, "assumed");
   // Day 8：08:30 發車、2.5 小時 → 11:00 抵達；班機未訂所以仍是資料不足
   assert.equal(dv[1].arrive, "11:00"); assert.equal(dv[1].status, "insufficient");
-  assert.deepEqual(J(C.connections(sabah, { ...st, choices: { danum_choice: "brl", last_night_choice: "kk" } }).map(x => x.id)), ["c-d6-brl", "c-d8-kk-brl"]);
+  assert.deepEqual(J(C.connections(sabah, { ...st, choices: { danum_choice: "brl", last_night_choice: "kk" } }).map(x => x.id)), ["c-d2-bki", "c-d6-brl", "c-d8-kk-brl"]);
 });
 t("待辦期限：排序、剩餘天數、逾期、前置未完成、期限未知不當成沒有期限", () => {
   const l = C.taskList(data, state, "2028-02-10");
@@ -98,7 +98,7 @@ t("待辦期限（沙巴）：每筆都有逾期後果；期限晚於行程或�
   const bad = J(sabah); bad.essentials.tasks[0].due = "2027-03-01"; bad.essentials.tasks[1].depends_on = ["nope"];
   const e = C.validateReferences(bad); assert.ok(e.some(m => m.includes("晚於行程結束日"))); assert.ok(e.some(m => m.includes("nope")));
 });
-t("每日備案表（沙巴）：9 天都有，每筆有徵兆／觸發條件／誰決定／備案；費用未知是 null 不是 0", () => {
+t("每日備案表（沙巴）：10 天都有，每筆有徵兆／觸發條件／誰決定／備案；費用未知是 null 不是 0", () => {
   for (const d of sabah.itinerary.days) {
     assert.ok(d.contingencies.length >= 1, "Day " + d.day);
     for (const c of d.contingencies) { for (const k of ["sign", "trigger", "decider", "fallback"]) assert.ok(typeof c[k] === "string" && c[k].length >= 2, `Day ${d.day} ${k}`);

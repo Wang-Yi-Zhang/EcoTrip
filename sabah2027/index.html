@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>2027 沙巴雨林生態探索規劃系統｜Tabin × Danum Valley</title>
-<meta name="description" content="2027/01/29–02/06 沙巴 Tabin Wildlife Reserve 與 Danum Valley 9 天 8 夜生態觀察旅行的行程檢查、費用試算、物種與風險決策工具。">
+<meta name="description" content="2027/01/28–02/06 沙巴 Tabin Wildlife Reserve 與 Danum Valley 10 天 9 夜生態觀察旅行的行程檢查、費用試算、物種與風險決策工具。">
 <meta name="theme-color" content="#1E2922">
 <!-- Leaflet：僅「生態地圖」需要；載入失敗時其他模組照常運作。SRI 已於 2026-11-10 實際下載核對。 -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
@@ -248,7 +248,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   <div class="topbar-inner">
     <div class="brand">
       <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="#26352C" stroke="#D97706" stroke-width="2"/><path d="M5 25 L12 14 L16 20 L21 11 L29 25 Z" fill="#3E5247"/><path d="M17 7c-3 3-3 7 0 10 3-3 3-7 0-10z" fill="#5DBB82"/><circle cx="24" cy="9" r="2.2" fill="#F2B45A"/></svg>
-      <div><h1>2027 沙巴雨林生態探索規劃<small>Tabin Wildlife Reserve × Danum Valley｜1/29–2/6 9 天 8 夜</small></h1></div>
+      <div><h1>2027 沙巴雨林生態探索規劃<small>Tabin Wildlife Reserve × Danum Valley｜1/28–2/6 10 天 9 夜</small></h1></div>
     </div>
     <span id="data-pill" class="pill local" role="status" aria-live="polite"><span class="dot"></span><span>資料：本機內建</span></span>
     <button class="btn small" id="btn-settings" type="button" aria-haspopup="dialog">⚙ 資料／匯出</button>
@@ -282,9 +282,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  "id": "sabah2027",
  "title": "2027 沙巴雨林生態探索：Tabin × Danum Valley",
  "region_label": "馬來西亞沙巴州東部（Lahad Datu）",
- "start": "2027-01-29",
+ "start": "2027-01-28",
  "end": "2027-02-06",
- "nights": 8,
+ "nights": 9,
  "default_pax": 4,
  "default_fx": 7.2,
  "fx_note": "1 MYR = 7.2 TWD、1 USD = 4.2 MYR 皆為試算值，非即時匯率。",
@@ -407,7 +407,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
  ],
  "short_title": "2027 沙巴雨林生態探索規劃",
- "subtitle": "Tabin Wildlife Reserve × Danum Valley｜1/29–2/6 9 天 8 夜",
+ "subtitle": "Tabin Wildlife Reserve × Danum Valley｜1/28–2/6 10 天 9 夜",
  "legacy_export_schemas": [
   "ecotrip2027-export/1"
  ]
@@ -419,22 +419,87 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  "days": [
   {
    "day": 1,
-   "date": "2027-01-29",
+   "date": "2027-01-28",
    "region": "transit",
-   "short": "抵達 Lahad Datu",
+   "short": "台灣 → 亞庇",
    "kind": [
     "arrival"
    ],
    "lodging_prev": null,
+   "lodging": "bki_hotel",
+   "lodging_status": "tbc",
+   "lodging_note": "亞庇機場附近過夜（待規劃）：約 23:00 抵達、隔天清晨離開，選離機場近、可深夜入住的住宿。",
+   "activities": [
+    {
+     "id": "out-flight",
+     "slot": "evening",
+     "type": "flight",
+     "title": "台灣 → Kota Kinabalu（BKI）國際航班",
+     "start": "19:30",
+     "duration_h": 3.5,
+     "duration_basis": "使用者規劃：19:30 起飛、約 23:00 抵達",
+     "effort": 1,
+     "status": "tbc",
+     "location": "bki_hotel",
+     "needs": [
+      "flight",
+      "booking"
+     ],
+     "species": [],
+     "detail": "使用者規劃的時刻，尚未訂位；實際班次與時刻以航空公司為準（2027 年班表未查證）。"
+    },
+    {
+     "id": "out-hotel",
+     "slot": "night",
+     "type": "transfer",
+     "title": "入境、前往機場附近住宿",
+     "duration_h": null,
+     "effort": 1,
+     "status": "tbc",
+     "location": "bki_hotel",
+     "needs": [
+      "booking"
+     ],
+     "species": [],
+     "detail": "抵達已近午夜：入境與領行李後才出機場。訂房前確認最晚入住時間、是否有機場接送，以及清晨回機場的交通。隔天 07:30 的班機，清晨就要回到機場（報到截止時間未查證）。"
+    }
+   ],
+   "notes": [
+    "每位旅客要在入境前 3 天內填好 MDAC（見待辦）。",
+    "深夜抵達、清晨出發：這一晚以睡得到覺為主，住宿離機場越近越好。"
+   ],
+   "weather_alt": "國際線延誤：抵達時間再晚，就直接影響隔天 07:30 的國內線；延誤超過 2–3 小時時，先聯絡住宿保留房間，並查隔天稍晚的 BKI → LDU 班次。",
+   "contingencies": [
+    {
+     "sign": "國際線延誤或取消通知",
+     "trigger": "預計抵達亞庇的時間晚到睡不到幾小時，或當晚無法抵達",
+     "decider": "團員聯絡人（出發前指定一位）",
+     "fallback": "把隔天的國內線改到稍晚的班次（Day 2 本來就是緩衝日）；當晚到不了就改搭隔天的國際線，Day 2 的 Lahad Datu 住宿順延或取消",
+     "extra_cost": {
+      "amount": null,
+      "note": "國內線改票費；亞庇住宿若沒入住能否退費未知"
+     }
+    }
+   ]
+  },
+  {
+   "day": 2,
+   "date": "2027-01-29",
+   "region": "transit",
+   "short": "亞庇 → Lahad Datu",
+   "kind": [
+    "transfer"
+   ],
+   "lodging_prev": "bki_hotel",
    "lodging": "ld_hotel",
    "lodging_status": "tbc",
-   "lodging_note": "緩衝晚：國際＋國內轉機到 Lahad Datu，吸收延誤。住宿未訂（待規劃）。",
+   "lodging_note": "緩衝晚：早班機抵達後整天待在 Lahad Datu，吸收航班延誤。住宿未訂（待規劃）。",
    "activities": [
     {
      "id": "d1-flight",
-     "slot": "morning",
+     "slot": "dawn",
      "type": "flight",
-     "title": "台灣 → 沙巴（國際航班）→ Lahad Datu（國內航班）",
+     "title": "Kota Kinabalu（BKI）→ Lahad Datu（LDU）國內航班",
      "duration_h": null,
      "effort": 1,
      "status": "tbc",
@@ -444,11 +509,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "booking"
      ],
      "species": [],
-     "detail": "航班尚未訂位。常見做法是經 Kota Kinabalu（BKI）或 Kuala Lumpur（KUL）轉國內線到 LDU；可行班次與轉機時間需查證後再填。"
+     "detail": "使用者規劃：07:30 左右起飛，尚未訂位。BKI–LDU 由 AirBorneo 經營，官網沒有公布班表，實際班次時刻要在訂位查詢時確認；航程第三方稱約 55 分鐘，未查證。",
+     "start": "07:30"
     },
     {
      "id": "d1-transfer",
-     "slot": "afternoon",
+     "slot": "morning",
      "type": "transfer",
      "title": "LDU 機場 → Lahad Datu 住宿",
      "duration_h": null,
@@ -460,6 +526,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ],
      "species": [],
      "detail": "不在 Tabin 報價範圍內（報價接送假設為 Lahad Datu ↔ Tabin，待確認）。"
+    },
+    {
+     "id": "d1-day",
+     "slot": "afternoon",
+     "type": "rest",
+     "title": "Lahad Datu 市區：補眠、補給",
+     "duration_h": null,
+     "effort": 1,
+     "status": "suggested",
+     "location": "ld_hotel",
+     "needs": [],
+     "species": [],
+     "detail": "前一晚睡眠很短，這一天不排活動。早班機若延誤或取消，改搭當天稍晚的班次仍趕得上隔天的 Tabin 接送（當天其他班次的時刻未查證）。"
     },
     {
      "id": "d1-eve",
@@ -476,25 +555,25 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     }
    ],
    "notes": [
-    "航班延誤時，這一晚是整趟行程的第一道緩衝。",
-    "若國際航班當天無法接上國內線，需改在 KK 過夜並通知 Tabin 業者延後接送。"
+    "這一天是整趟行程的第一道緩衝：早班機出狀況時，當天還有時間補救。",
+    "前一晚約 23:00 才抵達亞庇，清晨就要回機場，實際睡眠時間很短。"
    ],
-   "weather_alt": "大雨或航班延誤：直接入住休息；若當天無法抵達 LDU，於轉機城市過夜，隔天早班機到 LDU，並請業者調整 Day 2 接送時間（會壓縮 Day 2 下午活動）。",
+   "weather_alt": "早班機延誤或取消：改搭當天稍晚的 BKI → LDU 班次；若當天都飛不了，隔天最早班機到 LDU，並請 Tabin 業者延後 Day 3 的接送（會壓縮 Day 3 下午活動）。",
    "contingencies": [
     {
-     "sign": "國際段延誤或取消通知",
-     "trigger": "預計落地時間已趕不上當天最後一班往 LDU 的國內線（班表未訂，待填）",
+     "sign": "早班機延誤或取消通知",
+     "trigger": "07:30 班機無法起飛，或前一晚國際線延誤到趕不上報到",
      "decider": "團員聯絡人（出發前指定一位）",
-     "fallback": "在轉機城市過夜，改搭隔天最早班機到 LDU，並通知 Tabin 業者延後 Day 2 接送",
+     "fallback": "改搭當天稍晚的 BKI → LDU 班次；當天都飛不了就在亞庇多住一晚，隔天最早班機出發，並通知 Tabin 業者延後接送",
      "extra_cost": {
       "amount": null,
-      "note": "轉機城市一晚住宿與可能的改票費；Lahad Datu 已訂住宿能否退費未知"
+      "note": "改票費；若多住亞庇一晚，Lahad Datu 已訂住宿能否退費未知"
      }
     }
    ]
   },
   {
-   "day": 2,
+   "day": 3,
    "date": "2027-01-30",
    "region": "tabin",
    "short": "Tabin D1",
@@ -605,7 +684,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "day": 3,
+   "day": 4,
    "date": "2027-01-31",
    "region": "tabin",
    "short": "Tabin D2",
@@ -717,13 +796,13 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "Lipad 行程體力需求較高，前一晚注意休息。"
    ],
-   "weather_alt": "大雨或道路泥濘：Lipad 改到 Day 4 或 Day 5 上午；改為度假村周邊短步道或觀景點守候。",
+   "weather_alt": "大雨或道路泥濘：Lipad 改到 Day 5 或 Day 6 上午；改為度假村周邊短步道或觀景點守候。",
    "contingencies": [
     {
      "sign": "前一晚大雨、道路泥濘",
      "trigger": "往 Lipad 的道路無法通行，或觀景塔未開放",
      "decider": "Tabin 嚮導",
-     "fallback": "Lipad 改到 Day 4 或 Day 5 上午；當天改度假村周邊短步道或觀景點守候",
+     "fallback": "Lipad 改到 Day 5 或 Day 6 上午；當天改度假村周邊短步道或觀景點守候",
      "extra_cost": {
       "amount": null,
       "note": "改期是否另計費用，未向業者確認"
@@ -732,7 +811,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "day": 4,
+   "day": 5,
    "date": "2027-02-01",
    "region": "tabin",
    "short": "Tabin D3",
@@ -861,7 +940,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "day": 5,
+   "day": 6,
    "date": "2027-02-02",
    "region": "tabin",
    "short": "Tabin D4",
@@ -923,7 +1002,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "location": "tabin_resort",
      "needs": [],
      "species": [],
-     "detail": "確認 Day 6 退房時間與接送銜接。"
+     "detail": "確認 Day 7 退房時間與接送銜接。"
     },
     {
      "id": "d5-night",
@@ -969,7 +1048,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "contingencies": [
     {
      "sign": "前幾天有活動因天候取消",
-     "trigger": "Day 3–4 有未完成的活動（例如 Lipad）",
+     "trigger": "Day 4–5 有未完成的活動（例如 Lipad）",
      "decider": "團員與嚮導討論",
      "fallback": "用上午彈性時段補做；晚上視體力決定是否加購第 4 晚私人夜遊",
      "extra_cost": {
@@ -980,7 +1059,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "day": 6,
+   "day": 7,
    "date": "2027-02-03",
    "region": "transit",
    "short": "Tabin → Danum",
@@ -1113,7 +1192,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "day": 7,
+   "day": 8,
    "date": "2027-02-04",
    "region": "danum",
    "short": "Danum D2",
@@ -1244,7 +1323,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "day": 8,
+   "day": 9,
    "date": "2027-02-05",
    "region": "transit",
    "short": "Danum → LD/KK（除夕）",
@@ -1350,7 +1429,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "day": 9,
+   "day": 10,
    "date": "2027-02-06",
    "region": "transit",
    "short": "返程（初一）",
@@ -1398,8 +1477,34 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  ],
  "connections": [
   {
+   "id": "c-d2-bki",
+   "day": 2,
+   "title": "亞庇機場附近住宿 → BKI，銜接 07:30 國內線",
+   "buffer_min": 30,
+   "depart": {
+    "time": null,
+    "label": "從住宿出發"
+   },
+   "legs": [
+    {
+     "label": "住宿 → 機場",
+     "duration_h": null,
+     "basis": "住宿尚未選定"
+    }
+   ],
+   "deadline": {
+    "time": null,
+    "label": "07:30 班機的報到截止"
+   },
+   "missing": [
+    "國內線尚未訂位，07:30 是規劃時刻",
+    "航空公司的報到截止時間（未查證）"
+   ],
+   "basis": "前一晚約 23:00 抵達，扣掉入境、領行李、到住宿與清晨回機場，實際可睡的時間很短；選住宿時以離機場近為優先"
+  },
+  {
    "id": "c-d6-brl",
-   "day": 6,
+   "day": 7,
    "option": "brl",
    "title": "Tabin → Lahad Datu，銜接 BRL 排程車",
    "buffer_min": 30,
@@ -1427,7 +1532,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "c-d6-dvfc",
-   "day": 6,
+   "day": 7,
    "option": "dvfc",
    "title": "Tabin → Lahad Datu，銜接 DVFC 排程車",
    "buffer_min": 30,
@@ -1456,7 +1561,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "c-d8-kk-brl",
-   "day": 8,
+   "day": 9,
    "option": [
     "kk",
     "brl"
@@ -1485,7 +1590,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "c-d8-kk-dvfc",
-   "day": 8,
+   "day": 9,
    "option": [
     "kk",
     "dvfc"
@@ -1515,7 +1620,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "c-d9-ld",
-   "day": 9,
+   "day": 10,
    "option": "ld",
    "title": "LDU → BKI 國內線，銜接返台國際線",
    "buffer_min": 120,
@@ -1629,7 +1734,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "includes": [
     "來回接送一趟"
    ],
-   "assumption": "起訖點假設為 Lahad Datu ↔ Tabin（待確認）。官方套裝含排程接送（LDU 08:00／12:00 出發；Tabin 14:30 回程）。私人接送的好處是 Day 6 可提早離開以銜接 Danum。",
+   "assumption": "起訖點假設為 Lahad Datu ↔ Tabin（待確認）。官方套裝含排程接送（LDU 08:00／12:00 出發；Tabin 14:30 回程）。私人接送的好處是 Day 7 可提早離開以銜接 Danum。",
    "notes": "規格將此項歸為團體固定成本，但報價以「每人」計價，試算依報價隨人數變動。",
    "source_ids": [
     "src_quote_a",
@@ -1790,12 +1895,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    },
    "status": "demo",
    "applies": "flights",
-   "assumption": "示範數字，未查票價；回程為春節初一，實際可能更高。請改填實際票價。",
+   "assumption": "示範數字，未查票價；去程規劃為 1/28 19:30 台灣 → 亞庇，回程為春節初一，實際可能更高。請改填實際票價。",
    "source_ids": []
   },
   {
    "id": "domestic_flight",
-   "name": "國內機票（BKI／KUL ↔ LDU，來回）",
+   "name": "國內機票（BKI ↔ LDU，來回）",
    "category": "other",
    "unit": "per_person_trip",
    "price": {
@@ -1805,16 +1910,16 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    },
    "status": "demo",
    "applies": "flights",
-   "assumption": "示範數字，未查票價。",
+   "assumption": "示範數字，未查票價。去程規劃為 1/29 07:30 BKI → LDU；由 AirBorneo 經營。",
    "source_ids": []
   },
   {
    "id": "buffer_hotel",
-   "name": "緩衝晚住宿（Day 1、Day 8）",
+   "name": "緩衝晚住宿（Day 1 亞庇、Day 2 Lahad Datu、Day 9）",
    "category": "other",
    "unit": "per_room_per_night",
    "qty": {
-    "nights": 2
+    "nights": 3
    },
    "price": {
     "low": 150,
@@ -1823,12 +1928,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    },
    "status": "demo",
    "applies": "extras",
-   "assumption": "示範數字，未查房價；Day 8 若選 KK，價格可能不同。",
+   "assumption": "示範數字，未查房價；共 3 晚：1/28 亞庇機場附近、1/29 Lahad Datu、2/5（Lahad Datu 或亞庇）。各地價格不同。",
    "source_ids": []
   },
   {
    "id": "meals_extra",
-   "name": "非套裝餐食（Day 1、Day 8 等）",
+   "name": "非套裝餐食（Day 2、Day 9 等）",
    "category": "other",
    "unit": "per_person_day",
    "qty": {
@@ -1846,11 +1951,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "tourism_tax",
-   "name": "馬來西亞觀光稅（外國旅客，全部 8 晚）",
+   "name": "馬來西亞觀光稅（外國旅客，全部 9 晚）",
    "category": "other",
    "unit": "per_room_per_night",
    "qty": {
-    "nights": 8
+    "nights": 9
    },
    "price": 10,
    "status": "estimate",
@@ -1979,7 +2084,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "brl_private_transfer",
-   "name": "BRL 非排程私人接送 LDU → BRL（Day 6 同日轉場）",
+   "name": "BRL 非排程私人接送 LDU → BRL（Day 7 同日轉場）",
    "category": "danum",
    "unit": "per_group",
    "price_currency": "USD",
@@ -1995,13 +2100,13 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "itinerary_check": {
     "plan": "brl",
-    "day": 6,
-    "msg": "Day 6：未納入 BRL 非排程私人接送。只靠排程車無法同日轉場（Tabin 排程回程約 16:00 抵 LDU，BRL 排程車 09:30 從 LDU 出發）；必須確認 Tabin 私人接送能在 09:30 前抵達 LDU。"
+    "day": 7,
+    "msg": "Day 7：未納入 BRL 非排程私人接送。只靠排程車無法同日轉場（Tabin 排程回程約 16:00 抵 LDU，BRL 排程車 09:30 從 LDU 出發）；必須確認 Tabin 私人接送能在 09:30 前抵達 LDU。"
    }
   },
   {
    "id": "dvfc_private_transfer",
-   "name": "DVFC 包車 LDU → DVFC（Day 6，不搭 15:00 排程車時）",
+   "name": "DVFC 包車 LDU → DVFC（Day 7，不搭 15:00 排程車時）",
    "category": "danum",
    "unit": "per_group",
    "price": {
@@ -2019,8 +2124,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "itinerary_check": {
     "plan": "dvfc",
-    "day": 6,
-    "msg": "Day 6：未納入 DVFC 包車，表示要搭 15:00 的排程車（官方：週一三五、8 人座、需預約）。請確認訂得到 4 個座位，且 Tabin 的私人接送能在 15:00 前抵達 Lahad Datu。"
+    "day": 7,
+    "msg": "Day 7：未納入 DVFC 包車，表示要搭 15:00 的排程車（官方：週一三五、8 人座、需預約）。請確認訂得到 4 個座位，且 Tabin 的私人接送能在 15:00 前抵達 Lahad Datu。"
    }
   },
   {
@@ -2106,7 +2211,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "cons": [
      "價格明顯較高（第三方價每人約 USD 2,033 起）",
      "官方未公開價格，需詢價",
-     "Day 6 需加購私人接送才能同日轉場",
+     "Day 7 需加購私人接送才能同日轉場",
      "新建工程預計 2027-01-22 完工，需確認"
     ]
    },
@@ -2200,7 +2305,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    {
     "label": "接送需求",
     "brl": {
-     "text": "LDU 排程車 09:30 出發、約 2.5 小時；Day 6 需非排程私人接送（USD 160–198／單程）",
+     "text": "LDU 排程車 09:30 出發、約 2.5 小時；Day 7 需非排程私人接送（USD 160–198／單程）",
      "status": "third_party",
      "source_ids": [
       "src_brl_3p",
@@ -2219,7 +2324,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    {
     "label": "可用於野生動物觀察的時間",
     "brl": {
-     "text": "Day 6 傍晚與夜間、Day 7 全天、Day 8 清晨（兩方案相同）",
+     "text": "Day 7 傍晚與夜間、Day 8 全天、Day 9 清晨（兩方案相同）",
      "status": "estimate"
     },
     "dvfc": {
@@ -2317,7 +2422,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "en": "Will the Lipad mud volcano observation tower be open in Jan–Feb 2027?"
    },
    {
-    "zh": "BRL：2027/2/3–2/5（3D2N）4 人 2 房正式報價（各房型）、排程接送時刻、Day 6 下午私人接送費用、新建工程是否已完工、觀光稅計算方式。",
+    "zh": "BRL：2027/2/3–2/5（3D2N）4 人 2 房正式報價（各房型）、排程接送時刻、Day 7 下午私人接送費用、新建工程是否已完工、觀光稅計算方式。",
     "en": "BRL: formal quote for 3–5 Feb 2027 (3D2N), 4 pax in 2 rooms by room type; scheduled transfer times; cost of a private afternoon transfer on 3 Feb; confirmation that construction is completed; how tourism tax is charged."
    },
    {
@@ -4798,6 +4903,25 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  ],
  "pois": [
   {
+   "id": "bki_hotel",
+   "name": "Kota Kinabalu 機場附近住宿（Day 1，待規劃）",
+   "type": "lodging",
+   "region": "transit",
+   "lat": 5.937,
+   "lng": 116.051,
+   "approximate": true,
+   "summary": "1/28 深夜抵達亞庇（BKI）後過夜，1/29 一早搭國內線到 Lahad Datu。",
+   "stay": "1 晚（實際停留約 6–7 小時）",
+   "species": [],
+   "activities": [
+    "休息"
+   ],
+   "safety": "深夜抵達：先確認最晚入住時間、是否有機場接送，以及清晨回機場的交通。",
+   "guide": "不需要",
+   "coord_note": "以亞庇國際機場概略位置標示，住宿尚未選定",
+   "source_ids": []
+  },
+  {
    "id": "ldu",
    "name": "Lahad Datu Airport（LDU）",
    "type": "transport",
@@ -4829,7 +4953,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "lng": 118.3275533,
    "approximate": true,
    "coord_note": "以 Lahad Datu 市區中心點標示，住宿尚未選定",
-   "summary": "Day 1 與（選 LD 時）Day 8 的緩衝住宿；也是 Tabin 與 Danum 接送的轉運點。",
+   "summary": "Day 2 與（選 LD 時）Day 9 的緩衝住宿；也是 Tabin 與 Danum 接送的轉運點。",
    "stay": "1 晚",
    "activities": [
     "補給",
@@ -4844,7 +4968,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "kk_hotel",
-   "name": "Kota Kinabalu 住宿（Day 8 選項，待規劃）",
+   "name": "Kota Kinabalu 住宿（Day 9 選項，待規劃）",
    "type": "lodging",
    "region": "transit",
    "lat": 5.9804,
@@ -5017,6 +5141,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
  ],
  "route": [
+  "bki_hotel",
   "ldu",
   "ld_hotel",
   "tabin_resort",
@@ -5911,7 +6036,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "r-transfer",
    "level": 2,
-   "title": "Day 6 同日轉場銜接（Tabin → LD → Danum）",
+   "title": "Day 7 同日轉場銜接（Tabin → LD → Danum）",
    "trigger": "Tabin 排程回程 14:30 發車、約 16:00 抵 LDU；BRL 排程車 09:30 從 LDU 出發（第三方資料，官方未公布）；DVFC 排程車週一三五 15:00 從 LDU 出發（官方）",
    "impact": "只靠排程車無法在 2/3 同日轉場；可能損失 Danum 一晚。",
    "action": "請 Tabin 私人接送清晨出發（約 1.5 小時）趕上 09:30，或加購 Danum 非排程私人接送（已預設納入試算）；出發前取得兩家業者書面時刻表。",
@@ -5940,7 +6065,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "title": "雨季降雨、泥濘與道路延誤",
    "trigger": "連日大雨、業者通知道路狀況不佳",
    "impact": "車程延長、步道泥濘或封閉、夜遊取消。",
-   "action": "交通日不排高強度活動；Day 5 保留為雨天備用日；聽從嚮導決定改期或縮短。",
+   "action": "交通日不排高強度活動；Day 6 保留為雨天備用日；聽從嚮導決定改期或縮短。",
    "source_ids": [
     "src_weather"
    ]
@@ -5950,8 +6075,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "level": 2,
    "title": "國內線延誤或取消",
    "trigger": "航班異動、天候",
-   "impact": "影響 Day 1 抵達或 Day 8–9 回程銜接。",
-   "action": "Day 1、Day 8 為緩衝晚；保留業者聯絡方式，延誤時立即通知接送調整。",
+   "impact": "影響 Day 2 抵達或 Day 9–10 回程銜接。",
+   "action": "Day 2、Day 9 為緩衝晚；保留業者聯絡方式，延誤時立即通知接送調整。",
    "source_ids": [
     "src_wiki_ldu"
    ]
@@ -6014,15 +6139,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     },
     {
      "id": "c-f3",
-     "text": "決定 Day 8 住 Lahad Datu 或 Kota Kinabalu，並訂對應國內線"
+     "text": "決定 Day 9 住 Lahad Datu 或 Kota Kinabalu，並訂對應國內線"
     },
     {
      "id": "c-f4",
-     "text": "向 Tabin 業者確認 Day 2 接送時間、集合點與 Day 6 回程時間"
+     "text": "向 Tabin 業者確認 Day 3 接送時間、集合點與 Day 7 回程時間"
     },
     {
      "id": "c-f5",
-     "text": "向 Danum 方案確認 Day 6 去程與 Day 8 回程接送"
+     "text": "向 Danum 方案確認 Day 7 去程與 Day 9 回程接送"
     }
    ]
   },
@@ -6042,7 +6167,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     },
     {
      "id": "c-b3",
-     "text": "訂 Day 1 與 Day 8 緩衝晚住宿"
+     "text": "訂 Day 2 與 Day 9 緩衝晚住宿"
     },
     {
      "id": "c-b4",
@@ -6277,7 +6402,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "due": "2026-11-18",
    "due_kind": "self",
    "due_basis": "規劃自訂：其他決定都卡在這封回信",
-   "consequence": "無法判斷是否重複付費；Day 6 能否同日轉場不明，Danum 無法下訂",
+   "consequence": "無法判斷是否重複付費；Day 7 能否同日轉場不明，Danum 無法下訂",
    "source_ids": [
     "src_quote_a"
    ]
@@ -6316,19 +6441,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "ask_tabin",
     "ask_danum"
    ],
-   "consequence": "Danum 住宿與 Day 6 接送無法下訂",
+   "consequence": "Danum 住宿與 Day 7 接送無法下訂",
    "source_ids": []
   },
   {
    "id": "flights_out",
-   "title": "訂去程：台灣 → BKI／KUL → LDU（1/29 抵達）",
+   "title": "訂去程：1/28 19:30 台灣 → 亞庇（BKI），1/29 07:30 亞庇 → Lahad Datu（LDU）",
    "due": "2026-12-15",
    "due_kind": "self",
    "due_basis": "規劃自訂",
    "depends_on": [
     "flights_return"
    ],
-   "consequence": "1/29 到不了 Lahad Datu，Day 2 的 Tabin 接送要延後",
+   "consequence": "1/29 到不了 Lahad Datu，1/30 的 Tabin 接送要延後；兩段分開買票時，前段延誤不保障後段",
    "source_ids": [
     "src_airborneo"
    ]
@@ -6349,25 +6474,25 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "book_danum",
-   "title": "Danum 住宿下訂並付訂金（含 Day 6 接送安排）",
+   "title": "Danum 住宿下訂並付訂金（含 Day 7 接送安排）",
    "due": null,
    "due_basis": "尚未取得正式報價與付款條款",
    "depends_on": [
     "decide_danum"
    ],
-   "consequence": "春節前後房間不足；Day 6 接送無法確認",
+   "consequence": "春節前後房間不足；Day 7 接送無法確認",
    "source_ids": []
   },
   {
    "id": "book_buffer",
-   "title": "訂 1/29 與 2/5 兩個緩衝晚的住宿（選可免費取消的房型）",
+   "title": "訂三個緩衝晚的住宿：1/28 亞庇機場附近（可深夜入住）、1/29 Lahad Datu、2/5（選可免費取消的房型）",
    "due": "2026-12-20",
    "due_kind": "self",
    "due_basis": "規劃自訂：2/5 是除夕",
    "depends_on": [
     "flights_return"
    ],
-   "consequence": "除夕當晚 Lahad Datu／KK 住宿選擇變少、變貴",
+   "consequence": "1/28 深夜抵達卻無法入住；除夕當晚 Lahad Datu／亞庇住宿選擇變少、變貴",
    "source_ids": [
     "src_cny"
    ]
@@ -6383,7 +6508,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "offline_pack",
-   "title": "列印 9 天的當日流程、匯出規劃 JSON、用手機開飛航模式確認網站打得開",
+   "title": "列印 10 天的當日流程、匯出規劃 JSON、用手機開飛航模式確認網站打得開",
    "due": "2027-01-27",
    "due_kind": "self",
    "due_basis": "規劃自訂：保護區內網路不穩",
@@ -6393,9 +6518,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "mdac",
    "title": "每位旅客上網填寫 MDAC（入境前 3 天內才能填）",
-   "due": "2027-01-28",
+   "due": "2027-01-27",
    "due_kind": "external",
-   "due_basis": "外交部領事事務局：入境前 3 天內填寫；1/29 入境，最早 1/26 可填。出發前請再核對",
+   "due_basis": "外交部領事事務局：入境前 3 天內填寫；1/28 入境，最早 1/25 可填。出發前請再核對",
    "consequence": "入境馬來西亞時可能受阻",
    "source_ids": [
     "src_boca"
