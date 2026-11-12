@@ -1174,9 +1174,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "decider": "團員聯絡人（出發前指定一位），與兩家業者確認後決定",
      "fallback": "改用 Danum 的非排程私人接送（下午出發）",
      "extra_cost": {
-      "amount": 198,
-      "currency": "USD",
-      "note": "BRL 第三方資料：4–6 人廂型車單程。DVFC 為 USD 111／輛（1–3 人），4 人可能需 2 輛。兩者都已預設納入試算"
+      "amount": null,
+      "note": "額外應付差額待業者確認。BRL 私人接送預設已計入，但可取消勾選，不可再重複加算；DVFC 包車預設未計入。各方案參考價與是否納入請查費用試算；公開價不是本團確認報價，改期、車輛數及新增費用仍待確認。"
      }
     },
     {
@@ -6039,7 +6038,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "title": "Day 7 同日轉場銜接（Tabin → LD → Danum）",
    "trigger": "Tabin 排程回程 14:30 發車、約 16:00 抵 LDU；BRL 排程車 09:30 從 LDU 出發（第三方資料，官方未公布）；DVFC 排程車週一三五 15:00 從 LDU 出發（官方）",
    "impact": "只靠排程車無法在 2/3 同日轉場；可能損失 Danum 一晚。",
-   "action": "請 Tabin 私人接送清晨出發（約 1.5 小時）趕上 09:30，或加購 Danum 非排程私人接送（已預設納入試算）；出發前取得兩家業者書面時刻表。",
+   "action": "BRL 方案需協調 Tabin 私人接送提早抵達，銜接 09:30 排程車，或安排非排程接送；DVFC 方案需確認 15:00 排程車座位，或另訂包車。BRL 私人接送預設計入、DVFC 包車預設未計入，實際依費用勾選；出發前取得兩家業者書面時刻表與費用確認。",
    "source_ids": [
     "src_tabin_official",
     "src_brl_3p",
@@ -6134,7 +6133,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     },
     {
      "id": "c-f2",
-     "text": "訂 1/29 去程國際線＋轉 LDU 國內線，確認轉機時間足夠",
+     "text": "訂 1/28 去程國際線與 1/29 BKI → LDU 國內線，確認過夜住宿及銜接時間足夠",
      "critical": true
     },
     {
@@ -6167,7 +6166,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     },
     {
      "id": "c-b3",
-     "text": "訂 Day 2 與 Day 9 緩衝晚住宿"
+     "text": "訂 Day 1、Day 2 與 Day 9 緩衝晚住宿"
     },
     {
      "id": "c-b4",
@@ -7403,6 +7402,16 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     return { tbcActs: acts.length, unpriced: b.unpriced.length, lodgingTbd: ln.tbd, total: acts.length + b.unpriced.length + ln.tbd };
   }
 
+  /** 與金額一起顯示範圍，依目前開關產生；關閉不代表免費。 */
+  function budgetScopeText(b, s) {
+    const labels = D().costs.toggle_labels || {}, excluded = [];
+    for (const [key, enabled, fallback] of [["flights", s.includeFlights, "機票"], ["extras", s.includeExtras, "其他費用"]]) {
+      if (!enabled && D().costs.items.some(i => i.applies === key)) excluded.push((labels[key] || fallback).replace(/^納入/, ""));
+    }
+    const opts = compareChoices().map(c => (c.options.find(o => o.key === C.choiceValue(D(), s, c.id)) || {}).label).filter(Boolean);
+    return `${s.pax} 人／${s.rooms} 房${opts.length ? "／" + opts.join("、") : ""}；含預備金 ${b.contingencyPct}%。${excluded.length ? "未納入：" + excluded.join("；") + "。" : "費用依目前勾選計入，仍可能含示範或估算。"}未選加購、條件不符及缺價項目不在金額內；不是全旅程已確認費用。`;
+  }
+
   /* ================= 總覽 Dashboard ================= */
   function renderDashboard() {
     const P = clear(document.getElementById("p-dashboard"));
@@ -7420,11 +7429,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     P.append(h("div", { class: "grid g4" },
       kpi("旅行人數", `${S().pax} 人`, `${S().rooms} 間房${b.ctx.singles ? `（${b.ctx.singles} 間單人入住）` : ""}`),
       kpi("已排定住宿夜數", `${ln.planned} / ${ln.total} 晚`, `${ln.tbd} 晚待規劃；已取得訂房確認 ${ln.booked} 晚`),
-      kpi("尚未確認項目", `${pend.total} 項`, `活動 ${pend.tbcActs}｜未報價費用 ${pend.unpriced}｜住宿 ${pend.lodgingTbd}`),
+      kpi("待處理摘要（非全部未確認）", `${pend.total} 項`, `待確認活動 ${pend.tbcActs}｜已納入但缺價 ${pend.unpriced}｜待規劃住宿 ${pend.lodgingTbd}`),
       kpi((t.segments || []).map(sg => regionLabel(sg.key)).join("／") + " 停留", (t.segments || []).map(sg => sg.package || sg.nights + " 晚").join(" ／ "), compareChoices().map(c => `${c.label}：${(choiceOpt(c.id) || {}).label || "未定"}`).join("｜") || null),
-      kpi("已估價總費用", fmtBase(b.total), `${hasHome() ? fmtHome(b.totalHome) + "｜" : ""}含預備金 ${b.contingencyPct}%｜不含 ${b.unpriced.length} 項未報價｜業者報價部分 ${fmtBase(b.completeness.quoted)}`, "amber"),
-      kpi("每人平均", fmtBase(b.perPerson), hasHome() ? fmtHome(b.perPersonHome) : null, "amber"),
-      kpi("業者報價占比", fmtPct(b.completeness.quotedShare), `第三方／公開價 ${fmtPct(b.completeness.pubShare)}｜估算與示範 ${fmtPct(b.completeness.softShare)}｜${b.unpriced.length} 項未估價不計入`),
+      kpi("已估價總費用", fmtBase(b.total), `${hasHome() ? fmtHome(b.totalHome) + "｜" : ""}含預備金 ${b.contingencyPct}%｜目前納入項目缺價 ${b.unpriced.length} 項（未計入金額）｜業者報價部分 ${fmtBase(b.completeness.quoted)}`, "amber"),
+      kpi("每人目前試算（非全包）", fmtBase(b.perPerson), `${hasHome() ? fmtHome(b.perPersonHome) + "｜" : ""}${budgetScopeText(b, S())}`, "amber"),
+      kpi("業者報價占比", fmtPct(b.completeness.quotedShare), `第三方／公開價 ${fmtPct(b.completeness.pubShare)}｜估算與示範 ${fmtPct(b.completeness.softShare)}｜分母為未加預備金的已估價小計；報價不等於訂妥｜目前納入項目缺價 ${b.unpriced.length} 項`),
       nSp ? kpi("目標物種", `${nT} 種`, `資料庫共 ${nSp} 種${spGroup}（可自訂）`) : null));
     // 決策問題（題目由資料組成：有幾個區域、有沒有方案比較、有沒有物種）
     let qn = 0;
@@ -7437,7 +7446,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const spWith = D().species.items.filter(s => areaKeys().some(a => C.observabilityLabel(s.records[a], s.difficulty, null, !!s.inat_obscured).key !== "insufficient")).length;
     const qs = [
       q(`${t.nights + 1} 天行程是否合理？`, errs.length ? `有 ${errs.length} 個錯誤、${warns.length} 個注意事項。` : `沒有結構錯誤；${warns.length} 個注意事項。`, "itinerary"),
-      q("哪些行程與住宿仍需確認？", `${pend.lodgingTbd} 晚住宿、${pend.tbcActs} 項活動待確認${flightsTbc ? `（其中航班 ${flightsTbc} 段未訂）` : ""}。`, "itinerary"),
+      q("哪些行程與住宿仍需確認？", `${ln.planned} 晚住宿已規劃、${ln.tbd} 晚待規劃；已取得訂房確認 ${ln.booked} / ${ln.total} 晚。${pend.tbcActs} 項活動待確認${flightsTbc ? `（其中航班 ${flightsTbc} 段未訂）` : ""}。`, "itinerary"),
       nSp ? q(`${areaKeys().map(areaLabel).join(" 和 ")} 各有哪些觀察機會？`, `${spWith} / ${nSp} 種在其中一地有紀錄依據（iNaturalist、近似範圍或文獻），其中 ${D().species.items.filter(s => areaKeys().some(a => obsKey(s, a) === "strong")).length} 種有較充分依據。紀錄 ≠ 保證看到。`, "wildlife") : null,
       cmps.map(cmp => q(`${optLabels(cmp.choice)} 值得價差嗎？`, diffTxt(cmp), "compare")),
       q("人數與方案如何影響預算？", `目前每人 ${fmtBase(b.perPerson)}；固定成本 ${fmtBase(b.fixed)} 由全團分攤，人數越少每人越貴。`, "budget"),
@@ -7626,12 +7635,13 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const cats = Object.keys(catLabel);
     const shareBar = h("div", { class: "bar", role: "img", "aria-label": "各類費用占比：" + cats.map(k => `${catLabel[k]} ${b.subtotal ? (b.byCategory[k].base / b.subtotal * 100).toFixed(0) : 0}%`).join("、") },
       cats.map((k, i) => h("span", { style: `width:${b.subtotal ? b.byCategory[k].base / b.subtotal * 100 : 0}%;background:${C4[i % C4.length]}` })));
-    const cBar = h("div", { class: "bar", role: "img", "aria-label": `完整度：業者報價 ${fmtPct(b.completeness.quotedShare)}，公開或第三方價 ${fmtPct(b.completeness.pubShare)}，估算或示範 ${fmtPct(b.completeness.softShare)}，使用者輸入 ${fmtPct(b.completeness.userShare)}` },
+    const cBar = h("div", { class: "bar", role: "img", "aria-label": `已計入金額的來源構成（分母為未加預備金的已估價小計，報價不等於訂妥）：業者報價 ${fmtPct(b.completeness.quotedShare)}，公開或第三方價 ${fmtPct(b.completeness.pubShare)}，估算或示範 ${fmtPct(b.completeness.softShare)}，使用者輸入 ${fmtPct(b.completeness.userShare)}` },
       h("span", { style: `width:${(b.completeness.quotedShare || 0) * 100}%;background:#4C7DA6` }), h("span", { style: `width:${(b.completeness.pubShare || 0) * 100}%;background:#4A9494` }), h("span", { style: `width:${(b.completeness.softShare || 0) * 100}%;background:repeating-linear-gradient(45deg,#A86A12 0 5px,#7a4d0d 5px 10px)` }), h("span", { style: `width:${(b.completeness.userShare || 0) * 100}%;background:#8E887E` }));
     const results = h("div", { class: "card" }, h("h3", null, "試算結果"),
+      h("p", { class: "msg warn" }, budgetScopeText(b, s)),
       h("div", { class: "grid g2" },
         h("div", null, h("div", { class: "small muted" }, `已估價合計（${S().pax} 人，含預備金）`), h("div", { class: "big-total" }, fmtBase(b.total)), h("div", { class: "num" }, fmtHome(b.totalHome)),
-          h("div", { class: "small", style: "color:#F7C97E" }, `不含 ${b.unpriced.length} 項未報價；估算與示範占 ${fmtPct(b.completeness.softShare)}`)),
+          h("div", { class: "small", style: "color:#F7C97E" }, `目前納入項目中，缺價 ${b.unpriced.length} 項（未計入金額，不代表免費）；估算與示範占 ${fmtPct(b.completeness.softShare)}`)),
         h("div", null, h("div", { class: "small muted" }, "每人平均"), h("div", { class: "big-total" }, fmtBase(b.perPerson)), h("div", { class: "num" }, fmtHome(b.perPersonHome)))),
       h("table", { style: "margin-top:10px" }, h("tbody", null,
         h("tr", null, h("th", null, "其中：業者報價合計" + (D().costs.quoted_label ? `（${D().costs.quoted_label}）` : "")), h("td", { class: "r num" }, fmtBase(b.completeness.quoted)), h("td", { class: "r num" }, fmtHome(b.fx ? b.completeness.quoted * b.fx : null))),
@@ -7639,10 +7649,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         h("tr", null, h("th", null, `預備金 ${b.contingencyPct}%`), h("td", { class: "r num" }, fmtBase(b.contingency)), h("td", { class: "r num" }, fmtHome(b.fx ? b.contingency * b.fx : null))),
         h("tr", null, h("th", null, "固定成本（每團、每天計價）"), h("td", { class: "r num" }, fmtBase(b.fixed)), h("td", { class: "r small" }, b.ctx.pax ? `每人分攤 ${fmtBase(b.fixed / b.ctx.pax)}` : "")),
         h("tr", null, h("th", null, "變動成本（隨人數／房數）"), h("td", { class: "r num" }, fmtBase(b.variable)), h("td", null)),
-        h("tr", null, h("th", null, "未估價項目"), h("td", { class: "r" }, `${b.unpriced.length} 項`), h("td", { class: "r small unq" }, "不計入、不代表免費")))),
+        h("tr", null, h("th", null, "目前納入項目中的缺價"), h("td", { class: "r" }, `${b.unpriced.length} 項`), h("td", { class: "r small unq" }, "不計入、不代表免費")))),
       h("h4", { style: "margin-top:12px" }, "各類費用占比（已估價部分）"), shareBar,
       h("div", { class: "legend" }, cats.map((k, i) => h("span", null, h("i", { style: "background:" + C4[i % C4.length] }), `${catLabel[k]} ${fmtBase(b.byCategory[k].base)}${b.byCategory[k].unpriced ? `（+${b.byCategory[k].unpriced} 項未估）` : ""}`))),
-      h("h4", { style: "margin-top:12px" }, "估算完整度"), cBar,
+      h("h4", { style: "margin-top:12px" }, "已計入金額的來源構成"),
+      h("p", { class: "small muted" }, "比例以未加預備金的已估價小計為分母；不涵蓋未納入或缺價項目。業者報價不等於已訂妥；公開價與估算不是本團正式報價。"), cBar,
       h("div", { class: "legend" }, h("span", null, h("i", { style: "background:#4C7DA6" }), `業者報價 ${fmtPct(b.completeness.quotedShare)}`), h("span", null, h("i", { style: "background:#4A9494" }), `公開／第三方價 ${fmtPct(b.completeness.pubShare)}`), h("span", null, h("i", { style: "background:#A86A12" }), `估算／示範 ${fmtPct(b.completeness.softShare)}`), h("span", null, h("i", { style: "background:#8E887E" }), `使用者輸入 ${fmtPct(b.completeness.userShare)}`), h("span", null, `未估價 ${b.unpriced.length} 項`)),
       b.warnings.length ? h("div", { style: "margin-top:10px" }, b.warnings.map(w => msg(w.level, w.msg))) : null);
     P.append(h("div", { class: "split wide-left" }, controls, results));
@@ -8109,7 +8120,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     tb.append(h("tr", null, h("th", null, "每人預估價格（全行程）"), plans.map(p => h("td", { class: "num" }, fmtBase(tot[p].perPerson), h("div", { class: "small" }, fmtHome(tot[p].perPersonHome))))));
     tb.append(h("tr", null, h("th", null, "團體總價（全行程）"), plans.map(p => h("td", { class: "num" }, fmtBase(tot[p].total), h("div", { class: "small" }, fmtHome(tot[p].totalHome))))));
     tb.append(h("tr", null, h("th", null, (C.categoryLabels(D())[cdef.compare_category] || cdef.label) + "小計"), plans.map(p => h("td", { class: "num" }, fmtBase(cmp.options[p].categoryTotal)))));
-    tb.append(h("tr", null, h("th", null, "費用資料完整度"), plans.map(p => h("td", null, `業者報價 ${fmtPct(tot[p].completeness.quotedShare)}｜公開／第三方 ${fmtPct(tot[p].completeness.pubShare)}｜估算 ${fmtPct(tot[p].completeness.softShare)}；未估價 ${tot[p].unpriced.length} 項`))));
+    tb.append(h("tr", null, h("th", null, "已計入金額的來源構成（未加預備金小計；報價不等於訂妥）"), plans.map(p => h("td", null, `業者報價 ${fmtPct(tot[p].completeness.quotedShare)}｜公開／第三方 ${fmtPct(tot[p].completeness.pubShare)}｜估算 ${fmtPct(tot[p].completeness.softShare)}；目前納入項目缺價 ${tot[p].unpriced.length} 項`))));
     for (const r of cp.rows) tb.append(h("tr", null, h("th", null, r.label), plans.map(p => { const c = r[p] || {}; return h("td", null, c.text || "—", " ", c.status ? badge(c.status) : null, c.source_ids ? h("div", null, sourceLine(c.source_ids)) : null); })));
     tbl.append(tb);
     P.append(h("div", { class: "card scroll-x" }, tbl));
