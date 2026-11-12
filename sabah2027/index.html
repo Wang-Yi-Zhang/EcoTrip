@@ -1467,7 +1467,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "2/5 LDU → BKI 班機報到截止"
    },
    "missing": [
-    "航班尚未訂位，2027 年班表未查證"
+    "航班尚未訂位；AirBorneo 官網沒有公布班表，2/5 LDU → BKI 的班次時刻要在訂位查詢時才看得到"
    ],
    "basis": "緩衝 90 分鐘為規劃自訂（報到加上路況變數），非航空公司規定"
   },
@@ -1497,7 +1497,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "2/5 LDU → BKI 班機報到截止"
    },
    "missing": [
-    "航班尚未訂位，2027 年班表未查證（航空公司官網於 2026-11-12 無法讀取）"
+    "航班尚未訂位；AirBorneo 官網沒有公布班表，2/5 LDU → BKI 的班次時刻要在訂位查詢時才看得到"
    ],
    "basis": "排程車預計 11:00 抵達 Lahad Datu，所以要訂 12:30 以後起飛的班機才留得出 90 分鐘緩衝（緩衝為規劃自訂）"
   },
@@ -1515,7 +1515,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     {
      "label": "LDU → BKI",
      "duration_h": null,
-     "basis": "第三方行程稱約 55 分鐘，未查證班表"
+     "basis": "AirBorneo 官網沒有公布班表；第三方行程稱約 55 分鐘，未查證"
     }
    ],
    "deadline": {
@@ -5867,6 +5867,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "url": "https://doi.org/10.1002/ajp.23157",
    "reliability": "high",
    "note": "在 Danum Valley Conservation Area 兩個樣區進行 25 個月的路線調查與群體追蹤。摘要列出五種日行性靈長類：婆羅洲猩猩、Müller 氏長臂猿、紅葉猴、長尾獼猴、南方豬尾獼猴。我讀到的是摘要。"
+  },
+  {
+   "id": "src_airborneo",
+   "title": "AirBorneo 官網：Kota Kinabalu（BKI）→ Lahad Datu（LDU）航線頁",
+   "url": "https://airborneo.com/en/flights-from-kota-kinabalu-to-lahad-datu/airfares-from-bki-to-ldu",
+   "type": "official",
+   "checked_on": "2026-11-12",
+   "reliability": "high",
+   "note": "官網有 BKI–LDU 航線頁，確認這條航線由 AirBorneo 經營；但網站沒有公布班表，班次時刻只能用訂位查詢表單逐日查（本工具沒有代為查詢）。官網 2026-03-09 公告：新訂位、改票、退票請洽客服中心 1300-22-1388。"
   }
  ]
 }
@@ -6278,10 +6287,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "title": "鎖定回程機位：2/5 或 2/6 LDU → BKI、2/6 BKI → 台灣",
    "due": "2026-11-30",
    "due_kind": "self",
-   "due_basis": "規劃自訂：2/6 是初一，機位最緊",
+   "due_basis": "規劃自訂：2/6 是初一，機位最緊。BKI–LDU 由 AirBorneo 經營，官網沒有公布班表，要用訂位查詢或致電客服 1300-22-1388",
    "consequence": "春節機位售完或票價大漲；整趟行程的結束日被迫更動",
    "source_ids": [
-    "src_cny"
+    "src_cny",
+    "src_airborneo"
    ]
   },
   {
@@ -6307,7 +6317,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "flights_return"
    ],
    "consequence": "1/29 到不了 Lahad Datu，Day 2 的 Tabin 接送要延後",
-   "source_ids": []
+   "source_ids": [
+    "src_airborneo"
+   ]
   },
   {
    "id": "book_tabin",
