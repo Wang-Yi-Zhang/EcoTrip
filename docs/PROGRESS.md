@@ -1,8 +1,11 @@
 # 進度紀錄（供新 session 接手）
 
-最後更新：2026-11-12（第四輪）。`deepen-engine` 已於 2026-11-12 併回 `main`（快轉合併）；尚未 push。
+最後更新：2026-11-12（第五輪）。已推送到 https://github.com/Wang-Yi-Zhang/EcoTrip（`main`），GitHub Pages 已開啟。
 
 ## 現況
+
+- **正式網址**：首頁 https://wang-yi-zhang.github.io/EcoTrip/ ；沙巴 https://wang-yi-zhang.github.io/EcoTrip/sabah2027/ （分享給旅伴的是後者）。
+- 2026-11-12 部署後實測：7 個分頁正常、主控台無錯誤、離線支援已註冊、從正式網址讀取 Apps Script 端點成功（24 個費用項目通過驗證）。GitHub Actions 第一次執行全部通過。
 
 - 網站結構：每趟旅行一個資料夾，根目錄 `index.html` 是首頁（由 `tools/build-site.mjs` 產生）。`sabah2027/index.html` 是程式碼來源：引擎（`core-js`）與介面（`ui-js`）不含任何行程專有內容；沙巴的細節全部在 7 個 `data-*` 區塊。
 - 測試 4 支，全部通過：`core`（31）、`gas`（10）、`golden`（36 組設定）、`contrast`（16）。
@@ -36,8 +39,6 @@
 ## 待使用者決定或執行
 
 - 寄出 `docs/向業者確認問題清單.md`（待辦第一項，自訂目標日 2026-11-18）。DVFC 的部分可以改問：排程車 2/3、2/5 能否預約 4 個座位、車費是否含在套裝內。
-- 建立 GitHub repo 並 push（步驟見 `docs/03`）。repo 名稱建議用通用的（例如 `trips`），這一趟的網址會是 `…/trips/sabah2027/`。
-- Google 試算表：重新貼上新版 `gas/Code.gs`、執行 `setupSheets`、發新版本，再用 `node tools/sheet-export.mjs` 產生費用資料貼入並 `--check`（步驟見 `docs/03` D.5）。
-- push 之後看 GitHub Actions 是否全綠。
-- 旅伴三題測試、手機飛航模式測試（`docs/06`）。
+- 在正式網址的「⚙ 資料／匯出」貼上 Apps Script 網址並按「使用遠端資料」（每個裝置各做一次）。
+- 旅伴三題測試、手機飛航模式測試（`docs/06`），現在有正式網址可以做了。
 - 業者回覆後：更新 `data-costs`、`essentials.tasks` 的期限、`itinerary.connections` 的出發時間與 `status`。
