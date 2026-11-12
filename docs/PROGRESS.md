@@ -1,6 +1,6 @@
 # 進度紀錄（供新 session 接手）
 
-最後更新：2026-11-12（第四輪）。分支：`deepen-engine`（尚未併回 `main`，尚未 push）。
+最後更新：2026-11-12（第四輪）。`deepen-engine` 已於 2026-11-12 併回 `main`（快轉合併）；尚未 push。
 
 ## 現況
 
@@ -34,7 +34,7 @@
 ## 待使用者決定或執行
 
 - 寄出 `docs/向業者確認問題清單.md`（待辦第一項，自訂目標日 2026-11-18）。DVFC 的部分可以改問：排程車 2/3、2/5 能否預約 4 個座位、車費是否含在套裝內。
-- 是否把 `deepen-engine` 併回 `main`；建立 GitHub repo 並 push（步驟見 `docs/03`，記得連 `sw.js` 一起上傳）。
+- 建立 GitHub repo 並 push（步驟見 `docs/03`，記得連 `sw.js` 一起上傳）。
 - push 之後看 GitHub Actions 是否全綠。
 - 旅伴三題測試、手機飛航模式測試（`docs/06`）。
 - 業者回覆後：更新 `data-costs`、`essentials.tasks` 的期限、`itinerary.connections` 的出發時間與 `status`。
