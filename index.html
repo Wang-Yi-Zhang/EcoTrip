@@ -7133,7 +7133,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     mutator(App.state);
     saveState();
     if (!opts || opts.render !== false) {
+      // 重繪會先清空面板，頁面瞬間變短，瀏覽器會把卷軸拉回上方；所以先記下位置，重繪後還原
+      const sx = window.scrollX, sy = window.scrollY;
       renderActive();
+      if (window.scrollY !== sy || window.scrollX !== sx) window.scrollTo(sx, sy);
       // 重繪後把焦點還原到同一個控制項（鍵盤操作不中斷）
       if (fid) { const el = document.getElementById(fid); if (el && el !== ae) { el.focus({ preventScroll: true }); if (sel && el.setSelectionRange) try { el.setSelectionRange(sel[0], sel[1]); } catch (e) { } } }
       announce();
