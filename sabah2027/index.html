@@ -189,7 +189,19 @@ tr.off td{opacity:.5}
 .leaflet-popup-content{margin:10px 12px;font-size:.88rem;line-height:1.5;color:#1d1d1d}
 .leaflet-popup-content h4{color:#1E2922;margin:0 0 4px;font-size:1rem}
 .leaflet-popup-content .badge{color:#1E2922;background:#eee;border-color:#999}
-.map-legend{background:rgba(30,41,34,.92);color:var(--warm);padding:8px 10px;border-radius:8px;font-size:.78rem;line-height:1.5;max-width:220px}
+.map-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.8rem;color:var(--muted);margin-top:6px}
+/* 手機：地圖在上、地點資訊卡在地圖下方、清單最後；桌面：清單在左、地圖在右 */
+.map-split>.map-col{order:-1}
+@media (min-width:960px){ .map-split>.map-col{order:0} }
+@media (max-width:899px){ #map{height:46vh;min-height:280px} .leaflet-control-attribution{font-size:.62rem;line-height:1.3;max-width:calc(100vw - 60px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .leaflet-touch .leaflet-bar a{width:40px;height:40px;line-height:40px} }
+#map{position:relative;z-index:0} /* 自成堆疊層：縮放鈕與圖層鈕不會蓋到固定在上方的頁首 */
+#poi-detail{margin-top:10px}
+#poi-detail h4{color:var(--warm);font-size:1.05rem;margin:0 0 4px}
+#poi-detail .poi-body>div{margin-top:4px}
+.poi-approx{color:#B3261E;font-weight:700} #poi-detail .poi-approx{color:#FFB39C}
+.poi-coord{font-size:.75rem;color:#555;margin-top:4px} #poi-detail .poi-coord{color:var(--dim)}
+.leaflet-popup-content .poi-day{color:#1E2922;background:#eee;border-color:#999}
+.poi-day{margin:2px}
 
 /* ===== Wildlife ===== */
 .sp-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
@@ -7648,15 +7660,42 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
   function poiPopup(p) {
     const s = S(), days = D().itinerary.days.filter(d => d.activities.some(a => resolveLodging(a.location) === p.id) || resolveLodging(d.lodging) === p.id);
-    return h("div", null, h("h4", null, p.name), h("div", null, h("span", { class: "badge" }, POI_TYPE[p.type].label), " ", p.approximate ? h("b", { style: "color:#B3261E" }, "近似位置") : h("span", null, "座標已查核")),
+    return h("div", { class: "poi-body" }, h("h4", null, p.name), h("div", null, h("span", { class: "badge" }, POI_TYPE[p.type].label), " ", p.approximate ? h("span", { class: "poi-approx" }, "近似位置") : h("span", null, "座標已查核")),
       p.summary ? h("p", null, p.summary) : null,
       p.stay ? h("div", null, h("b", null, "建議停留："), p.stay) : null,
       p.activities && p.activities.length ? h("div", null, h("b", null, "常見活動："), p.activities.join("、")) : null,
       p.species && p.species.length ? h("div", null, h("b", null, "可能觀察物種："), p.species.map(id => speciesById(id)).filter(Boolean).map(speciesName).join("、"), "（不保證）") : null,
       p.safety ? h("div", null, h("b", null, "安全注意："), p.safety) : null,
       p.guide != null ? h("div", null, h("b", null, "嚮導／許可："), p.guide) : null,
-      days.length ? h("div", { style: "margin-top:4px" }, h("b", null, "相關日期："), days.map(d => h("button", { type: "button", class: "btn small", style: "color:#1E2922;background:#eee;border-color:#999;margin:2px", onclick: () => { update(x => { x.selectedDay = d.day; x.dayFilter = "all"; }, { render: false }); selectTab("itinerary", true); } }, `Day ${d.day}`))) : null,
-      h("div", { style: "font-size:.75rem;color:#555;margin-top:4px" }, `座標 ${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}`, p.coord_note ? `｜${p.coord_note}` : ""));
+      days.length ? h("div", { style: "margin-top:4px" }, h("b", null, "相關日期："), days.map(d => h("button", { type: "button", class: "btn small poi-day", onclick: () => { update(x => { x.selectedDay = d.day; x.dayFilter = "all"; }, { render: false }); selectTab("itinerary", true); } }, `Day ${d.day}`))) : null,
+      h("div", { class: "poi-coord" }, `座標 ${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}`, p.coord_note ? `｜${p.coord_note}` : ""));
+  }
+  /** 窄螢幕（手機）不用地圖上的彈出視窗：它會蓋住整張地圖與縮放鈕。改在地圖下方顯示資訊卡。 */
+  const mapNarrow = () => window.matchMedia("(max-width: 899px)").matches;
+  function markSelected(id) {
+    if (!App.map) return; App.map.selected = id;
+    for (const [k, mk] of Object.entries(App.map.markers)) mk.setStyle({ radius: k === id ? 13 : 9, weight: k === id ? 4 : 2 });
+    if (id && App.map.markers[id]) App.map.markers[id].bringToFront();
+  }
+  function closePoiDetail() { const box = document.getElementById("poi-detail"); if (box) { clear(box); box.hidden = true; } markSelected(null); }
+  /** 顯示地點資訊：桌面用彈出視窗（限制高度、可捲動），手機用地圖下方的資訊卡 */
+  function showPoi(p, fromList) {
+    const M = App.map; if (!M) return;
+    const box = document.getElementById("poi-detail");
+    if (mapNarrow()) {
+      M.map.closePopup(); markSelected(p.id);
+      clear(box).append(h("div", { class: "row between", style: "align-items:flex-start" }, h("div", { class: "small muted" }, "地點資訊"),
+        h("button", { class: "btn small", type: "button", id: "poi-detail-close", "aria-label": "關閉地點資訊", onclick: closePoiDetail }, "✕ 關閉")), poiPopup(p));
+      box.hidden = false;
+      // 把地圖捲到頁首正下方（清單在地圖下面，資訊卡在地圖與清單之間）
+      const head = document.querySelector(".topbar"), top = (head ? head.offsetHeight : 0) + 8;
+      const y = document.getElementById("map").getBoundingClientRect().top + window.scrollY - top;
+      if (fromList || Math.abs(window.scrollY - y) > 40) window.scrollTo(0, Math.max(0, y));   // 地圖貼齊頁首下方：地圖與資訊卡開頭同時看得到
+    } else {
+      closePoiDetail(); markSelected(p.id);
+      const hgt = M.map.getSize().y;
+      L.popup({ maxWidth: 300, maxHeight: Math.max(160, hgt - 90), autoPanPadding: [16, 16] }).setLatLng([p.lat, p.lng]).setContent(poiPopup(p)).openOn(M.map);
+    }
   }
   function renderMap() {
     const P = document.getElementById("p-map");
@@ -7664,13 +7703,16 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       P.dataset.built = "1";
       App.mapVisible = App.mapVisible || Object.fromEntries(Object.keys(POI_TYPE).map(k => [k, true]));
       P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "生態地圖"),
-        h("p", { class: "muted small" }, "虛線＝依行程順序的示意連線，不是實際道路；虛線外框標記＝近似位置。地圖不顯示任何物種觀測點位。"))));
+        h("p", { class: "muted small" }, "點地圖上的圓點或清單中的地點看說明。虛線＝依行程順序的示意連線，不是實際道路；虛線外框標記＝近似位置。地圖不顯示任何物種觀測點位。"))));
       const filters = h("div", { class: "row", id: "map-filters", role: "group", "aria-label": "地點類別" });
       for (const [k, t] of Object.entries(POI_TYPE)) filters.append(h("label", { class: "check" }, h("input", { type: "checkbox", checked: App.mapVisible[k], onchange: e => { App.mapVisible[k] = e.target.checked; refreshMapLayers(); } }), h("span", { style: `color:${t.color}` }, "●"), t.label));
       P.append(filters);
       const side = h("div", { class: "card", id: "poi-list" });
-      const mapBox = h("div", null, h("div", { id: "map", role: "region", "aria-label": "行程地圖" }));
-      P.append(h("div", { class: "split", style: "margin-top:8px" }, side, mapBox));
+      const legend = h("div", { class: "map-legend", "aria-label": "圖例" }, Object.values(POI_TYPE).map(t => h("span", null, h("span", { style: `color:${t.color}` }, "● "), t.label)),
+        h("span", null, h("span", { style: "color:#F2B45A" }, "┅ "), "示意連線（非道路）"), h("span", null, "◌ 虛線外框＝近似位置"));
+      const mapBox = h("div", { class: "map-col" }, h("div", { id: "map", role: "region", "aria-label": "行程地圖" }), legend,
+        h("div", { class: "card", id: "poi-detail", hidden: true, role: "region", "aria-label": "地點資訊", "aria-live": "polite" }));
+      P.append(h("div", { class: "split map-split", style: "margin-top:8px" }, side, mapBox));
       if (!window.L) {
         mapBox.prepend(msg("error", "Leaflet 地圖函式庫未載入（可能離線或 CDN 被阻擋）。地點資料仍列於左側清單；其他分頁不受影響。"));
         document.getElementById("map").style.display = "none";
@@ -7684,10 +7726,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         for (const k of Object.keys(POI_TYPE)) App.map.groups[k] = L.layerGroup().addTo(map);
         L.control.layers({ "地形圖 OpenTopoMap": topo, "標準圖 OpenStreetMap": osm }, { "保護區近似範圍": App.map.areas, "行程示意連線": App.map.route }, { collapsed: true }).addTo(map);
         L.control.scale({ metric: true, imperial: false }).addTo(map);
-        const legend = L.control({ position: "bottomleft" });
-        legend.onAdd = () => h("div", { class: "map-legend" }, Object.values(POI_TYPE).map(t => h("div", null, h("span", { style: `color:${t.color}` }, "● "), t.label)),
-          h("div", null, h("span", { style: "color:#F2B45A" }, "┅ "), "示意連線（非道路）"), h("div", null, "◌ 虛線外框＝近似位置"));
-        legend.addTo(map);
+        map.attributionControl.setPrefix(false);                       // 省下一行空間；OpenStreetMap／OpenTopoMap 的歸屬文字仍保留
+        map.on("popupclose", () => { if (!mapNarrow()) markSelected(null); });
         tileErrorWatch(topo, mapBox);
       }
     }
@@ -7704,7 +7744,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const side = document.getElementById("poi-list");
     if (side) {
       clear(side).append(h("h3", null, "地點清單"), h("p", { class: "small muted" }, "點選定位（可用鍵盤操作）"));
-      for (const p of pois) if (App.mapVisible[p.type]) side.append(h("button", { class: "btn ghost", id: "poi-" + p.id, type: "button", style: "width:100%;text-align:left;margin-bottom:4px", onclick: () => focusPoi(p.id) },
+      for (const p of pois) if (App.mapVisible[p.type]) side.append(h("button", { class: "btn ghost", id: "poi-" + p.id, type: "button", style: "width:100%;text-align:left;margin-bottom:4px", onclick: () => focusPoi(p.id, true) },
         h("span", { style: `color:${POI_TYPE[p.type].color}` }, "● "), h("b", null, p.name), h("div", { class: "small dim" }, POI_TYPE[p.type].label, p.approximate ? "｜近似位置" : "", window.L ? "" : `｜${p.lat.toFixed(3)}, ${p.lng.toFixed(3)}`)));
     }
     if (!App.map) return;
@@ -7714,10 +7754,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     for (const p of pois) {
       const t = POI_TYPE[p.type];
       const mk = L.circleMarker([p.lat, p.lng], { radius: 9, color: p.approximate ? "#ffffff" : "#1E2922", weight: 2, dashArray: p.approximate ? "3 3" : null, fillColor: t.color, fillOpacity: .95 })
-        .bindPopup(() => poiPopup(p), { maxWidth: 300 }).bindTooltip(h("span", null, p.name + (p.approximate ? "（近似）" : "")));
+        .on("click", () => showPoi(p, false));
+      if (!mapNarrow()) mk.bindTooltip(h("span", null, p.name + (p.approximate ? "（近似）" : "")));   // 觸控裝置上提示框會卡住不消失，手機不綁
       M.markers[p.id] = mk;
       if (App.mapVisible[p.type]) M.groups[p.type].addLayer(mk);
     }
+    if (M.selected && M.markers[M.selected] && App.mapVisible[C.poiById(D(), M.selected).type]) markSelected(M.selected); else if (M.selected) closePoiDetail();
     M.route.clearLayers();
     const r = resolveRoute();
     if (r.length > 1) L.polyline(r.map(p => [p.lat, p.lng]), { color: "#F2B45A", weight: 3, dashArray: "8 8", opacity: .9 })
@@ -7726,12 +7768,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     for (const a of D().locations.areas) if (a.bbox) L.rectangle([[a.bbox.swlat, a.bbox.swlng], [a.bbox.nelat, a.bbox.nelng]], { color: "#9BD3A8", weight: 1.5, dashArray: "4 6", fill: false })
       .bindTooltip(h("span", null, `${a.name}：iNaturalist 近似查詢範圍（不等於保護區實際邊界）`), { sticky: true }).addTo(M.areas);
   }
-  function focusPoi(id) {
+  function focusPoi(id, fromList) {
     const p = C.poiById(D(), id); if (!p) return;
     if (!App.map) { const b = document.getElementById("poi-" + id); b && b.focus(); return; }
     if (!App.mapVisible[p.type]) { App.mapVisible[p.type] = true; const P = document.getElementById("map-filters"); P && [...P.querySelectorAll("input")].forEach((cb, i) => { cb.checked = App.mapVisible[Object.keys(POI_TYPE)[i]]; }); refreshMapLayers(); }
     App.map.map.setView([p.lat, p.lng], Math.max(App.map.map.getZoom(), 12));
-    const mk = App.map.markers[id]; mk && mk.openPopup();
+    showPoi(p, !!fromList);
   }
   function goMap(poiId) { App.pendingPoi = poiId; selectTab("map", true); }
 
