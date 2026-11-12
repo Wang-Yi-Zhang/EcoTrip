@@ -6484,6 +6484,21 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "source_ids": []
   },
   {
+   "id": "pay_method",
+   "title": "確認每筆款項怎麼付（匯款、刷卡或現金），比較手續費；要換的台幣分 2～3 次換",
+   "due": "2026-12-10",
+   "due_kind": "self",
+   "due_basis": "規劃自訂：等 Tabin、Danum 回覆付款條款後決定",
+   "depends_on": [
+    "ask_tabin",
+    "ask_danum"
+   ],
+   "consequence": "大額款項臨時才換匯或付款，手續費與匯率都沒得選",
+   "source_ids": [
+    "src_quote_a"
+   ]
+  },
+  {
    "id": "book_buffer",
    "title": "訂三個緩衝晚的住宿：1/28 亞庇機場附近（可深夜入住）、1/29 Lahad Datu、2/5（選可免費取消的房型）",
    "due": "2026-12-20",
@@ -6496,6 +6511,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "source_ids": [
     "src_cny"
    ]
+  },
+  {
+   "id": "cash_myr",
+   "title": "備妥令吉現鈔（小費、雜支，金額依業者確認的未含費用估），另帶一張可海外提款的金融卡",
+   "due": "2027-01-15",
+   "due_kind": "self",
+   "due_basis": "規劃自訂：保護區內沒有 ATM，Lahad Datu 換匯點少；台灣銀行令吉現鈔只有部分分行有，換前先打電話預約",
+   "depends_on": [
+    "pay_method"
+   ],
+   "consequence": "進保護區後缺現金付小費或雜支",
+   "source_ids": []
   },
   {
    "id": "insurance",
