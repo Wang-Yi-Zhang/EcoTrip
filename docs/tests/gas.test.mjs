@@ -126,7 +126,7 @@ t("往返測試：內建 costs 寫入試算表 → doGet → 通過網站驗證�
       price: typeof p === "number" ? p : "", price_low: p && typeof p === "object" ? p.low : "", price_mid: p && typeof p === "object" ? p.mid : "", price_high: p && typeof p === "object" ? p.high : "",
       price_currency: it.price_currency || "", status: it.status, applies: it.applies, when: it.when || "", default_on: it.default_on === undefined ? "" : it.default_on,
       qty_days: q.days ?? "", qty_nights: q.nights ?? "", qty_trips: q.trips ?? "", qty_nights_from: q.nights_from || "", qty_rooms_from: q.rooms_from || "",
-      quoted_nights: it.quoted_nights ?? "", includes: (it.includes || []).join(";"), excludes: (it.excludes || []).join(";"), assumption: it.assumption || "",
+      quoted_nights: it.quoted_nights ?? "", count_label: it.count_label || "", days_check: it.days_check ? JSON.stringify(it.days_check) : "", notes: it.notes || "", includes: (it.includes || []).join(";"), excludes: (it.excludes || []).join(";"), assumption: it.assumption || "",
       source_ids: (it.source_ids || []).join(";"), duplicate_risk: (it.duplicate_risk || []).join(";"), itinerary_check: it.itinerary_check ? JSON.stringify(it.itinerary_check) : "" };
     sh.writeRow(i + 2, names.map(n => row[n]));
   });
@@ -142,6 +142,14 @@ t("往返測試：內建 costs 寫入試算表 → doGet → 通過網站驗證�
     assert.ok(Math.abs(a.total - b.total) < 1e-6, `${JSON.stringify(st)}: ${a.total} vs ${b.total}`);
     assert.equal(a.unpriced.length, b.unpriced.length);
   }
+  // 行程檢查的訊息也要逐字相同（count_label、days_check 經試算表往返後不能遺失）
+  for (const ch of [{ danum_choice: "brl", last_night_choice: "ld" }, { danum_choice: "dvfc", last_night_choice: "kk" }]) {
+    const s2 = { pax: 4, rooms: 2, choices: ch, optionalOn: {}, activity: { "d5-night": { choice: 1 } } };
+    assert.deepEqual(J(C.checkItinerary(merged, s2)), J(C.checkItinerary(data, s2)));
+  }
+  // 費用明細的每一行（名稱、單價、數量、金額、狀態、包含／不含、假設、補充說明、來源、重複風險）也要逐欄相同
+  const sAll = { pax: 3, rooms: 2, fx: 7.2, rates: { USD: 4.2 }, choices: { danum_choice: "dvfc", last_night_choice: "ld" }, scenario: "mid", contingencyPct: 10, includeFlights: true, includeExtras: true, optionalOn: {}, overrides: {}, activity: {} };
+  assert.deepEqual(J(C.computeBudget(merged, sAll).lines), J(C.computeBudget(data, sAll).lines));
   assert.ok(C.checkItinerary(merged, { choices: { danum_choice: "brl", last_night_choice: "ld" }, optionalOn: { brl_private_transfer: false }, activity: {} }).some(c => c.code === "feasibility"));
 });
 t("json 工作表：略過表頭列；壞 JSON 回報錯誤但不影響其他資料集", () => {
@@ -154,6 +162,15 @@ t("json 工作表：略過表頭列；壞 JSON 回報錯誤但不影響其他資
   assert.ok(env.data.trip); assert.ok(!env.data.essentials); assert.ok(!env.data.dataset);
   assert.ok(env.errors.some(e => e.includes("essentials")));
   assert.ok(!env.data.costs, "只有表頭的 costs 工作表不應回傳空的 costs（否則會蓋掉網站全部費用）");
+});
+t("核取方塊讓空白列看起來有資料時，doGet 不回傳空的 costs（2026-11-12 實際部署發現）", () => {
+  const { ctx, sheets } = makeEnv();
+  ctx.setupSheets();
+  const sh = sheets.get("costs"), col = ctx.COSTS_HEADERS.findIndex(h => h.name === "default_on") + 1;
+  for (let r = 2; r <= 50; r++) sh.getRange(r, col).setValue(false);      // 核取方塊欄：空白列的值是 false，不是空字串
+  assert.ok(sh.getLastRow() >= 2);
+  const env = JSON.parse(ctx.doGet({}).text);
+  assert.ok(!env.data.costs, "不應回傳沒有任何項目的 costs");
 });
 t("costs 缺欄位時 doGet 回報要執行 setupSheets", () => {
   const { ctx, ss } = makeEnv();

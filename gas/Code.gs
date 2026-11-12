@@ -76,6 +76,9 @@ var COSTS_HEADERS = [
   { name: "qty_nights_from", kind: "list:qty_from", note: "晚數改由計算情境取得（activity_count＝行程中選到此項目的活動數）" },
   { name: "qty_rooms_from", kind: "list:qty_from", note: "房數改由計算情境取得（例如 singles）" },
   { name: "quoted_nights", kind: "number", note: "報價晚數（與行程不符時提醒）" },
+  { name: "count_label", kind: "text", note: "晚數提醒文字裡用的簡稱（選填），例如 私人夜遊" },
+  { name: "days_check", kind: "json", note: '報價天數檢查（選填），例如 {"segment":"tabin","msg":"…{span}…{days}…"}' },
+  { name: "notes", kind: "text", note: "補充說明（選填，顯示在費用明細）" },
   { name: "includes", kind: "text", note: "包含項目，以 ; 分隔" },
   { name: "excludes", kind: "text", note: "不含項目，以 ; 分隔" },
   { name: "assumption", kind: "text", note: "假設與說明（估算必填）" },
@@ -95,7 +98,11 @@ function doGet(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var costs = ss.getSheetByName(SHEET_COSTS);
-    if (costs && costs.getLastRow() >= 2) out.data.costs = readCosts_(costs, errors);
+    if (costs && costs.getLastRow() >= 2) {
+      // 核取方塊欄位會讓空白列也算「有資料」，所以要真的讀到費用列才回傳；否則空的費用表會蓋掉網站全部費用
+      var c = readCosts_(costs, errors);
+      if (c.items.length) out.data.costs = c;
+    }
     var js = ss.getSheetByName(SHEET_JSON);
     if (js) {
       var rows = js.getDataRange().getValues();
@@ -149,6 +156,12 @@ function readCosts_(sheet, errors) {
     if (row.when) item.when = String(row.when);
     if (row.default_on !== "" && row.default_on !== undefined) item.default_on = row.default_on === true || String(row.default_on).toLowerCase() === "true";
     if (num(row.quoted_nights) !== null) item.quoted_nights = num(row.quoted_nights);
+    if (String(row.count_label || "").trim()) item.count_label = String(row.count_label).trim();
+    if (String(row.notes || "").trim()) item.notes = String(row.notes).trim();
+    if (String(row.days_check || "").trim()) {
+      try { item.days_check = JSON.parse(String(row.days_check)); }
+      catch (err) { errors.push("costs!" + item.id + " 的 days_check 不是合法 JSON"); }
+    }
     if (String(row.itinerary_check || "").trim()) {
       try { item.itinerary_check = JSON.parse(String(row.itinerary_check)); }
       catch (err) { errors.push("costs!" + item.id + " 的 itinerary_check 不是合法 JSON"); }
