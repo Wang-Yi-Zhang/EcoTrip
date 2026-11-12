@@ -304,7 +304,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "date": "2027-02-06",
    "name": "農曆新年初一（馬來西亞全國假期）",
-   "impact": "回程日即初一（2/7 初二亦為假期）：機位最緊、延誤後改票困難。",
+   "impact": "回程日即初一；2/7（日）初二亦為假期，依假期表附註順延至 2/8（一）補假。機位最緊、延誤後改票困難，延誤到 2/7–2/8 時多數機關與部分商家休息。",
    "source_ids": [
     "src_cny"
    ]
@@ -1035,7 +1035,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "detail": "需確認接送是否包含在 Danum 套裝內、集合地點與出發時間。",
      "plan_notes": {
       "brl": "第三方：BRL 排程車 09:30 從 LDU 出發、入住 14:00。若 Tabin 清晨私人接送趕不上，需加購 BRL 非排程私人接送（費用試算預設已納入，可取消）。",
-      "dvfc": "官方：LDU ↔ DVFC 交通僅週一、三、五（2/3 為週三）；第三方則稱每日。時刻未查證，費用試算預設納入非排程私人接送估算。"
+      "dvfc": "官方：排程車每週一、三、五 15:00 從 Lahad Datu Town 發車，預計 17:30 抵達，每人單程 RM85，8 人座，需預約（2/3 為週三）。包車 4WD 每輛單程 RM350、時間彈性。官方頁面未標示更新日期。"
      },
      "duration_basis": "官方／第三方：礫石路約 2.5 小時"
     },
@@ -1072,7 +1072,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "notes": [
     "本行程最關鍵的銜接日：Tabin 排程回程（約 16:00 抵 LDU）無法接上 BRL 09:30 排程車，需私人接送（見費用試算）。",
-    "DVFC 官方交通日為週一、三、五；2/3（三）可行，但時刻未查證。",
+    "DVFC 官方排程車：週一、三、五 15:00 從 Lahad Datu 發車（2/3 為週三）；Tabin 的官方排程回程約 16:00 才到，趕不上，仍需 Tabin 私人接送提早出發。",
     "若同日轉場不可行，備案是在 Lahad Datu 多住一晚、Danum 縮短為 1 晚（會改變費用與夜數，需重新報價）。"
    ],
    "weather_alt": "大雨導致道路延誤：與兩家業者保持聯絡；最壞情況在 Lahad Datu 過夜，隔天一早進 Danum。",
@@ -1284,7 +1284,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_basis": "官方／第三方：約 2.5 小時",
      "plan_notes": {
       "brl": "第三方：BRL 退房 11:30，排程回程時刻待確認。",
-      "dvfc": "官方：週五有交通（2/5 為週五）；時刻待確認。"
+      "dvfc": "官方：排程車週一、三、五 08:30 從 Danum 發車，預計 11:00 抵達 Lahad Datu（2/5 為週五）；需預約。"
      }
     },
     {
@@ -1417,7 +1417,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "c-d6-dvfc",
    "day": 6,
    "option": "dvfc",
-   "title": "Tabin → Lahad Datu，銜接 DVFC 交通",
+   "title": "Tabin → Lahad Datu，銜接 DVFC 排程車",
    "buffer_min": 30,
    "depart": {
     "time": "07:00",
@@ -1432,23 +1432,28 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     }
    ],
    "deadline": {
-    "time": null,
-    "label": "DVFC 2/3（三）從 Lahad Datu 發車"
+    "time": "15:00",
+    "label": "DVFC 排程車從 Lahad Datu Town 發車（官方：週一、三、五；2/3 是週三）"
    },
    "missing": [
-    "DVFC 官方只說交通日為週一、三、五，未公布發車時刻"
+    "排程車的上車地點（官方只寫 Lahad Datu Town；辦公室在機場正對面）",
+    "排程車只有 8 個座位，需事先預約，4 人是否訂得到未確認",
+    "官方頁面沒有標示更新日期"
    ],
-   "basis": "趕不上時的備案是 DVFC 非排程私人接送（已預設納入試算）"
+   "basis": "若搭 Tabin 官方排程回程（14:30 發車、約 16:00 抵達）會趕不上 15:00；所以仍需要 Tabin 的私人接送，或改用 DVFC 包車（官方：每輛單程 RM350、時間彈性）"
   },
   {
-   "id": "c-d8-kk",
+   "id": "c-d8-kk-brl",
    "day": 8,
-   "option": "kk",
+   "option": [
+    "kk",
+    "brl"
+   ],
    "title": "Danum → Lahad Datu，銜接 LDU → BKI 國內線",
    "buffer_min": 90,
    "depart": {
     "time": null,
-    "label": "Danum 回程發車（BRL 退房 11:30；DVFC 未查證）"
+    "label": "BRL 回程發車（官方未公布；第三方資料不一致）"
    },
    "legs": [
     {
@@ -1465,6 +1470,36 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "航班尚未訂位，2027 年班表未查證"
    ],
    "basis": "緩衝 90 分鐘為規劃自訂（報到加上路況變數），非航空公司規定"
+  },
+  {
+   "id": "c-d8-kk-dvfc",
+   "day": 8,
+   "option": [
+    "kk",
+    "dvfc"
+   ],
+   "title": "Danum → Lahad Datu，銜接 LDU → BKI 國內線",
+   "buffer_min": 90,
+   "depart": {
+    "time": "08:30",
+    "status": "tbc",
+    "label": "DVFC 排程車從 Danum 發車（官方：週一、三、五；2/5 是週五）"
+   },
+   "legs": [
+    {
+     "label": "Danum → Lahad Datu",
+     "duration_h": 2.5,
+     "basis": "官方：08:30 發車、預計 11:00 抵達"
+    }
+   ],
+   "deadline": {
+    "time": null,
+    "label": "2/5 LDU → BKI 班機報到截止"
+   },
+   "missing": [
+    "航班尚未訂位，2027 年班表未查證（航空公司官網於 2026-11-12 無法讀取）"
+   ],
+   "basis": "排程車預計 11:00 抵達 Lahad Datu，所以要訂 12:30 以後起飛的班機才留得出 90 分鐘緩衝（緩衝為規劃自訂）"
   },
   {
    "id": "c-d9-ld",
@@ -1954,27 +1989,26 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "dvfc_private_transfer",
-   "name": "DVFC 非排程私人接送 LDU → DVFC（Day 6 同日轉場）",
+   "name": "DVFC 包車 LDU → DVFC（Day 6，不搭 15:00 排程車時）",
    "category": "danum",
    "unit": "per_group",
-   "price_currency": "USD",
    "price": {
-    "low": 111,
-    "mid": 222,
-    "high": 222
+    "low": 350,
+    "mid": 350,
+    "high": 700
    },
-   "status": "estimate",
+   "status": "public_rate",
    "applies": "optional",
-   "default_on": true,
+   "default_on": false,
    "when": "plan_dvfc",
-   "assumption": "第三方資料：私人 4WD 單程 USD 111／輛（1–3 人）；4 人可能需 2 輛（中、高情境以 2 輛計）。DVFC 排程車時刻未查證。",
+   "assumption": "官方：包車 4WD（4 人座）每輛單程 RM350，出發時間彈性。低、中情境以 1 輛計；4 人加行李若坐不下需 2 輛（高情境）。官方另有排程車（週一三五 15:00 發車、每人 RM85），所以這一項預設不計入；排程車費是否已含在 DVFC 套裝內未確認。先前使用的第三方價格（USD 111／輛）已由官方價取代。",
    "source_ids": [
-    "src_dvfc_3p"
+    "src_dvfc_transport"
    ],
    "itinerary_check": {
     "plan": "dvfc",
     "day": 6,
-    "msg": "Day 6：未納入 DVFC 非排程私人接送。DVFC 排程車時刻未查證，必須確認能與 Tabin 回程銜接。"
+    "msg": "Day 6：未納入 DVFC 包車，表示要搭 15:00 的排程車（官方：週一三五、8 人座、需預約）。請確認訂得到 4 個座位，且 Tabin 的私人接送能在 15:00 前抵達 Lahad Datu。"
    }
   },
   {
@@ -2081,7 +2115,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      },
      "risk": {
       "s": 2,
-      "why": "官方稱交通僅週一三五；價格只有第三方 4D3N 資料，資訊完整度低"
+      "why": "官方排程車僅週一三五（2/3、2/5 剛好符合）且只有 8 個座位；價格只有第三方 4D3N 資料，資訊完整度低"
      }
     },
     "pros": [
@@ -2092,7 +2126,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "cons": [
      "設施簡單、供電時間有限",
      "官方價目頁無法開啟，3D2N 價格為推估",
-     "交通日期與時刻資訊互相衝突",
+     "排程車只有週一三五、8 個座位；官方與第三方的時刻不一致",
      "活動是否包含待確認"
     ]
    }
@@ -2162,10 +2196,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ]
     },
     "dvfc": {
-     "text": "官方：交通僅週一、三、五；第三方：每日、約 2.5 小時；私人 4WD USD 111／輛（1–3 人）",
-     "status": "tbc",
+     "text": "官方：排程車週一、三、五，15:00 從 Lahad Datu 發車、08:30 從 Danum 發車，每人單程 RM85，8 人座需預約；包車 4WD 每輛單程 RM350。第三方另稱每日 08:30 發車，與官方不一致",
+     "status": "public_rate",
      "source_ids": [
-      "src_dvfc_official",
+      "src_dvfc_transport",
       "src_dvfc_3p"
      ]
     }
@@ -5033,12 +5067,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "src_cny",
-   "title": "馬來西亞 2027 年國定及州假期清單（內閣公告，FMM 轉載 PDF）",
+   "title": "FMM 通函 GI/15/2026（2026-08-27）：2027 年馬來西亞國定及州假期（轉載首相署內閣、憲法及政府間關係司公告）",
    "url": "https://www.fmm.org.my/uploads/files/fmm/20260828_144306_GI15%20-%202027%20Public%20Holiday%20National%20&%20State%20-%2027%20Aug.pdf",
-   "type": "official",
-   "checked_on": "2026-11-10",
+   "type": "third_party",
+   "checked_on": "2026-11-12",
    "reliability": "medium",
-   "note": "2/6 初一、2/7 初二為全國假期；2/8 是否補假來源衝突（未查證）。"
+   "note": "已讀 PDF 全文。2/6（六）初一、2/7（日）初二：沙巴欄皆為 N（全國假期）。2/8（一）在表中是 Awal Ramadan，只適用 Johor、Kedah，沙巴欄為「–」。但附註 1 寫明：假期落在每週休息日（沙巴為週日）時，次日補假。依此 2/7 的假期在沙巴順延到 2/8（一）。這是由附註推得，表中沒有逐州列出補假日。本檔是產業公會轉載，政府原始頁面（kabinet.gov.my）於 2026-11-12 連線被拒，未能直接核對。"
   },
   {
    "id": "src_boca",
@@ -5766,6 +5800,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "checked_on": "2026-11-11",
    "reliability": "medium",
    "note": "僅用於中文名對應；維基名稱不等於官方或學術標準譯名。"
+  },
+  {
+   "id": "src_dvfc_transport",
+   "title": "Borneo Forest Heritage（Sabah Foundation）：Danum Valley Conservation Area — 交通與接駁",
+   "url": "https://borneoforestheritage.org.my/dvca/dvca.htm",
+   "type": "official",
+   "checked_on": "2026-11-12",
+   "reliability": "medium",
+   "note": "官方頁面原文：排程車（8 人座）每週一、三、五，每人單程 RM85；15:00 從 Lahad Datu Town 發車、預計 17:30 抵達；08:30 從 Danum 發車、預計 11:00 抵達 Lahad Datu。包車 4WD（4 人座）每輛單程 RM350，出發時間彈性。需事先預約。辦公室在 Lahad Datu 機場正對面。頁面沒有標示更新日期，所以可信度列為中；訂位時請向 DVFC 再確認。"
   }
  ]
 }
@@ -5779,7 +5822,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "r-cny",
    "level": 1,
    "title": "春節連假：回程日為初一",
-   "trigger": "2/5 除夕（非假期）、2/6 初一與 2/7 初二為馬來西亞全國假期；2/8 是否補假來源衝突",
+   "trigger": "2/5 除夕（非假期）；2/6 初一、2/7 初二為全國假期；2/7 是週日，依假期表附註在沙巴順延至 2/8（一）補假",
    "impact": "回程國際線、國內線與 LD／KK 住宿需求高；延誤或取消時改票選擇很少。",
    "action": "優先鎖定 2/6 回程機位與 2/5 住宿；國內段與國際段保留充足轉機時間；保險需含航班延誤／取消。",
    "source_ids": [
@@ -5790,13 +5833,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "r-transfer",
    "level": 2,
    "title": "Day 6 同日轉場銜接（Tabin → LD → Danum）",
-   "trigger": "Tabin 排程回程 14:30 發車、約 16:00 抵 LDU；BRL 排程車 09:30 從 LDU 出發；DVFC 交通僅週一三五（官方）",
+   "trigger": "Tabin 排程回程 14:30 發車、約 16:00 抵 LDU；BRL 排程車 09:30 從 LDU 出發（第三方資料，官方未公布）；DVFC 排程車週一三五 15:00 從 LDU 出發（官方）",
    "impact": "只靠排程車無法在 2/3 同日轉場；可能損失 Danum 一晚。",
    "action": "請 Tabin 私人接送清晨出發（約 1.5 小時）趕上 09:30，或加購 Danum 非排程私人接送（已預設納入試算）；出發前取得兩家業者書面時刻表。",
    "source_ids": [
     "src_tabin_official",
     "src_brl_3p",
-    "src_dvfc_official"
+    "src_dvfc_official",
+    "src_dvfc_transport"
    ]
   },
   {
@@ -6755,7 +6799,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     }
     for (const c of data.itinerary.connections || []) {
       if (!data.itinerary.days.some(d => d.day === c.day)) out.push(`銜接 ${c.id} 的 day「${c.day}」不存在`);
-      if (c.option != null && !optionKeys.has(c.option)) out.push(`銜接 ${c.id} 的 option「${c.option}」不是任何選擇題的選項`);
+      for (const k of c.option == null ? [] : [].concat(c.option)) if (!optionKeys.has(k)) out.push(`銜接 ${c.id} 的 option「${k}」不是任何選擇題的選項`);
     }
     for (const it of data.costs.items) {
       for (const s of it.source_ids || []) if (!src.has(s)) out.push(`費用 ${it.id} 來源「${s}」不存在`);
@@ -6824,7 +6868,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   function connections(data, state) {
     const out = [];
     for (const c of (data.itinerary.connections || [])) {
-      if (c.option && !optionSelected(data, state, c.option)) continue;
+      if (c.option && ![].concat(c.option).every(k => optionSelected(data, state, k))) continue;   // option 可為單一 key 或陣列（須全部選到）
       const legs = c.legs || [], missing = (c.missing || []).slice();
       for (const l of legs) if (!isNum(l.duration_h)) missing.push(`「${l.label}」的車程或航程時間`);
       const totalMin = legs.length && legs.every(l => isNum(l.duration_h)) ? Math.round(legs.reduce((a, l) => a + l.duration_h * 60, 0)) : null;
