@@ -2,13 +2,16 @@
 // 用法：
 //   node tools/sheet-export.mjs                產生 gas/costs-for-sheet.tsv（含表頭列，欄位順序與 Code.gs 的 COSTS_HEADERS 相同）
 //   node tools/sheet-export.mjs --check <網址>  讀取已部署的 /exec 網址，用網站同一套規則驗證，並和內建資料比對試算結果
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import vm from "node:vm";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const html = readFileSync(join(root, "sabah2027", "index.html"), "utf8");
+// --trip <資料夾>：指定行程資料夾（預設 sabah2027）。該資料夾要有 index.html（其他行程先執行 node tools/build-site.mjs 產生）。
+const ti = process.argv.indexOf("--trip"), trip = ti >= 0 ? process.argv[ti + 1] : "sabah2027";
+if (!trip || !/^[A-Za-z0-9_.-]+$/.test(trip) || !existsSync(join(root, trip, "index.html"))) { console.error(`找不到行程資料夾「${trip}」的 index.html（先執行 node tools/build-site.mjs）`); process.exit(2); }
+const html = readFileSync(join(root, trip, "index.html"), "utf8");
 const ctx = { globalThis: {} }; ctx.globalThis = ctx; vm.createContext(ctx);
 vm.runInContext(html.match(/<script id="core-js">([^]*?)<\/script>/)[1], ctx);
 const C = ctx.EcoCore, data = {};
@@ -33,12 +36,13 @@ if (ci < 0) {
     const unknown = headers.filter(h => !(h in row)); if (unknown.length) throw new Error("Code.gs 有這裡沒處理的欄位：" + unknown.join(", "));
     rows.push(headers.map(h => cell(row[h])).join("\t"));
   }
-  const out = join(root, "gas", "costs-for-sheet.tsv");
+  const outRel = trip === "sabah2027" ? "gas/costs-for-sheet.tsv" : trip + "/costs-for-sheet.tsv";
+  const out = join(root, ...outRel.split("/"));
   writeFileSync(out, rows.join("\r\n") + "\r\n");
   // 試算表不維護、由網站內建沿用的欄位：提醒使用者
   const known = new Set(["id", "name", "category", "unit", "qty", "price", "price_currency", "status", "applies", "when", "default_on", "quoted_nights", "count_label", "days_check", "notes", "includes", "excludes", "assumption", "source_ids", "duplicate_risk", "itinerary_check"]);
   const notInSheet = [...new Set(data.costs.items.flatMap(i => Object.keys(i)))].filter(k => !known.has(k));
-  console.log(`已產生 gas/costs-for-sheet.tsv：${data.costs.items.length} 個費用項目、${headers.length} 欄（含表頭列）`);
+  console.log(`已產生 ${outRel}：${data.costs.items.length} 個費用項目、${headers.length} 欄（含表頭列）`);
   if (notInSheet.length) console.log(`注意：試算表沒有這些欄位，改用遠端資料後它們會消失：${notInSheet.join("、")}`);
   process.exit(0);
 }

@@ -1,7 +1,8 @@
 // gas/Code.gs 模擬測試：以記憶體中的假 SpreadsheetApp 執行 setupSheets() 與 doGet()。
 // 執行：node docs/tests/gas.test.mjs
 // 注意：這是模擬環境，只驗證程式邏輯；真實 Google 服務的行為（授權、CORS、配額）仍需實際部署確認。
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdirSync, rmSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import vm from "node:vm";
@@ -182,6 +183,28 @@ t("costs 缺欄位時 doGet 回報要執行 setupSheets", () => {
 });
 t("內建資料集單格長度低於 50,000 字元上限", () => {
   for (const [k, v] of Object.entries(data)) assert.ok(JSON.stringify(v).length < 50000, `${k} ${JSON.stringify(v).length}`);
+});
+
+t("試算表工具可用在另一趟旅行（--trip）：依該行程的分類、幣別產生下拉允許值與可貼上的費用表", () => {
+  const dir = "_test_trip_tools", abs = join(root, dir), node = process.execPath, run = (...a) => execFileSync(node, a, { cwd: root, encoding: "utf8" });
+  try {
+    mkdirSync(abs, { recursive: true });
+    run(join(root, "tools", "build-trip.mjs"), join(root, "docs", "tests", "fixtures", "contrast-trip.json"), join(abs, "index.html"));
+    const before = readFileSync(join(root, "gas", "Code.gs"), "utf8");
+    run(join(root, "tools", "gas-allowed.mjs"), "--trip", dir, "--write");
+    assert.equal(readFileSync(join(root, "gas", "Code.gs"), "utf8"), before, "不可改到沙巴的 gas/Code.gs");
+    const g = { JSON, Date, String, Number, Math, Object, Array }; vm.createContext(g); vm.runInContext(readFileSync(join(abs, "Code.gs"), "utf8"), g);
+    assert.deepEqual(J(g.ALLOWED.category), ["stay", "move", "food"]); assert.deepEqual(J(g.ALLOWED.price_currency), ["JPY"]);
+    assert.deepEqual(J(g.ALLOWED.applies), J(C.BUILTIN_APPLIES)); assert.deepEqual(J(g.ALLOWED.when), ["singles"]);
+    assert.deepEqual(J(g.COSTS_HEADERS.map(h => h.name)), J(makeEnv().ctx.COSTS_HEADERS.map(h => h.name)), "欄位定義應與範本相同");
+    const msg = run(join(root, "tools", "sheet-export.mjs"), "--trip", dir);
+    assert.ok(msg.includes(dir + "/costs-for-sheet.tsv"), msg);
+    const rows = readFileSync(join(abs, "costs-for-sheet.tsv"), "utf8").trim().split("\r\n").map(r => r.split("\t"));
+    assert.deepEqual(rows[0], J(g.COSTS_HEADERS.map(h => h.name))); assert.equal(rows.length, 1 + 5);
+    const col = n => rows[0].indexOf(n), tea = rows.find(r => r[0] === "tea"), museum = rows.find(r => r[0] === "museum");
+    assert.equal(tea[col("price")], "1500"); assert.equal(tea[col("qty_nights_from")], "activity_count"); assert.equal(tea[col("count_label")], "茶席");
+    assert.equal(museum[col("price")], "", "未報價要留空，不是 0"); assert.equal(museum[col("status")], "unquoted"); assert.equal(museum[col("default_on")], "TRUE");
+  } finally { if (existsSync(abs)) rmSync(abs, { recursive: true, force: true }); }
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);
