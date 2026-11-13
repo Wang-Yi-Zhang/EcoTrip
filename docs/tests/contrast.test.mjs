@@ -79,8 +79,8 @@ t("銜接餘裕（沙巴）：Day 7 最晚 07:30 出發；出發時間未確認�
   assert.deepEqual(J(dv.map(x => x.id)), ["c-d2-bki", "c-d6-dvfc", "c-d8-kk-dvfc"]); dv.shift();   // 需同時符合兩個選項的銜接（kk 且 dvfc）
   // DVFC 官方排程車 15:00 發車：07:00 出發、08:30 抵達，餘裕 390 分鐘；最晚 13:00 出發
   assert.equal(dv[0].slackMin, 390); assert.equal(dv[0].latestDepart, "13:00"); assert.equal(dv[0].status, "assumed");
-  // Day 8：08:30 發車、2.5 小時 → 11:00 抵達；班機未訂所以仍是資料不足
-  assert.equal(dv[1].arrive, "11:00"); assert.equal(dv[1].status, "insufficient");
+  // Day 8：09:30 發車（DVFC 價目表）、2.5 小時 → 12:00 抵達；班機未訂所以仍是資料不足
+  assert.equal(dv[1].arrive, "12:00"); assert.equal(dv[1].status, "insufficient");
   assert.deepEqual(J(C.connections(sabah, { ...st, choices: { danum_choice: "brl", last_night_choice: "kk" } }).map(x => x.id)), ["c-d2-bki", "c-d6-brl", "c-d8-kk-brl"]);
 });
 t("待辦期限：排序、剩餘天數、逾期、前置未完成、期限未知不當成沒有期限", () => {

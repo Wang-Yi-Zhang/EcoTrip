@@ -148,7 +148,8 @@ t("Danum 方案的接送／單人差額只在對應方案啟用", () => {
   assert.equal(line(b, "brl_private_transfer").active, true); assert.equal(line(b, "dvfc_private_transfer").active, false);
   assert.equal(line(b, "brl_single").active, true); assert.equal(line(b, "dvfc_single").active, false);
   const d = C.computeBudget(data, { ...base, rates: { USD: 4.2 }, pax: 3, choices: { danum_choice: "dvfc", last_night_choice: "ld" } });
-  assert.equal(line(d, "dvfc_single").amountBase, null); assert.ok(d.unpriced.some(l => l.id === "dvfc_single"));
+  // DVFC 價目表（2026-11-13 取得）：Standard Resthouse 單人 3,060 − 兩人同房 2,550 = RM510／單人房
+  assert.equal(line(d, "dvfc_single").active, true); assert.equal(line(d, "dvfc_single").amountBase, 510); assert.ok(!d.unpriced.some(l => l.id === "dvfc_single"));
 });
 t("GAS 信封驗證：schema 錯誤拒收、單一資料集錯誤不影響其他", () => {
   assert.equal(C.validateEnvelope({ schema: "x", data: {} }).ok, false);

@@ -286,8 +286,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  "end": "2027-02-06",
  "nights": 9,
  "default_pax": 4,
- "default_fx": 7.2,
- "fx_note": "1 MYR = 7.2 TWD、1 USD = 4.2 MYR 皆為試算值，非即時匯率。",
+ "default_fx": 8.563,
+ "fx_note": "臺灣銀行牌告匯率（2026-11-13 07:51 掛牌）：令吉只有現金匯率，本行賣出 1 MYR = 8.563 TWD；美金現金賣出 33.155 TWD，換算 1 USD = 3.872 MYR（= 33.155 ÷ 8.563，讓美金計價項目換成台幣時等於直接用美金現金賣出價）。用現金賣出價是為了保守估算換匯成本；刷卡或即期匯率通常較低。匯率每天變動，出發前請再更新。",
  "segments": [
   {
    "key": "tabin",
@@ -322,7 +322,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   }
  ],
- "default_usd_myr": 4.2,
+ "default_usd_myr": 3.872,
  "currency": {
   "base": "MYR",
   "home": "TWD",
@@ -332,7 +332,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "USD": "US$"
   },
   "default_rates": {
-   "USD": 4.2
+   "USD": 3.872
   }
  },
  "regions": {
@@ -1126,7 +1126,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "detail": "需確認接送是否包含在 Danum 套裝內、集合地點與出發時間。",
      "plan_notes": {
       "brl": "第三方：BRL 排程車 09:30 從 LDU 出發、入住 14:00。若 Tabin 清晨私人接送趕不上，需加購 BRL 非排程私人接送（費用試算預設已納入，可取消）。",
-      "dvfc": "官方：排程車每週一、三、五 15:00 從 Lahad Datu Town 發車，預計 17:30 抵達，每人單程 RM85，8 人座，需預約（2/3 為週三）。包車 4WD 每輛單程 RM350、時間彈性。官方頁面未標示更新日期。"
+      "dvfc": "DVFC 價目表（2026-01-01–2027-03-31）：套裝已含來回排程接送；LDU → Danum 排程車（8 人座）週一至週五 09:30 或 15:00 發車（2/3 為週三）。非排程包車每天都有、時間彈性：4WD（最多 4 人）每輛單程 RM400，廂型車（最多 8 人）RM700。官方網站另寫排程車只有週一、三、五 15:00、每人 RM85，與價目表不一致，訂位時請確認。"
      },
      "duration_basis": "官方／第三方：礫石路約 2.5 小時"
     },
@@ -1163,7 +1163,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "notes": [
     "本行程最關鍵的銜接日：Tabin 排程回程（約 16:00 抵 LDU）無法接上 BRL 09:30 排程車，需私人接送（見費用試算）。",
-    "DVFC 官方排程車：週一、三、五 15:00 從 Lahad Datu 發車（2/3 為週三）；Tabin 的官方排程回程約 16:00 才到，趕不上，仍需 Tabin 私人接送提早出發。",
+    "DVFC 排程車（價目表）：週一至週五 09:30 或 15:00 從 Lahad Datu 發車（2/3 為週三）；Tabin 的官方排程回程約 16:00 才到，兩班都趕不上，仍需 Tabin 私人接送提早出發（07:00 出發可趕 09:30 班，多出半天在 Danum）。",
     "若同日轉場不可行，備案是在 Lahad Datu 多住一晚、Danum 縮短為 1 晚（會改變費用與夜數，需重新報價）。"
    ],
    "weather_alt": "大雨導致道路延誤：與兩家業者保持聯絡；最壞情況在 Lahad Datu 過夜，隔天一早進 Danum。",
@@ -1374,7 +1374,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_basis": "官方／第三方：約 2.5 小時",
      "plan_notes": {
       "brl": "第三方：BRL 退房 11:30，排程回程時刻待確認。",
-      "dvfc": "官方：排程車週一、三、五 08:30 從 Danum 發車，預計 11:00 抵達 Lahad Datu（2/5 為週五）；需預約。"
+      "dvfc": "DVFC 價目表：Danum → Lahad Datu 排程車每天 09:30 發車（約 2.5 小時，約 12:00 抵達），對應 14:55 起飛的 LDU → BKI 班機（MH3017）。官方網站另寫週一、三、五 08:30 發車，與價目表不一致，訂位時請確認。"
      }
     },
     {
@@ -1549,14 +1549,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "deadline": {
     "time": "15:00",
-    "label": "DVFC 排程車從 Lahad Datu Town 發車（官方：週一、三、五；2/3 是週三）"
+    "label": "DVFC 排程車從 Lahad Datu 發車的最後一班（價目表：週一至週五 09:30 或 15:00；2/3 是週三）"
    },
    "missing": [
     "排程車的上車地點（官方只寫 Lahad Datu Town；辦公室在機場正對面）",
     "排程車只有 8 個座位，需事先預約，4 人是否訂得到未確認",
-    "官方頁面沒有標示更新日期"
+    "價目表寫週一至週五 09:30／15:00，官方網站寫週一、三、五 15:00，兩者不一致"
    ],
-   "basis": "若搭 Tabin 官方排程回程（14:30 發車、約 16:00 抵達）會趕不上 15:00；所以仍需要 Tabin 的私人接送，或改用 DVFC 包車（官方：每輛單程 RM350、時間彈性）"
+   "basis": "若搭 Tabin 官方排程回程（14:30 發車、約 16:00 抵達）會趕不上 15:00；所以仍需要 Tabin 的私人接送，或改用 DVFC 包車（價目表：4WD 每輛單程 RM400、時間彈性）。07:00 從 Tabin 出發約 08:30 到，也趕得上 09:30 那班"
   },
   {
    "id": "c-d8-kk-brl",
@@ -1597,15 +1597,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "title": "Danum → Lahad Datu，銜接 LDU → BKI 國內線",
    "buffer_min": 90,
    "depart": {
-    "time": "08:30",
+    "time": "09:30",
     "status": "tbc",
-    "label": "DVFC 排程車從 Danum 發車（官方：週一、三、五；2/5 是週五）"
+    "label": "DVFC 排程車從 Danum 發車（價目表：每天 09:30；官方網站寫週一、三、五 08:30）"
    },
    "legs": [
     {
      "label": "Danum → Lahad Datu",
      "duration_h": 2.5,
-     "basis": "官方：08:30 發車、預計 11:00 抵達"
+     "basis": "官方／第三方：礫石路約 2.5 小時"
     }
    ],
    "deadline": {
@@ -1615,7 +1615,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "missing": [
     "航班尚未訂位；AirBorneo 官網沒有公布班表，2/5 LDU → BKI 的班次時刻要在訂位查詢時才看得到"
    ],
-   "basis": "排程車預計 11:00 抵達 Lahad Datu，所以要訂 12:30 以後起飛的班機才留得出 90 分鐘緩衝（緩衝為規劃自訂）"
+   "basis": "排程車 09:30 發車、約 12:00 抵達 Lahad Datu，所以要訂 13:30 以後起飛的班機才留得出 90 分鐘緩衝（緩衝為規劃自訂）；價目表把這班車對應 14:55 起飛的 MH3017"
   },
   {
    "id": "c-d9-ld",
@@ -1853,33 +1853,35 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "dvfc_package",
-   "name": "DVFC 3D2N 套裝（Resthouse，推估）",
+   "name": "DVFC 3D2N 套裝（Standard Resthouse，兩人同房）",
    "category": "danum",
    "unit": "per_person",
    "price": {
-    "low": 1040,
-    "mid": 1085,
-    "high": 1447
+    "low": 2210,
+    "mid": 2550,
+    "high": 2740
    },
-   "status": "estimate",
+   "status": "public_rate",
    "applies": "dvfc",
    "includes": [
-    "住宿與餐食（3D2N 內容未查證）",
-    "排程接送（約 2.5 小時，日期限制見方案比較）",
-    "保育費（第三方 4D3N 資料）",
-    "夜間車遊、巡守員／英語嚮導步行（第三方 4D3N 資料）"
+    "保育費",
+    "非單眼相機的攝影費（Non-DSLR Camera Fee）",
+    "住宿與全餐",
+    "導覽叢林健行、一次夜間步行（併團，約 6–8 人一位嚮導）",
+    "LDU ↔ DVFC 來回排程接送"
    ],
    "source_ids": [
-    "src_dvfc_3p",
+    "src_dvfc_rates",
     "src_dvfc_official"
    ],
-   "price_currency": "USD",
    "excludes": [
     "機票",
-    "相機／攝影費",
+    "單眼相機（DSLR）攝影費（價目表未列金額）",
+    "夜間車遊、Bukit Atur 日出（加購，抵達後才能安排）",
+    "Day 1 午餐（加購 RM123／人）",
     "保險"
    ],
-   "assumption": "只有第三方 4D3N（2027 年）價格：Dormitory USD 1,560、Standard Resthouse USD 1,628，另一組未標示數字 USD 2,171。推估 3D2N ≈ 4D3N × 2/3：低 1,040、中 1,085、高 1,447（每人）。純屬推估，須取得正式報價。DVFC 官方價目頁查核時無法開啟。"
+   "assumption": "DVFC 價目表國際價（適用 2026-01-01–2027-03-31），3D2N 每人、兩人同房（至少 2 人）：低＝Hostel 宿舍 RM2,210、中＝Standard Resthouse RM2,550、高＝Superior Deluxe RM2,740（Deluxe Resthouse RM2,620）。這是公開價目，不是針對本團日期與人數的報價；有無空房、春節是否加價仍待確認。價目表註明賞鳥、野生動物攝影等特殊需求另行計價。"
   },
   {
    "id": "intl_flight",
@@ -2072,13 +2074,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "qty": {
     "rooms_from": "singles"
    },
-   "price": null,
-   "status": "unquoted",
+   "price": {
+    "low": 510,
+    "mid": 510,
+    "high": 700
+   },
+   "status": "public_rate",
    "applies": "dvfc",
    "when": "singles",
-   "assumption": "第三方 4D3N 單人加價 USD 215–289／人；3D2N 未報價。",
+   "assumption": "DVFC 價目表 3D2N 單人入住價 − 兩人同房價：Standard Resthouse RM3,060 − 2,550 = RM510、Superior Deluxe RM3,440 − 2,740 = RM700（Deluxe Resthouse RM590）。Hostel 為宿舍，沒有單人價，低情境沿用 Standard Resthouse。",
    "source_ids": [
-    "src_dvfc_3p"
+    "src_dvfc_rates"
    ]
   },
   {
@@ -2105,26 +2111,27 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "dvfc_private_transfer",
-   "name": "DVFC 包車 LDU → DVFC（Day 7，不搭 15:00 排程車時）",
+   "name": "DVFC 包車 LDU → DVFC（Day 7，不搭排程車時）",
    "category": "danum",
    "unit": "per_group",
    "price": {
-    "low": 350,
-    "mid": 350,
+    "low": 400,
+    "mid": 400,
     "high": 700
    },
    "status": "public_rate",
    "applies": "optional",
    "default_on": false,
    "when": "plan_dvfc",
-   "assumption": "官方：包車 4WD（4 人座）每輛單程 RM350，出發時間彈性。低、中情境以 1 輛計；4 人加行李若坐不下需 2 輛（高情境）。官方另有排程車（週一三五 15:00 發車、每人 RM85），所以這一項預設不計入；排程車費是否已含在 DVFC 套裝內未確認。先前使用的第三方價格（USD 111／輛）已由官方價取代。",
+   "assumption": "DVFC 價目表：非排程包車每天都有、出發時間彈性；4WD（最多 4 人）每輛單程 RM400，廂型車（最多 8 人）每輛單程 RM700。低、中情境以 1 輛 4WD 計；4 人加行李坐不下時改廂型車（高情境）。套裝已含來回排程接送（週一至週五 09:30 或 15:00 從 LDU 發車），所以這一項預設不計入。官方網站舊資料為 4WD RM350，已由價目表取代。",
    "source_ids": [
+    "src_dvfc_rates",
     "src_dvfc_transport"
    ],
    "itinerary_check": {
     "plan": "dvfc",
     "day": 7,
-    "msg": "Day 7：未納入 DVFC 包車，表示要搭 15:00 的排程車（官方：週一三五、8 人座、需預約）。請確認訂得到 4 個座位，且 Tabin 的私人接送能在 15:00 前抵達 Lahad Datu。"
+    "msg": "Day 7：未納入 DVFC 包車，表示要搭套裝內的排程車（價目表：週一至週五 09:30 或 15:00、8 人座、需預約）。請確認訂得到 4 個座位，且 Tabin 的私人接送能在發車前抵達 Lahad Datu。"
    }
   },
   {
@@ -2135,15 +2142,32 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "qty": {
     "days": 2
    },
-   "price_currency": "USD",
-   "price": 86,
-   "status": "third_party",
+   "price": 350,
+   "status": "public_rate",
    "applies": "optional",
    "default_on": false,
    "when": "plan_dvfc",
-   "assumption": "第三方資料：私人嚮導 USD 86／天（賞鳥嚮導 USD 136／天）。",
+   "assumption": "DVFC 價目表：一般私人嚮導每晚 RM350、最少收 2 晚（賞鳥私人嚮導每晚 RM450）；本行程 2 晚，以 2 晚計。",
    "source_ids": [
-    "src_dvfc_3p"
+    "src_dvfc_rates"
+   ]
+  },
+  {
+   "id": "dvfc_night_drive",
+   "name": "DVFC 夜間車遊（加購）",
+   "category": "danum",
+   "unit": "per_person_per_night",
+   "qty": {
+    "nights": 2
+   },
+   "price": 80,
+   "status": "public_rate",
+   "applies": "optional",
+   "default_on": true,
+   "when": "plan_dvfc",
+   "assumption": "DVFC 價目表：夜間車遊每人 RM80（最少 3 人、每趟最多 7 公里），套裝不含，只能抵達後安排。以 2 晚各 1 趟計；日出 Bukit Atur 每人 RM80、額外夜間步行每人 RM60 未計入。賞哺乳動物的重點活動，所以預設計入，可取消勾選。",
+   "source_ids": [
+    "src_dvfc_rates"
    ]
   }
  ],
@@ -2219,7 +2243,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "scores": {
      "wildlife": {
       "s": 3,
-      "why": "研究站環境佳；但 3D2N 活動內容未查證（4D3N 第三方含夜間與日出車遊）"
+      "why": "研究站環境佳；3D2N 套裝只含導覽健行與一次夜間步行，夜間車遊與日出須加購（價目表）"
      },
      "comfort": {
       "s": 2,
@@ -2227,23 +2251,23 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      },
      "flex": {
       "s": 3,
-      "why": "可加購私人嚮導（第三方 USD 86／天）"
+      "why": "可加購私人嚮導（價目表 RM350／晚，最少 2 晚）；夜間車遊只能抵達後安排"
      },
      "risk": {
-      "s": 2,
-      "why": "官方排程車僅週一三五（2/3、2/5 剛好符合）且只有 8 個座位；價格只有第三方 4D3N 資料，資訊完整度低"
+      "s": 3,
+      "why": "已有官方價目表；排程車只有 8 個座位，價目表與官方網站的班次不一致；入住前 60 天要付清全額"
      }
     },
     "pros": [
-     "推估價格較低",
+     "官方價目表價格較低（Standard Resthouse 每人 RM2,550，含保育費與來回排程接送）",
      "研究站，可能接觸研究人員與長期樣區",
-     "2/3（三）進、2/5（五）出，符合官方所列交通日"
+     "價目表：LDU 發車週一至週五 09:30／15:00，回程每天 09:30，2/3（三）進、2/5（五）出都有車"
     ],
     "cons": [
      "設施簡單、供電時間有限",
-     "官方價目頁無法開啟，3D2N 價格為推估",
-     "排程車只有週一三五、8 個座位；官方與第三方的時刻不一致",
-     "活動是否包含待確認"
+     "夜間車遊、日出、單眼相機攝影費不含在套裝內",
+     "排程車只有 8 個座位；價目表與官方網站的班次不一致",
+     "付款條件嚴：訂房後 7 天內付 60% 不可退訂金，入住前 60 天付清"
     ]
    }
   },
@@ -2276,10 +2300,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ]
     },
     "dvfc": {
-     "text": "4D3N 第三方含全餐；3D2N 內容待確認",
-     "status": "tbc",
+     "text": "全餐（Day 1 午餐另購 RM123／人）",
+     "status": "public_rate",
      "source_ids": [
-      "src_dvfc_3p"
+      "src_dvfc_rates"
      ]
     }
    },
@@ -2293,10 +2317,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ]
     },
     "dvfc": {
-     "text": "夜間車遊、Bukit Atur 日出車遊、巡守員或英語嚮導步行（4D3N）；40 m 樹冠觀景平台",
-     "status": "tbc",
+     "text": "套裝含導覽健行與一次夜間步行（併團）；加購：夜間車遊 RM80／人、Bukit Atur 日出 RM80／人、夜間步行 RM60／人（皆最少 3 人）；40 m 樹冠觀景平台",
+     "status": "public_rate",
      "source_ids": [
-      "src_dvfc_3p",
+      "src_dvfc_rates",
       "src_dvfc_official"
      ]
     }
@@ -2312,11 +2336,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ]
     },
     "dvfc": {
-     "text": "官方：排程車週一、三、五，15:00 從 Lahad Datu 發車、08:30 從 Danum 發車，每人單程 RM85，8 人座需預約；包車 4WD 每輛單程 RM350。第三方另稱每日 08:30 發車，與官方不一致",
+     "text": "價目表：套裝含來回排程接送（8 人座）；LDU 發車週一至週五 09:30 或 15:00，Danum 回程每天 09:30；包車 4WD 每輛單程 RM400、廂型車 RM700。官方網站寫週一、三、五 15:00／08:30，與價目表不一致",
      "status": "public_rate",
      "source_ids": [
-      "src_dvfc_transport",
-      "src_dvfc_3p"
+      "src_dvfc_rates",
+      "src_dvfc_transport"
      ]
     }
    },
@@ -2341,10 +2365,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ]
     },
     "dvfc": {
-     "text": "（4D3N 第三方）住宿、餐食、排程接送、保育費、夜間／日出車遊、步行",
-     "status": "tbc",
+     "text": "保育費、非單眼相機攝影費、住宿、全餐、導覽健行、一次夜間步行、來回排程接送",
+     "status": "public_rate",
      "source_ids": [
-      "src_dvfc_3p"
+      "src_dvfc_rates"
      ]
     }
    },
@@ -2358,10 +2382,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ]
     },
     "dvfc": {
-     "text": "機票、相機費、保險",
-     "status": "tbc",
+     "text": "機票、保險、單眼相機攝影費（金額未列）、夜間車遊與日出、Day 1 午餐",
+     "status": "public_rate",
      "source_ids": [
-      "src_dvfc_3p"
+      "src_dvfc_rates"
      ]
     }
    },
@@ -2372,8 +2396,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "status": "third_party"
     },
     "dvfc": {
-     "text": "官方價目頁 404；3D2N 價格為推估",
-     "status": "estimate"
+     "text": "官方價目表（2026-01-01–2027-03-31）有各房型價格與付款條件；尚無本團日期的訂位確認",
+     "status": "public_rate"
     }
    },
    {
@@ -2387,10 +2411,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ]
     },
     "dvfc": {
-     "text": "交通日期資訊衝突；設施簡單",
+     "text": "交通班次資訊衝突；設施簡單；60% 訂金不可退，取消政策條文有矛盾處",
      "status": "tbc",
      "source_ids": [
-      "src_dvfc_official"
+      "src_dvfc_official",
+      "src_dvfc_rates"
      ]
     }
    }
@@ -2425,8 +2450,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "en": "BRL: formal quote for 3–5 Feb 2027 (3D2N), 4 pax in 2 rooms by room type; scheduled transfer times; cost of a private afternoon transfer on 3 Feb; confirmation that construction is completed; how tourism tax is charged."
    },
    {
-    "zh": "DVFC：3D2N（Resthouse）正式報價、2/3（三）與 2/5（五）交通時刻、私人接送與私人嚮導費用、保育費。",
-    "en": "DVFC: formal 3D2N quote (Resthouse); transport times on Wed 3 Feb and Fri 5 Feb; private transfer and private guide rates; conservation fees."
+    "zh": "DVFC：2027/2/3–2/5（3D2N）4 人 2 間 Standard Resthouse 是否有空房？價目表適用到 2027/3/31，春節期間是否加價？2/3 排程車 09:30 與 15:00 兩班是否都有 4 個座位、上車地點？2/5 回程 09:30 發車是否確定（官方網站寫週一三五 08:30）？單眼相機攝影費多少？夜間車遊能否抵達前先預約？",
+    "en": "DVFC: Are 2 Standard Resthouse rooms for 4 pax available for 3–5 Feb 2027 (3D2N)? The rate sheet runs to 31 Mar 2027 — is there a Chinese New Year surcharge? On 3 Feb, are 4 seats available on the 09:30 and 15:00 scheduled transfers, and where is the pick-up? Is the 09:30 return on 5 Feb confirmed (the website says 08:30 on Mon/Wed/Fri)? What is the DSLR camera fee? Can night drives be reserved before arrival?"
+   },
+   {
+    "zh": "DVFC 付款條件：60% 訂金「不可退」，但取消條款又寫 21 天前取消只收 22% 手續費、21 天內退 60%，兩者如何適用？入住前 60 天（2026/12/5）付清全額是否正確？",
+    "en": "DVFC payment terms: the 60% deposit is stated as non-refundable, yet the cancellation policy says only a 22% administration fee applies if cancelled more than 21 days before check-in and 60% is refunded within 21 days. Which applies? Is full payment due 60 days before arrival (5 Dec 2026)?"
    },
    {
     "zh": "夜間活動的燈光與攝影規範？是否收相機費？",
@@ -5212,7 +5241,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "type": "third_party",
    "checked_on": "2026-11-10",
    "reliability": "medium",
-   "note": "價格頁有未標示的第二組數字；非官方。"
+   "note": "價格頁有未標示的第二組數字；非官方。已由 DVFC 價目表（src_dvfc_rates）取代，僅留作對照。"
+  },
+  {
+   "id": "src_dvfc_rates",
+   "title": "Danum Valley Conservation Area 價目表（Published Rate，適用 2026-01-01–2027-03-31；使用者提供的 Word 檔）",
+   "type": "operator_quote",
+   "checked_on": "2026-11-13",
+   "reliability": "high",
+   "note": "國際價與馬來西亞居民價兩套；本行程用國際價。內容：3D2N／4D3N／5D4N 各房型（Superior Deluxe、Deluxe Resthouse、Standard Resthouse、Hostel、Menggaris 營地）、加購項目、包車、嚮導與排程車時刻、付款與取消條款。屬公開價目，不是針對本團日期與人數的報價。逐項對照見 docs/05-報價信對照.md 的「DVFC 價目表」一節。"
   },
   {
    "id": "src_cny",
@@ -6036,14 +6073,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "r-transfer",
    "level": 2,
    "title": "Day 7 同日轉場銜接（Tabin → LD → Danum）",
-   "trigger": "Tabin 排程回程 14:30 發車、約 16:00 抵 LDU；BRL 排程車 09:30 從 LDU 出發（第三方資料，官方未公布）；DVFC 排程車週一三五 15:00 從 LDU 出發（官方）",
+   "trigger": "Tabin 排程回程 14:30 發車、約 16:00 抵 LDU；BRL 排程車 09:30 從 LDU 出發（第三方資料，官方未公布）；DVFC 排程車週一至週五 09:30 或 15:00 從 LDU 出發（價目表；官方網站寫週一三五 15:00）",
    "impact": "只靠排程車無法在 2/3 同日轉場；可能損失 Danum 一晚。",
-   "action": "BRL 方案需協調 Tabin 私人接送提早抵達，銜接 09:30 排程車，或安排非排程接送；DVFC 方案需確認 15:00 排程車座位，或另訂包車。BRL 私人接送預設計入、DVFC 包車預設未計入，實際依費用勾選；出發前取得兩家業者書面時刻表與費用確認。",
+   "action": "BRL 方案需協調 Tabin 私人接送提早抵達，銜接 09:30 排程車，或安排非排程接送；DVFC 方案需確認 09:30 或 15:00 排程車座位，或另訂包車。BRL 私人接送預設計入、DVFC 包車預設未計入，實際依費用勾選；出發前取得兩家業者書面時刻表與費用確認。",
    "source_ids": [
     "src_tabin_official",
     "src_brl_3p",
     "src_dvfc_official",
-    "src_dvfc_transport"
+    "src_dvfc_transport",
+    "src_dvfc_rates"
    ]
   },
   {
@@ -6408,14 +6446,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "ask_danum",
-   "title": "向 BRL、DVFC 索取 2/3–2/5 正式報價與接送時刻",
+   "title": "向 BRL 索取 2/3–2/5 正式報價；向 DVFC 確認空房、春節加價與接送時刻（價目表已取得）",
    "due": "2026-11-18",
    "due_kind": "self",
    "due_basis": "規劃自訂",
-   "consequence": "BRL 目前是第三方價、DVFC 是推估價，兩方案無法比較",
+   "consequence": "BRL 目前只有第三方價；DVFC 雖有價目表，空房與班次未確認，兩方案仍無法定案",
    "source_ids": [
     "src_brl_3p",
-    "src_dvfc_3p"
+    "src_dvfc_rates"
    ]
   },
   {
@@ -6433,9 +6471,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "decide_danum",
    "title": "決定 Danum 方案（BRL 或 DVFC）",
-   "due": "2026-12-05",
+   "due": "2026-11-27",
    "due_kind": "self",
-   "due_basis": "規劃自訂",
+   "due_basis": "規劃自訂：原訂 12/5，提前是因為 DVFC 價目表要求入住前 60 天（2026-12-05）付清全額，決定後還要時間下訂與付款",
    "depends_on": [
     "ask_tabin",
     "ask_danum"
@@ -6473,14 +6511,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "book_danum",
-   "title": "Danum 住宿下訂並付訂金（含 Day 7 接送安排）",
-   "due": null,
-   "due_basis": "尚未取得正式報價與付款條款",
+   "title": "Danum 住宿下訂並付款（含 Day 7 接送安排）",
+   "due": "2026-12-05",
+   "due_kind": "external",
+   "due_basis": "DVFC 價目表：下訂後 7 天內付 60% 不可退訂金；入住前 60 天（2/3 入住 → 2026-12-05）付清全額，否則房間會被釋出。BRL 付款條款尚未取得",
    "depends_on": [
     "decide_danum"
    ],
-   "consequence": "春節前後房間不足；Day 7 接送無法確認",
-   "source_ids": []
+   "consequence": "春節前後房間不足；DVFC 未在期限前付清會被取消訂房；Day 7 接送無法確認",
+   "source_ids": [
+    "src_dvfc_rates"
+   ]
   },
   {
    "id": "pay_method",
