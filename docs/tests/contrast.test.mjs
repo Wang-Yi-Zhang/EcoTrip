@@ -70,19 +70,21 @@ t("銜接餘裕：足夠／偏緊／趕不上（手算）", () => {
   assert.equal(c["c-tight"].slackMin, 10); assert.equal(c["c-tight"].status, "tight");
   assert.equal(c["c-miss"].slackMin, -15); assert.equal(c["c-miss"].status, "miss");
 });
-t("銜接餘裕（沙巴，Danum 定案 DVFC）：Day 7 最晚 13:00 出發；出發時間未確認時不會顯示為 ok；缺資料時列出缺什麼", () => {
+t("銜接餘裕（沙巴，先 Danum 後 Tabin）：Day 2 下飛機接 DVFC 09:30 排程車；出發時間未確認時不會顯示為 ok；缺資料時列出缺什麼", () => {
   const st = { ...state, pax: 4, rooms: 2, rates: { USD: 4.2 }, choices: { last_night_choice: "ld" } };
-  const list = C.connections(sabah, st), d6 = list.find(x => x.day === 7);
-  // DVFC 排程車最後一班 15:00：07:00 出發、08:30 抵達，餘裕 390 分鐘；最晚 13:00 出發
-  assert.equal(d6.id, "c-d6-dvfc"); assert.equal(d6.latestDepart, "13:00"); assert.equal(d6.slackMin, 390); assert.equal(d6.status, "assumed");
-  const d9 = list.find(x => x.day === 10); assert.equal(d9.status, "insufficient"); assert.ok(d9.missing.length >= 3); assert.equal(d9.latestDepart, null);
+  const list = C.connections(sabah, st);
+  assert.deepEqual(J(list.map(x => x.id)), ["c-d2-bki", "c-d2-dvfc", "c-d9-ld"]);
+  // 07:30 起飛、航程 1 小時＋走到 DVFC 辦公室 0.5 小時 → 09:00 到；09:30 發車，緩衝 30 分鐘 → 最晚 07:30 起飛，餘裕 30 分鐘
+  const d2 = list.find(x => x.id === "c-d2-dvfc");
+  assert.equal(d2.latestDepart, "07:30"); assert.equal(d2.slackMin, 30); assert.equal(d2.status, "assumed");
+  const d10 = list.find(x => x.day === 10); assert.equal(d10.status, "insufficient"); assert.ok(d10.missing.length >= 3); assert.equal(d10.latestDepart, null);
   const kk = C.connections(sabah, { ...st, choices: { last_night_choice: "kk" } });
-  assert.deepEqual(J(kk.map(x => x.id)), ["c-d2-bki", "c-d6-dvfc", "c-d8-kk-dvfc"]);
-  // Day 9：09:30 發車（DVFC 價目表）、2.5 小時 → 12:00 抵達；班機未訂所以仍是資料不足
-  assert.equal(kk[2].arrive, "12:00"); assert.equal(kk[2].status, "insufficient");
+  assert.deepEqual(J(kk.map(x => x.id)), ["c-d2-bki", "c-d2-dvfc", "c-d9-kk-tabin"]);
+  // Day 9：Tabin 排程回程 14:30 發車、1.5 小時 → 16:00 抵達；班機未訂所以仍是資料不足
+  assert.equal(kk[2].arrive, "16:00"); assert.equal(kk[2].status, "insufficient");
   // option 為陣列時須全部選到：kk 與 ld 不可能同時成立 → 不列出
-  const s2 = JSON.parse(JSON.stringify(sabah)); s2.itinerary.connections.find(c => c.id === "c-d8-kk-dvfc").option = ["kk", "ld"];
-  assert.ok(!C.connections(s2, { ...st, choices: { last_night_choice: "kk" } }).some(x => x.id === "c-d8-kk-dvfc"));
+  const s2 = JSON.parse(JSON.stringify(sabah)); s2.itinerary.connections.find(c => c.id === "c-d9-kk-tabin").option = ["kk", "ld"];
+  assert.ok(!C.connections(s2, { ...st, choices: { last_night_choice: "kk" } }).some(x => x.id === "c-d9-kk-tabin"));
 });
 t("待辦期限：排序、剩餘天數、逾期、前置未完成、期限未知不當成沒有期限", () => {
   const l = C.taskList(data, state, "2028-02-10");

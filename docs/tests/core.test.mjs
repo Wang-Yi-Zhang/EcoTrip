@@ -175,10 +175,10 @@ t("重複計費警告不重複、雙向成立", () => {
   assert.equal(new Set(w).size, w.length);
   assert.ok(w.some(m => m.includes("Private Vehicle")));
 });
-t("Day 7 可行性：沒納入 DVFC 包車時提醒要搭排程車（itinerary_check 不指定方案也會檢查）", () => {
+t("Day 2 可行性：沒納入 DVFC 包車時提醒要搭排程車（itinerary_check 不指定方案也會檢查）", () => {
   const off = C.checkItinerary(data, base).filter(c => c.code === "feasibility");
   const on = C.checkItinerary(data, { ...base, optionalOn: { dvfc_private_transfer: true } }).filter(c => c.code === "feasibility");
-  assert.equal(on.length, 0); assert.equal(off.length, 1); assert.equal(off[0].day, 7);
+  assert.equal(on.length, 0); assert.equal(off.length, 1); assert.equal(off[0].day, 2);
 });
 t("CSV 公式注入防護", () => {
   const d2 = clone(data); d2.costs.items[0].name = "=HYPERLINK(\"x\")";

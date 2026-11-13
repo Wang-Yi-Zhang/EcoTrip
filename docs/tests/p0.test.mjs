@@ -21,15 +21,15 @@ for (const flights of [false,true]) for (const extras of [false,true]) {
   assert.ok(text.includes('不是全旅程已確認費用'));
 }
 assert.ok(C.computeBudget(data,{...base,pax:3}).unpriced.some(l=>l.id==='tabin_single'));
-const extra = data.itinerary.days.find(d=>d.day===7).contingencies[0].extra_cost;
+const extra = data.itinerary.days.find(d=>d.day===2).contingencies[0].extra_cost;   // 2026-11-13 改為先 Danum：包車備案在 Day 2
 assert.equal(extra.amount,null);
 assert.ok(extra.note.includes('不可再重複加算'));
 assert.equal(data.costs.items.find(i=>i.id==='dvfc_private_transfer').default_on,false);
 const checklist = data.essentials.checklist.flatMap(c=>c.items).map(i=>i.text).join('\n');
 assert.ok(checklist.includes('訂 1/28 去程國際線與 1/29 BKI → LDU'));
-assert.ok(checklist.includes('Day 1、Day 2 與 Day 9'));
+assert.ok(checklist.includes('Day 1、Day 4 與 Day 9'));
 assert.ok(!html.includes('兩者都已預設納入試算'));
 assert.ok(!ui.includes('估算完整度'));
 assert.ok(ui.includes('已取得訂房確認 ${ln.booked} / ${ln.total} 晚'));
-assert.equal(Math.round(C.computeBudget(data,base).perPerson),10219);   // 2026-11-13 定案 DVFC（原 BRL 16859）
+assert.equal(Math.round(C.computeBudget(data,base).perPerson),10354);   // 2026-11-13 定案 DVFC Standard Resthouse＋抵達日午餐（原 BRL 16859）
 console.log('✔ P0範圍四組開關、單人缺價、備案差額、日期、住宿語意及UI語法通過');

@@ -43,6 +43,17 @@
 - 旅伴三題測試、手機飛航模式測試（`docs/06`），現在有正式網址可以做了。
 - 業者回覆後：更新 `data-costs`、`essentials.tasks` 的期限、`itinerary.connections` 的出發時間與 `status`。
 
+## 2026-11-13 行程改為先 Danum 後 Tabin、DVFC 房型定案（使用者指示）
+
+- **新順序**：1/28 亞庇 → 1/29（五）飛 LDU 後直接搭 DVFC 09:30 排程車 → Danum 1/29–1/31 → 1/31（日）回 Lahad Datu 過夜 → Tabin 2/1（一）–2/5（五，除夕）→ 2/5 住 LD 或 KK → 2/6 返台。總夜數仍 9 晚。
+- 活動 id 沒有改，跟著內容一起搬到新的日子（瀏覽器裡存的選擇與備註仍對得上）。刪除 `d1-transfer`（LDU → LD 住宿，已不需要）。Tabin 4 天內文字的 Day N 全部 +2。
+- 銜接：`c-d6-dvfc` → `c-d2-dvfc`（07:30 起飛接 09:30 排程車，餘裕 30 分鐘）；`c-d8-kk-dvfc` → `c-d9-kk-tabin`（Tabin 14:30 排程回程接 2/5 國內線）。原本的 Day 7 同日轉場風險改寫為 Day 2 早班機銜接。
+- DVFC 付款期限提前為 **11/30**；自訂 11/23 前下訂；`pay_method` 期限改為 11/23。
+- Tabin 私人接送（RM1,200）保留，但確認問題加問能否改排程接送。
+- **DVFC 房型定為 Standard Resthouse**：套裝固定 RM2,550／人、單人差額 RM510。新增 `dvfc_lunch_day1`（抵達日午餐 RM123／人，預設計入）。
+- 4 人 2 房、中情境：RM41,417（每人約 NT$88,664，匯率 8.563）。
+- 待使用者做：把重新產生的 `gas/costs-for-sheet.tsv` 貼進試算表（`Code.gs` 沒變，不用重跑 `setupSheets()`）；寄出改寫後的 Tabin 與 DVFC 確認信。
+
 ## 2026-11-13 定案 DVFC、匯率存檔規則（使用者指示）
 
 - **Danum 定案住 DVFC**。網站資料拿掉 BRL：刪除「Danum 方案」選擇題、BRL 的 4 個費用項目、方案比較（`costs.compare`）、BRL 地圖點、BRL 的銜接檢查與風險、BRL 的確認問題。「方案比較」分頁因此自動隱藏。BRL 的查證紀錄留在 `docs/research.md` 與 git 歷史。DVFC 的缺點改寫進地圖點說明與新風險「DVFC 付款期限與不可退訂金」。
