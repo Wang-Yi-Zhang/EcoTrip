@@ -10,7 +10,7 @@ const ui = html.match(/<script id="ui-js">([\s\S]*?)<\/script>/)[1];
 new vm.Script(ui);
 ctx.D = () => data; ctx.C = C;
 ctx.compareChoices = () => C.choiceDefs(data).filter(c => c.compare_category);
-vm.runInContext(ui.slice(ui.indexOf('  function budgetScopeText('), ui.indexOf('  /* ================= 總覽 Dashboard')), ctx);
+vm.runInContext(ui.slice(ui.indexOf('  function scenarioSame('), ui.indexOf('  /* ================= 總覽 Dashboard')), ctx);
 const base = {pax:4,rooms:2,fx:7.2,rates:{USD:4.2},choices:{last_night_choice:'ld'},scenario:'mid',contingencyPct:10,includeFlights:false,includeExtras:false,optionalOn:{},overrides:{},activity:{}};
 for (const flights of [false,true]) for (const extras of [false,true]) {
   const state = {...base,includeFlights:flights,includeExtras:extras};
@@ -37,4 +37,11 @@ assert.ok(!/\$\{a\.duration_h\}/.test(ui));
 // 不到 1 小時改用分鐘顯示（0.9 小時不直覺，55 分鐘才是實際航程）
 const durText = vm.runInNewContext(ui.match(/const durText = (v => [^\n]+);\n/)[1]);
 assert.deepEqual([0.9167, 0.5, 3.5833, 3.4167, 1, 1.5, 2].map(durText), ['55 分鐘', '30 分鐘', '3.6 小時', '3.4 小時', '1 小時', '1.5 小時', '2 小時']);
+// 三種情境結果相同時不顯示表格，改為說明哪些勾選會產生價差（2026-11-13）
+{ const st = { ...base }, sc = C.scenarios(data, st), b = C.computeBudget(data, st);
+  assert.equal(ctx.scenarioSame(sc), true);
+  const t = ctx.scenarioSameText(b, st);
+  assert.ok(t.includes('三種情境結果相同') && t.includes('「納入國際與國內機票」') && t.includes('「納入其他費用」') && t.includes('DVFC 包車'), t);
+  const st2 = { ...base, includeExtras: true };
+  assert.equal(ctx.scenarioSame(C.scenarios(data, st2)), false); }
 console.log('✔ P0範圍四組開關、單人缺價、備案差額、日期、住宿語意及UI語法通過');

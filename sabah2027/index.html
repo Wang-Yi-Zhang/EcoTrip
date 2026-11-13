@@ -6982,6 +6982,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
 
   /** 與金額一起顯示範圍，依目前開關產生；關閉不代表免費。 */
+  /** 低／中／高三種情境的總額是否相同（以整數比較，避免浮點誤差） */
+  function scenarioSame(sc) { return ["low", "high"].every(k => Math.round(sc[k].total) === Math.round(sc.mid.total)); }
+  /** 三種情境相同時的說明：指出勾選哪些開關或加購項目後才會出現價差 */
+  function scenarioSameText(b, s) {
+    const labels = D().costs.toggle_labels || {}, varies = i => i.price && typeof i.price === "object";
+    const hints = [];
+    for (const [key, enabled, fallback] of [["flights", s.includeFlights, "納入機票"], ["extras", s.includeExtras, "納入其他費用"]])
+      if (!enabled && D().costs.items.some(i => i.applies === key && varies(i))) hints.push(`「${(labels[key] || fallback).replace(/（.*$/, "")}」`);
+    const off = D().costs.items.filter(i => i.applies === "optional" && varies(i) && !(b.lines.find(l => l.id === i.id) || {}).active).map(i => `「${i.name}」`);
+    return "目前計入的項目都是報價或公開價，三種情境結果相同。" +
+      (hints.length || off.length ? `勾選${hints.join("或")}${hints.length && off.length ? "，或加購" : ""}${off.join("、")}後才會有差別。` : "");
+  }
   function budgetScopeText(b, s) {
     const labels = D().costs.toggle_labels || {}, excluded = [];
     for (const [key, enabled, fallback] of [["flights", s.includeFlights, "機票"], ["extras", s.includeExtras, "其他費用"]]) {
@@ -7245,8 +7257,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const scRow = (k, t) => h("tr", { class: s.scenario === k ? "sub" : null }, h("td", null, t), h("td", { class: "r num" }, fmtBase(sc[k].total)), h("td", { class: "r num" }, fmtHome(sc[k].totalHome)), h("td", { class: "r num" }, fmtBase(sc[k].perPerson)), h("td", { class: "r num" }, fmtHome(sc[k].perPersonHome)));
     const pl = (bb, name, on) => h("tr", { class: on ? "sub" : null }, h("td", null, name), h("td", { class: "r num" }, fmtBase(bb.total)), h("td", { class: "r num" }, fmtBase(bb.perPerson)), h("td", { class: "r" }, fmtPct(bb.completeness.quotedShare)), h("td", { class: "r" }, `${bb.unpriced.length} 項`));
     P.append(h("div", { class: "grid g2", style: "margin-top:14px" },
-      h("div", { class: "card" }, h("h3", null, "低／中／高預算情境"), h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "情境"), h("th", { class: "r" }, "總計 " + base), h("th", { class: "r" }, "總計 " + (home || "—")), h("th", { class: "r" }, "每人 " + base), h("th", { class: "r" }, "每人 " + (home || "—")))),
-        h("tbody", null, scRow("low", "低"), scRow("mid", "中"), scRow("high", "高")))), h("p", { class: "small dim" }, "業者報價與公開牌價在三種情境中不變；只有估算與示範項目會依低中高變動。")),
+      h("div", { class: "card" }, h("h3", null, "低／中／高預算情境"), scenarioSame(sc) ? h("p", { class: "small", id: "scenario-same" }, scenarioSameText(b, s)) : [h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "情境"), h("th", { class: "r" }, "總計 " + base), h("th", { class: "r" }, "總計 " + (home || "—")), h("th", { class: "r" }, "每人 " + base), h("th", { class: "r" }, "每人 " + (home || "—")))),
+        h("tbody", null, scRow("low", "低"), scRow("mid", "中"), scRow("high", "高")))), h("p", { class: "small dim" }, "業者報價與公開牌價在三種情境中不變；只有估算與示範項目會依低中高變動。")]),
       cmps.map(cmp => { const o = Object.values(cmp.options).slice().sort((x, y) => y.budget.total - x.budget.total), hi = o[0], lo = o[o.length - 1], diff = hi.budget.total - lo.budget.total;
         return h("div", { class: "card" }, h("h3", null, cmp.choice.options.map(x => x.label || x.key).join(" 與 ") + " 價差"), h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "方案"), h("th", { class: "r" }, "總計"), h("th", { class: "r" }, "每人"), h("th", { class: "r" }, "業者報價占比"), h("th", { class: "r" }, "未估價"))),
           h("tbody", null, cmp.choice.options.map(x => pl(cmp.options[x.key].budget, x.label || x.key, choiceVal(cmp.choice.id) === x.key))))),
