@@ -70,18 +70,19 @@ t("銜接餘裕：足夠／偏緊／趕不上（手算）", () => {
   assert.equal(c["c-tight"].slackMin, 10); assert.equal(c["c-tight"].status, "tight");
   assert.equal(c["c-miss"].slackMin, -15); assert.equal(c["c-miss"].status, "miss");
 });
-t("銜接餘裕（沙巴）：Day 7 最晚 07:30 出發；出發時間未確認時不會顯示為 ok；缺資料時列出缺什麼", () => {
-  const st = { ...state, pax: 4, rooms: 2, rates: { USD: 4.2 }, choices: { danum_choice: "brl", last_night_choice: "ld" } };
+t("銜接餘裕（沙巴，Danum 定案 DVFC）：Day 7 最晚 13:00 出發；出發時間未確認時不會顯示為 ok；缺資料時列出缺什麼", () => {
+  const st = { ...state, pax: 4, rooms: 2, rates: { USD: 4.2 }, choices: { last_night_choice: "ld" } };
   const list = C.connections(sabah, st), d6 = list.find(x => x.day === 7);
-  assert.equal(d6.latestDepart, "07:30"); assert.equal(d6.slackMin, 60); assert.equal(d6.status, "assumed");
+  // DVFC 排程車最後一班 15:00：07:00 出發、08:30 抵達，餘裕 390 分鐘；最晚 13:00 出發
+  assert.equal(d6.id, "c-d6-dvfc"); assert.equal(d6.latestDepart, "13:00"); assert.equal(d6.slackMin, 390); assert.equal(d6.status, "assumed");
   const d9 = list.find(x => x.day === 10); assert.equal(d9.status, "insufficient"); assert.ok(d9.missing.length >= 3); assert.equal(d9.latestDepart, null);
-  const dv = C.connections(sabah, { ...st, choices: { danum_choice: "dvfc", last_night_choice: "kk" } });
-  assert.deepEqual(J(dv.map(x => x.id)), ["c-d2-bki", "c-d6-dvfc", "c-d8-kk-dvfc"]); dv.shift();   // 需同時符合兩個選項的銜接（kk 且 dvfc）
-  // DVFC 官方排程車 15:00 發車：07:00 出發、08:30 抵達，餘裕 390 分鐘；最晚 13:00 出發
-  assert.equal(dv[0].slackMin, 390); assert.equal(dv[0].latestDepart, "13:00"); assert.equal(dv[0].status, "assumed");
-  // Day 8：09:30 發車（DVFC 價目表）、2.5 小時 → 12:00 抵達；班機未訂所以仍是資料不足
-  assert.equal(dv[1].arrive, "12:00"); assert.equal(dv[1].status, "insufficient");
-  assert.deepEqual(J(C.connections(sabah, { ...st, choices: { danum_choice: "brl", last_night_choice: "kk" } }).map(x => x.id)), ["c-d2-bki", "c-d6-brl", "c-d8-kk-brl"]);
+  const kk = C.connections(sabah, { ...st, choices: { last_night_choice: "kk" } });
+  assert.deepEqual(J(kk.map(x => x.id)), ["c-d2-bki", "c-d6-dvfc", "c-d8-kk-dvfc"]);
+  // Day 9：09:30 發車（DVFC 價目表）、2.5 小時 → 12:00 抵達；班機未訂所以仍是資料不足
+  assert.equal(kk[2].arrive, "12:00"); assert.equal(kk[2].status, "insufficient");
+  // option 為陣列時須全部選到：kk 與 ld 不可能同時成立 → 不列出
+  const s2 = JSON.parse(JSON.stringify(sabah)); s2.itinerary.connections.find(c => c.id === "c-d8-kk-dvfc").option = ["kk", "ld"];
+  assert.ok(!C.connections(s2, { ...st, choices: { last_night_choice: "kk" } }).some(x => x.id === "c-d8-kk-dvfc"));
 });
 t("待辦期限：排序、剩餘天數、逾期、前置未完成、期限未知不當成沒有期限", () => {
   const l = C.taskList(data, state, "2028-02-10");

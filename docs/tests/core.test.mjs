@@ -15,7 +15,7 @@ const data = {};
 for (const m of html.matchAll(/<script type="application\/json" id="data-([a-z]+)">([\s\S]*?)<\/script>/g)) data[m[1]] = JSON.parse(m[2]);
 const clone = o => JSON.parse(JSON.stringify(o));
 const eq = (a, b, m) => assert.deepEqual(JSON.parse(JSON.stringify(a)), b, m); // vm 跨 realm 陣列需先序列化
-const base = { pax: 4, rooms: 2, fx: 7.2, rates: { USD: 4.2 }, choices: { danum_choice: "brl", last_night_choice: "ld" }, scenario: "mid", contingencyPct: 0, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {}, activity: {} };
+const base = { pax: 4, rooms: 2, fx: 7.2, rates: { USD: 4.2 }, choices: { last_night_choice: "ld" }, scenario: "mid", contingencyPct: 0, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {}, activity: {} };
 const tabinIds = ["tabin_base", "river_surcharge", "private_guide", "private_vehicle", "private_transfer", "night_safari"];
 const tabinSum = b => b.lines.filter(l => tabinIds.includes(l.id)).reduce((a, l) => a + l.amountBase, 0);
 const line = (b, id) => b.lines.find(l => l.id === id);
@@ -60,10 +60,10 @@ t("TWD 計價項目（國際機票）換算成 MYR", () => {
   const f = line(b, "intl_flight");
   assert.equal(f.amountHome, 20000 * 4); assert.ok(Math.abs(f.amountBase - 80000 / 7.2) < 1e-6);
 });
-t("BRL／DVFC 切換：只啟用所選方案，另一方案不計入", () => {
-  const b = C.computeBudget(data, { ...base, choices: { danum_choice: "brl", last_night_choice: "ld" } }), d = C.computeBudget(data, { ...base, choices: { danum_choice: "dvfc", last_night_choice: "ld" } });
-  assert.equal(line(b, "brl_package").active, true); assert.equal(line(b, "dvfc_package").active, false);
-  assert.equal(line(d, "brl_package").active, false); assert.equal(line(d, "dvfc_package").active, true);
+t("Danum 已定案為 DVFC：不需選擇題就計入，選擇題只剩最後一晚", () => {
+  eq(C.choiceDefs(data).map(c => c.id), ["last_night_choice"]);
+  assert.equal(line(C.computeBudget(data, base), "dvfc_package").active, true);
+  assert.ok(!data.costs.items.some(i => /^brl_/.test(i.id))); assert.equal(data.costs.compare, undefined);
 });
 t("重複計費檢查：Base Package 與私人嚮導／夜遊同時啟用時提出警告", () => {
   const b = C.computeBudget(data, base);
@@ -97,7 +97,7 @@ t("住宿夜數驗證：Tabin 4 晚、Danum 2 晚、合計 9 晚（含 3 個緩�
   const ln = C.lodgingNightsSummary(data, base); assert.equal(ln.total, 9);
 });
 t("住宿夜數驗證：把一晚 Tabin 改成 Danum → 回報夜數不符與連續性錯誤", () => {
-  const d2 = clone(data); d2.itinerary.days[5].lodging = "brl";
+  const d2 = clone(data); d2.itinerary.days[5].lodging = "dvfc";
   const errs = C.checkItinerary(d2, base).filter(c => c.level === "error");
   assert.ok(errs.some(e => e.code === "nights")); assert.ok(errs.some(e => e.code === "continuity"));
 });
@@ -111,7 +111,7 @@ t("時間衝突：同日兩活動時間重疊 → 錯誤", () => {
   assert.ok(C.checkItinerary(d2, base).some(c => c.code === "overlap"));
 });
 t("最後一晚未決定 → Day 9 住宿待確認（警告，不是假資料）", () => {
-  const c = C.checkItinerary(data, { ...base, choices: { danum_choice: "brl", last_night_choice: "tbd" } });
+  const c = C.checkItinerary(data, { ...base, choices: { last_night_choice: "tbd" } });
   assert.ok(c.some(x => x.code === "lodging" && x.day === 9));
 });
 t("春節提醒出現在 Day 9、Day 10", () => {
@@ -138,16 +138,15 @@ t("觀察可能性標籤規則（含座標遮蔽）", () => {
   const live = C.observabilityLabel({ lit: "unknown", inat_snapshot: { total: 0 } }, 1, { place: 25, bbox: null, fetchedAt: "x" }, false);
   assert.equal(live.key, "strong"); assert.equal(live.usedLive, true);
 });
-t("USD 計價（BRL）以 USD 匯率換算", () => {
-  const b = C.computeBudget(data, { ...base, rates: { USD: 4.2 } });
-  const l = line(b, "brl_package");
-  assert.equal(l.currency, "USD"); assert.ok(Math.abs(l.amountBase - 2033 * 4 * 4.2) < 1e-6); assert.ok(Math.abs(l.amountHome - 2033 * 4 * 4.2 * 7.2) < 1e-6);
+t("USD 計價項目以 USD 匯率換算", () => {
+  const d2 = clone(data), it = d2.costs.items.find(i => i.id === "dvfc_package"); it.price_currency = "USD"; it.price = 100;
+  const l = line(C.computeBudget(d2, { ...base, rates: { USD: 4.2 } }), "dvfc_package");
+  assert.equal(l.currency, "USD"); assert.ok(Math.abs(l.amountBase - 100 * 4 * 4.2) < 1e-6); assert.ok(Math.abs(l.amountHome - 100 * 4 * 4.2 * 7.2) < 1e-6);
 });
-t("Danum 方案的接送／單人差額只在對應方案啟用", () => {
-  const b = C.computeBudget(data, { ...base, rates: { USD: 4.2 }, pax: 3 });
-  assert.equal(line(b, "brl_private_transfer").active, true); assert.equal(line(b, "dvfc_private_transfer").active, false);
-  assert.equal(line(b, "brl_single").active, true); assert.equal(line(b, "dvfc_single").active, false);
-  const d = C.computeBudget(data, { ...base, rates: { USD: 4.2 }, pax: 3, choices: { danum_choice: "dvfc", last_night_choice: "ld" } });
+t("DVFC 單人差額只在有單人房時計入；包車預設不計入", () => {
+  const b = C.computeBudget(data, base);
+  assert.equal(line(b, "dvfc_single").active, false); assert.equal(line(b, "dvfc_private_transfer").active, false);
+  const d = C.computeBudget(data, { ...base, pax: 3 });
   // DVFC 價目表（2026-11-13 取得）：Standard Resthouse 單人 3,060 − 兩人同房 2,550 = RM510／單人房
   assert.equal(line(d, "dvfc_single").active, true); assert.equal(line(d, "dvfc_single").amountBase, 510); assert.ok(!d.unpriced.some(l => l.id === "dvfc_single"));
 });
@@ -176,9 +175,9 @@ t("重複計費警告不重複、雙向成立", () => {
   assert.equal(new Set(w).size, w.length);
   assert.ok(w.some(m => m.includes("Private Vehicle")));
 });
-t("Day 7 可行性：關掉 BRL 私人接送時提出警告", () => {
-  const on = C.checkItinerary(data, base).filter(c => c.code === "feasibility");
-  const off = C.checkItinerary(data, { ...base, optionalOn: { brl_private_transfer: false } }).filter(c => c.code === "feasibility");
+t("Day 7 可行性：沒納入 DVFC 包車時提醒要搭排程車（itinerary_check 不指定方案也會檢查）", () => {
+  const off = C.checkItinerary(data, base).filter(c => c.code === "feasibility");
+  const on = C.checkItinerary(data, { ...base, optionalOn: { dvfc_private_transfer: true } }).filter(c => c.code === "feasibility");
   assert.equal(on.length, 0); assert.equal(off.length, 1); assert.equal(off[0].day, 7);
 });
 t("CSV 公式注入防護", () => {

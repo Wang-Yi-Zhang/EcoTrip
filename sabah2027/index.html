@@ -287,7 +287,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  "nights": 9,
  "default_pax": 4,
  "default_fx": 8.563,
- "fx_note": "臺灣銀行牌告匯率（2026-11-13 07:51 掛牌）：令吉只有現金匯率，本行賣出 1 MYR = 8.563 TWD；美金現金賣出 33.155 TWD，換算 1 USD = 3.872 MYR（= 33.155 ÷ 8.563，讓美金計價項目換成台幣時等於直接用美金現金賣出價）。用現金賣出價是為了保守估算換匯成本；刷卡或即期匯率通常較低。匯率每天變動，出發前請再更新。",
+ "fx_note": "臺灣銀行牌告匯率（2026-11-13 07:51 掛牌），用現金賣出價：1 MYR = 8.563 TWD；USD 現金賣出 33.155 TWD，換算 1 USD = 3.8719 MYR（= 33.155 ÷ 8.563，讓 USD 計價項目換成TWD時等於直接用 USD 的現金賣出價）。用賣出價是為了保守估算換匯成本；刷卡或即期匯率通常較低。匯率每天變動，付款或換匯前請再更新（node tools/update-fx.mjs）。",
  "segments": [
   {
    "key": "tabin",
@@ -322,7 +322,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   }
  ],
- "default_usd_myr": 3.872,
+ "default_usd_myr": 3.8719,
  "currency": {
   "base": "MYR",
   "home": "TWD",
@@ -332,7 +332,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "USD": "US$"
   },
   "default_rates": {
-   "USD": 3.872
+   "USD": 3.8719
   }
  },
  "regions": {
@@ -341,24 +341,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   "transit": "交通／轉運"
  },
  "choices": [
-  {
-   "id": "danum_choice",
-   "label": "Danum 方案",
-   "default": "brl",
-   "compare_category": "danum",
-   "options": [
-    {
-     "key": "brl",
-     "label": "BRL",
-     "lodging": "brl"
-    },
-    {
-     "key": "dvfc",
-     "label": "DVFC",
-     "lodging": "dvfc"
-    }
-   ]
-  },
   {
    "id": "last_night_choice",
    "label": "最後一晚住宿",
@@ -385,10 +367,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  "storage_prefix": "ecotrip2027",
  "transit_region": "transit",
  "legacy_state": {
-  "danumPlan": [
-   "choices",
-   "danum_choice"
-  ],
   "lastNight": [
    "choices",
    "last_night_choice"
@@ -410,7 +388,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  "subtitle": "Tabin Wildlife Reserve × Danum Valley｜1/28–2/6 10 天 9 夜",
  "legacy_export_schemas": [
   "ecotrip2027-export/1"
- ]
+ ],
+ "legacy_defaults": {
+  "fx": [
+   7.2,
+   8.563
+  ],
+  "rates": {
+   "USD": [
+    4.2,
+    3.872
+   ]
+  }
+ }
 }
 </script>
 
@@ -1071,9 +1061,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "danum"
    ],
    "lodging_prev": "tabin_resort",
-   "lodging": "danum_choice",
+   "lodging": "dvfc",
    "lodging_status": "planned",
-   "lodging_note": "Tabin 5D4N 最後一天＝Danum 3D2N 第一天。Danum 住宿依選定方案（BRL 或 DVFC），尚未訂房。",
+   "lodging_note": "Tabin 5D4N 最後一天＝Danum 3D2N 第一天。住 DVFC，尚未訂房。",
    "activities": [
     {
      "id": "d6-dawn",
@@ -1114,20 +1104,16 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "id": "d6-t2",
      "slot": "afternoon",
      "type": "transfer",
-     "title": "Lahad Datu → Danum Valley（Danum 套裝接送）",
+     "title": "Lahad Datu → Danum Valley（DVFC 套裝接送）",
      "duration_h": 2.5,
      "effort": 1,
      "status": "tbc",
-     "location": "danum_choice",
+     "location": "dvfc",
      "needs": [
       "booking"
      ],
      "species": [],
-     "detail": "需確認接送是否包含在 Danum 套裝內、集合地點與出發時間。",
-     "plan_notes": {
-      "brl": "第三方：BRL 排程車 09:30 從 LDU 出發、入住 14:00。若 Tabin 清晨私人接送趕不上，需加購 BRL 非排程私人接送（費用試算預設已納入，可取消）。",
-      "dvfc": "DVFC 價目表（2026-01-01–2027-03-31）：套裝已含來回排程接送；LDU → Danum 排程車（8 人座）週一至週五 09:30 或 15:00 發車（2/3 為週三）。非排程包車每天都有、時間彈性：4WD（最多 4 人）每輛單程 RM400，廂型車（最多 8 人）RM700。官方網站另寫排程車只有週一、三、五 15:00、每人 RM85，與價目表不一致，訂位時請確認。"
-     },
+     "detail": "需確認排程車座位、集合地點與出發時間。\nDVFC 價目表（2026-01-01–2027-03-31）：套裝已含來回排程接送；LDU → Danum 排程車（8 人座）週一至週五 09:30 或 15:00 發車（2/3 為週三）。非排程包車每天都有、時間彈性：4WD（最多 4 人）每輛單程 RM400，廂型車（最多 8 人）RM700。官方網站另寫排程車只有週一、三、五 15:00、每人 RM85，與價目表不一致，訂位時請確認。",
      "duration_basis": "官方／第三方：礫石路約 2.5 小時"
     },
     {
@@ -1138,7 +1124,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_h": null,
      "effort": 1,
      "status": "tbc",
-     "location": "danum_choice",
+     "location": "dvfc",
      "needs": [
       "guide"
      ],
@@ -1149,7 +1135,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      ],
      "options": [
       {
-       "label": "依套裝安排的夜間活動（是否包含待確認）",
+       "label": "套裝內的夜間步行（價目表：3D2N 含一次，併團）",
        "cost_ref": null
       },
       {
@@ -1162,7 +1148,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     }
    ],
    "notes": [
-    "本行程最關鍵的銜接日：Tabin 排程回程（約 16:00 抵 LDU）無法接上 BRL 09:30 排程車，需私人接送（見費用試算）。",
+    "本行程最關鍵的銜接日：Tabin 排程回程（約 16:00 抵 LDU）趕不上 DVFC 排程車，需 Tabin 私人接送提早出發（見費用試算）。",
     "DVFC 排程車（價目表）：週一至週五 09:30 或 15:00 從 Lahad Datu 發車（2/3 為週三）；Tabin 的官方排程回程約 16:00 才到，兩班都趕不上，仍需 Tabin 私人接送提早出發（07:00 出發可趕 09:30 班，多出半天在 Danum）。",
     "若同日轉場不可行，備案是在 Lahad Datu 多住一晚、Danum 縮短為 1 晚（會改變費用與夜數，需重新報價）。"
    ],
@@ -1175,7 +1161,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "fallback": "改用 Danum 的非排程私人接送（下午出發）",
      "extra_cost": {
       "amount": null,
-      "note": "額外應付差額待業者確認。BRL 私人接送預設已計入，但可取消勾選，不可再重複加算；DVFC 包車預設未計入。各方案參考價與是否納入請查費用試算；公開價不是本團確認報價，改期、車輛數及新增費用仍待確認。"
+      "note": "額外應付差額待業者確認。DVFC 包車預設未計入（價目表：4WD 每輛單程 RM400），改用時請在費用試算勾選，不可再重複加算；改期、車輛數及新增費用仍待確認。"
      }
     },
     {
@@ -1198,21 +1184,21 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "kind": [
     "activity"
    ],
-   "lodging_prev": "danum_choice",
-   "lodging": "danum_choice",
+   "lodging_prev": "dvfc",
+   "lodging": "dvfc",
    "lodging_status": "planned",
    "activities": [
     {
      "id": "d7-dawn",
      "slot": "dawn",
      "type": "walk",
-     "title": "清晨：樹冠步道或步道健行（依方案）",
+     "title": "清晨：樹冠觀景平台或步道健行",
      "start": "06:00",
      "duration_h": 2,
      "duration_basis": "規劃估計",
      "effort": 2,
      "status": "suggested",
-     "location": "danum_choice",
+     "location": "dvfc",
      "needs": [
       "guide"
      ],
@@ -1221,11 +1207,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "red_leaf_monkey",
       "orangutan"
      ],
-     "detail": "",
-     "plan_notes": {
-      "brl": "第三方：套裝含樹冠步道（約 300 m、最高 26 m）與導覽健行。",
-      "dvfc": "官方：40 m 樹冠觀景平台、10 m 觀景塔；3D2N 活動內容待確認。"
-     }
+     "detail": "官方：40 m 樹冠觀景平台、10 m 觀景塔；3D2N 活動內容待確認。"
     },
     {
      "id": "d7-am",
@@ -1259,7 +1241,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_h": null,
      "effort": 1,
      "status": "suggested",
-     "location": "danum_choice",
+     "location": "dvfc",
      "needs": [],
      "species": [],
      "detail": ""
@@ -1273,7 +1255,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_basis": "規劃估計",
      "effort": 2,
      "status": "tbc",
-     "location": "danum_choice",
+     "location": "dvfc",
      "needs": [
       "guide"
      ],
@@ -1297,11 +1279,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       }
      ],
      "default_choice": 0,
-     "detail": "",
-     "plan_notes": {
-      "brl": "第三方：套裝含夜間車遊與夜間步行（併團）。",
-      "dvfc": "第三方 4D3N 含夜間車遊；DVFC 供電 07:30–23:00（官方）。"
-     }
+     "detail": "第三方 4D3N 含夜間車遊；DVFC 供電 07:30–23:00（官方）。"
     }
    ],
    "notes": [
@@ -1332,7 +1310,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "segment_days": [
     "danum"
    ],
-   "lodging_prev": "danum_choice",
+   "lodging_prev": "dvfc",
    "lodging": "last_night_choice",
    "lodging_status": "tbc",
    "lodging_note": "緩衝晚（待規劃）：可選 Lahad Datu（隔天從 LDU 出發）或先飛 Kota Kinabalu（隔天從 BKI 搭國際線）。",
@@ -1347,7 +1325,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_basis": "規劃估計",
      "effort": 2,
      "status": "suggested",
-     "location": "danum_choice",
+     "location": "dvfc",
      "needs": [
       "guide"
      ],
@@ -1361,7 +1339,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "id": "d8-transfer",
      "slot": "morning",
      "type": "transfer",
-     "title": "Danum → Lahad Datu（Danum 套裝接送）",
+     "title": "Danum → Lahad Datu（DVFC 套裝接送）",
      "duration_h": 2.5,
      "effort": 1,
      "status": "tbc",
@@ -1370,12 +1348,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "booking"
      ],
      "species": [],
-     "detail": "",
-     "duration_basis": "官方／第三方：約 2.5 小時",
-     "plan_notes": {
-      "brl": "第三方：BRL 退房 11:30，排程回程時刻待確認。",
-      "dvfc": "DVFC 價目表：Danum → Lahad Datu 排程車每天 09:30 發車（約 2.5 小時，約 12:00 抵達），對應 14:55 起飛的 LDU → BKI 班機（MH3017）。官方網站另寫週一、三、五 08:30 發車，與價目表不一致，訂位時請確認。"
-     }
+     "detail": "DVFC 價目表：Danum → Lahad Datu 排程車每天 09:30 發車（約 2.5 小時，約 12:00 抵達），對應 14:55 起飛的 LDU → BKI 班機（MH3017）。官方網站另寫週一、三、五 08:30 發車，與價目表不一致，訂位時請確認。",
+     "duration_basis": "官方／第三方：約 2.5 小時"
     },
     {
      "id": "d8-pm",
@@ -1502,37 +1476,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "basis": "前一晚約 23:00 抵達，扣掉入境、領行李、到住宿與清晨回機場，實際可睡的時間很短；選住宿時以離機場近為優先"
   },
   {
-   "id": "c-d6-brl",
-   "day": 7,
-   "option": "brl",
-   "title": "Tabin → Lahad Datu，銜接 BRL 排程車",
-   "buffer_min": 30,
-   "depart": {
-    "time": "07:00",
-    "status": "tbc",
-    "label": "從 Tabin 出發（已列入向業者確認的問題，尚未回覆）"
-   },
-   "legs": [
-    {
-     "label": "Tabin → Lahad Datu",
-     "duration_h": 1.5,
-     "basis": "Tabin 官方：礫石路約 1.5 小時"
-    }
-   ],
-   "deadline": {
-    "time": "09:30",
-    "label": "BRL 排程車從 Lahad Datu 出發（第三方資料）"
-   },
-   "missing": [
-    "BRL 排程車的集合地點與報到截止時間",
-    "東北季風期間這段礫石路的實際車程"
-   ],
-   "basis": "趕不上時的備案是 BRL 非排程私人接送（已預設納入試算）"
-  },
-  {
    "id": "c-d6-dvfc",
    "day": 7,
-   "option": "dvfc",
    "title": "Tabin → Lahad Datu，銜接 DVFC 排程車",
    "buffer_min": 30,
    "depart": {
@@ -1559,41 +1504,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "basis": "若搭 Tabin 官方排程回程（14:30 發車、約 16:00 抵達）會趕不上 15:00；所以仍需要 Tabin 的私人接送，或改用 DVFC 包車（價目表：4WD 每輛單程 RM400、時間彈性）。07:00 從 Tabin 出發約 08:30 到，也趕得上 09:30 那班"
   },
   {
-   "id": "c-d8-kk-brl",
-   "day": 9,
-   "option": [
-    "kk",
-    "brl"
-   ],
-   "title": "Danum → Lahad Datu，銜接 LDU → BKI 國內線",
-   "buffer_min": 90,
-   "depart": {
-    "time": null,
-    "label": "BRL 回程發車（官方未公布；第三方資料不一致）"
-   },
-   "legs": [
-    {
-     "label": "Danum → Lahad Datu",
-     "duration_h": 2.5,
-     "basis": "官方／第三方：礫石路約 2.5 小時"
-    }
-   ],
-   "deadline": {
-    "time": null,
-    "label": "2/5 LDU → BKI 班機報到截止"
-   },
-   "missing": [
-    "航班尚未訂位；AirBorneo 官網沒有公布班表，2/5 LDU → BKI 的班次時刻要在訂位查詢時才看得到"
-   ],
-   "basis": "緩衝 90 分鐘為規劃自訂（報到加上路況變數），非航空公司規定"
-  },
-  {
    "id": "c-d8-kk-dvfc",
    "day": 9,
-   "option": [
-    "kk",
-    "dvfc"
-   ],
+   "option": "kk",
    "title": "Danum → Lahad Datu，銜接 LDU → BKI 國內線",
    "buffer_min": 90,
    "depart": {
@@ -1824,34 +1737,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "id": "brl_package",
-   "name": "BRL 3D2N 套裝（Jungle Chalet，兩人同房）",
-   "category": "danum",
-   "unit": "per_person",
-   "price": 2033,
-   "status": "third_party",
-   "applies": "brl",
-   "includes": [
-    "2 晚住宿",
-    "2 早餐、3 午餐、2 晚餐",
-    "LDU ↔ BRL 排程接送（LDU 09:30 出發）",
-    "保護區入園許可與稅",
-    "導覽健行、樹冠步道、夜間車遊、夜間步行（併團）"
-   ],
-   "source_ids": [
-    "src_brl_3p",
-    "src_brl_official"
-   ],
-   "price_currency": "USD",
-   "excludes": [
-    "國內線機票",
-    "酒精與碳酸飲料",
-    "保險",
-    "觀光稅（外國旅客）"
-   ],
-   "assumption": "第三方旅行社公開價（全市場價，適用 2026-04-01–2027-03-31），非官方、非報價；頁面另有未標示的較高數字。BRL 官方網站未公開價格。Deluxe／Premium 房型更高（USD 2,165／2,725）。"
-  },
-  {
    "id": "dvfc_package",
    "name": "DVFC 3D2N 套裝（Standard Resthouse，兩人同房）",
    "category": "danum",
@@ -1862,7 +1747,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "high": 2740
    },
    "status": "public_rate",
-   "applies": "dvfc",
+   "applies": "always",
    "includes": [
     "保育費",
     "非單眼相機的攝影費（Non-DSLR Camera Fee）",
@@ -1961,12 +1846,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "price": 10,
    "status": "estimate",
    "applies": "extras",
-   "assumption": "依 RM10／房／晚估算（第三方業者資料）；BRL 第三方頁面寫 USD 2／房／晚，兩者不一致，待確認。各套裝是否已含亦待確認。",
+   "assumption": "依 RM10／房／晚估算（第三方業者資料；同一來源另寫 USD 2／房／晚，兩者不一致），待確認。DVFC 價目表沒有提到觀光稅；各套裝是否已含亦待確認。",
    "source_ids": [
     "src_brl_3p"
    ],
    "duplicate_risk": [
-    "brl_package",
     "dvfc_package",
     "tabin_base"
    ]
@@ -1995,10 +1879,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "price": null,
    "status": "unquoted",
    "applies": "extras",
-   "assumption": "是否另收及金額待查證／待業者確認；BRL 第三方資料稱套裝已含入園許可與稅。",
+   "assumption": "DVFC 價目表：套裝已含保育費與非單眼相機攝影費；單眼相機攝影費未列金額。Tabin 是否另收入園／保育費待業者確認。",
    "source_ids": [],
    "duplicate_risk": [
-    "brl_package",
     "dvfc_package",
     "tabin_base"
    ]
@@ -2033,40 +1916,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "id": "danum_private_guide",
-   "name": "BRL 私人嚮導（加購）",
-   "category": "danum",
-   "unit": "per_group_per_day",
-   "qty": {
-    "days": 2
-   },
-   "price": null,
-   "status": "unquoted",
-   "applies": "optional",
-   "default_on": false,
-   "assumption": "BRL 是否提供私人嚮導及價格待確認。",
-   "source_ids": [],
-   "when": "plan_brl"
-  },
-  {
-   "id": "brl_single",
-   "name": "BRL 單人入住差額（推算）",
-   "category": "danum",
-   "unit": "per_room",
-   "qty": {
-    "rooms_from": "singles"
-   },
-   "price_currency": "USD",
-   "price": 864,
-   "status": "estimate",
-   "applies": "brl",
-   "when": "singles",
-   "assumption": "第三方單人價 USD 2,897 − 兩人同房價 USD 2,033 = USD 864／單人房（整個 3D2N）。",
-   "source_ids": [
-    "src_brl_3p"
-   ]
-  },
-  {
    "id": "dvfc_single",
    "name": "DVFC 單人入住差額",
    "category": "danum",
@@ -2080,34 +1929,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "high": 700
    },
    "status": "public_rate",
-   "applies": "dvfc",
+   "applies": "always",
    "when": "singles",
    "assumption": "DVFC 價目表 3D2N 單人入住價 − 兩人同房價：Standard Resthouse RM3,060 − 2,550 = RM510、Superior Deluxe RM3,440 − 2,740 = RM700（Deluxe Resthouse RM590）。Hostel 為宿舍，沒有單人價，低情境沿用 Standard Resthouse。",
    "source_ids": [
     "src_dvfc_rates"
    ]
-  },
-  {
-   "id": "brl_private_transfer",
-   "name": "BRL 非排程私人接送 LDU → BRL（Day 7 同日轉場）",
-   "category": "danum",
-   "unit": "per_group",
-   "price_currency": "USD",
-   "price": 198,
-   "status": "third_party",
-   "applies": "optional",
-   "default_on": true,
-   "when": "plan_brl",
-   "assumption": "第三方資料：BRL 排程車 09:30 從 LDU 出發，Tabin 排程回程約 16:00 才到 LDU，無法同日銜接。私人接送單程 USD 198（4–6 人廂型車）；1–3 人 4WD 為 USD 160。若 Tabin 私人接送能在清晨出發趕上 09:30 排程車，可取消此項。",
-   "source_ids": [
-    "src_brl_3p",
-    "src_tabin_official"
-   ],
-   "itinerary_check": {
-    "plan": "brl",
-    "day": 7,
-    "msg": "Day 7：未納入 BRL 非排程私人接送。只靠排程車無法同日轉場（Tabin 排程回程約 16:00 抵 LDU，BRL 排程車 09:30 從 LDU 出發）；必須確認 Tabin 私人接送能在 09:30 前抵達 LDU。"
-   }
   },
   {
    "id": "dvfc_private_transfer",
@@ -2122,14 +1949,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "status": "public_rate",
    "applies": "optional",
    "default_on": false,
-   "when": "plan_dvfc",
    "assumption": "DVFC 價目表：非排程包車每天都有、出發時間彈性；4WD（最多 4 人）每輛單程 RM400，廂型車（最多 8 人）每輛單程 RM700。低、中情境以 1 輛 4WD 計；4 人加行李坐不下時改廂型車（高情境）。套裝已含來回排程接送（週一至週五 09:30 或 15:00 從 LDU 發車），所以這一項預設不計入。官方網站舊資料為 4WD RM350，已由價目表取代。",
    "source_ids": [
     "src_dvfc_rates",
     "src_dvfc_transport"
    ],
    "itinerary_check": {
-    "plan": "dvfc",
     "day": 7,
     "msg": "Day 7：未納入 DVFC 包車，表示要搭套裝內的排程車（價目表：週一至週五 09:30 或 15:00、8 人座、需預約）。請確認訂得到 4 個座位，且 Tabin 的私人接送能在發車前抵達 Lahad Datu。"
    }
@@ -2146,7 +1971,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "status": "public_rate",
    "applies": "optional",
    "default_on": false,
-   "when": "plan_dvfc",
    "assumption": "DVFC 價目表：一般私人嚮導每晚 RM350、最少收 2 晚（賞鳥私人嚮導每晚 RM450）；本行程 2 晚，以 2 晚計。",
    "source_ids": [
     "src_dvfc_rates"
@@ -2164,305 +1988,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "status": "public_rate",
    "applies": "optional",
    "default_on": true,
-   "when": "plan_dvfc",
    "assumption": "DVFC 價目表：夜間車遊每人 RM80（最少 3 人、每趟最多 7 公里），套裝不含，只能抵達後安排。以 2 晚各 1 趟計；日出 Bukit Atur 每人 RM80、額外夜間步行每人 RM60 未計入。賞哺乳動物的重點活動，所以預設計入，可取消勾選。",
    "source_ids": [
     "src_dvfc_rates"
    ]
   }
- ],
- "compare": {
-  "choice": "danum_choice",
-  "criteria": [
-   {
-    "key": "budget",
-    "default_weight": 3,
-    "label": "預算",
-    "desc": "依目前試算總價自動計算"
-   },
-   {
-    "key": "wildlife",
-    "default_weight": 4,
-    "label": "生態觀察時間",
-    "desc": "在 Danum 可用於觀察的時段與導覽安排"
-   },
-   {
-    "key": "comfort",
-    "default_weight": 2,
-    "label": "住宿舒適度",
-    "desc": "房型、衛浴、餐飲"
-   },
-   {
-    "key": "flex",
-    "default_weight": 2,
-    "label": "行程彈性",
-    "desc": "活動是否能依天候與目標調整"
-   },
-   {
-    "key": "risk",
-    "default_weight": 3,
-    "label": "旅遊風險（越高越低風險）",
-    "desc": "接送銜接、資訊完整度、取消彈性"
-   }
-  ],
-  "options": {
-   "brl": {
-    "name": "Borneo Rainforest Lodge（BRL）",
-    "scores": {
-     "wildlife": {
-      "s": 4,
-      "why": "套裝含導覽健行、樹冠步道、夜間車遊與夜間步行（第三方）"
-     },
-     "comfort": {
-      "s": 5,
-      "why": "旅遊型木屋、全餐（官方／第三方）"
-     },
-     "flex": {
-      "s": 3,
-      "why": "併團行程；私人嚮導與非排程接送需另計"
-     },
-     "risk": {
-      "s": 3,
-      "why": "工程至 2027-01-22；排程車與 Tabin 回程無法銜接，需私人接送"
-     }
-    },
-    "pros": [
-     "住宿與餐飲品質較高",
-     "套裝活動內容公開較完整（含樹冠步道、夜間車遊）",
-     "官方有獨立營運商與訂房管道"
-    ],
-    "cons": [
-     "價格明顯較高（第三方價每人約 USD 2,033 起）",
-     "官方未公開價格，需詢價",
-     "Day 7 需加購私人接送才能同日轉場",
-     "新建工程預計 2027-01-22 完工，需確認"
-    ]
-   },
-   "dvfc": {
-    "name": "Danum Valley Field Centre（DVFC）",
-    "scores": {
-     "wildlife": {
-      "s": 3,
-      "why": "研究站環境佳；3D2N 套裝只含導覽健行與一次夜間步行，夜間車遊與日出須加購（價目表）"
-     },
-     "comfort": {
-      "s": 2,
-      "why": "研究站設施較簡單，供電 07:30–23:00（官方）"
-     },
-     "flex": {
-      "s": 3,
-      "why": "可加購私人嚮導（價目表 RM350／晚，最少 2 晚）；夜間車遊只能抵達後安排"
-     },
-     "risk": {
-      "s": 3,
-      "why": "已有官方價目表；排程車只有 8 個座位，價目表與官方網站的班次不一致；入住前 60 天要付清全額"
-     }
-    },
-    "pros": [
-     "官方價目表價格較低（Standard Resthouse 每人 RM2,550，含保育費與來回排程接送）",
-     "研究站，可能接觸研究人員與長期樣區",
-     "價目表：LDU 發車週一至週五 09:30／15:00，回程每天 09:30，2/3（三）進、2/5（五）出都有車"
-    ],
-    "cons": [
-     "設施簡單、供電時間有限",
-     "夜間車遊、日出、單眼相機攝影費不含在套裝內",
-     "排程車只有 8 個座位；價目表與官方網站的班次不一致",
-     "付款條件嚴：訂房後 7 天內付 60% 不可退訂金，入住前 60 天付清"
-    ]
-   }
-  },
-  "rows": [
-   {
-    "label": "住宿條件",
-    "brl": {
-     "text": "約 30 棟木屋；房型 Jungle／Deluxe／Premium Deluxe／Villa",
-     "status": "confirmed",
-     "source_ids": [
-      "src_brl_official",
-      "src_brl_3p"
-     ]
-    },
-    "dvfc": {
-     "text": "VIP 房 2、Resthouse 7 間（每間 2 床）、Hostel 96 床、營地；供電 07:30–23:00",
-     "status": "confirmed",
-     "source_ids": [
-      "src_dvfc_official"
-     ]
-    }
-   },
-   {
-    "label": "餐飲及附加服務",
-    "brl": {
-     "text": "3D2N：2 早、3 午、2 晚；酒精與碳酸飲料另計",
-     "status": "third_party",
-     "source_ids": [
-      "src_brl_3p"
-     ]
-    },
-    "dvfc": {
-     "text": "全餐（Day 1 午餐另購 RM123／人）",
-     "status": "public_rate",
-     "source_ids": [
-      "src_dvfc_rates"
-     ]
-    }
-   },
-   {
-    "label": "嚮導與生態活動",
-    "brl": {
-     "text": "導覽健行、樹冠步道（約 300 m、最高 26 m）、夜間車遊、夜間步行（併團）",
-     "status": "third_party",
-     "source_ids": [
-      "src_brl_3p"
-     ]
-    },
-    "dvfc": {
-     "text": "套裝含導覽健行與一次夜間步行（併團）；加購：夜間車遊 RM80／人、Bukit Atur 日出 RM80／人、夜間步行 RM60／人（皆最少 3 人）；40 m 樹冠觀景平台",
-     "status": "public_rate",
-     "source_ids": [
-      "src_dvfc_rates",
-      "src_dvfc_official"
-     ]
-    }
-   },
-   {
-    "label": "接送需求",
-    "brl": {
-     "text": "LDU 排程車 09:30 出發、約 2.5 小時；Day 7 需非排程私人接送（USD 160–198／單程）",
-     "status": "third_party",
-     "source_ids": [
-      "src_brl_3p",
-      "src_brl_official"
-     ]
-    },
-    "dvfc": {
-     "text": "價目表：套裝含來回排程接送（8 人座）；LDU 發車週一至週五 09:30 或 15:00，Danum 回程每天 09:30；包車 4WD 每輛單程 RM400、廂型車 RM700。官方網站寫週一、三、五 15:00／08:30，與價目表不一致",
-     "status": "public_rate",
-     "source_ids": [
-      "src_dvfc_rates",
-      "src_dvfc_transport"
-     ]
-    }
-   },
-   {
-    "label": "可用於野生動物觀察的時間",
-    "brl": {
-     "text": "Day 7 傍晚與夜間、Day 8 全天、Day 9 清晨（兩方案相同）",
-     "status": "estimate"
-    },
-    "dvfc": {
-     "text": "同左；DVFC 供電時段可能影響夜間充電安排",
-     "status": "estimate"
-    }
-   },
-   {
-    "label": "套裝包含",
-    "brl": {
-     "text": "住宿、餐食、排程接送、入園許可與稅、導覽活動",
-     "status": "third_party",
-     "source_ids": [
-      "src_brl_3p"
-     ]
-    },
-    "dvfc": {
-     "text": "保育費、非單眼相機攝影費、住宿、全餐、導覽健行、一次夜間步行、來回排程接送",
-     "status": "public_rate",
-     "source_ids": [
-      "src_dvfc_rates"
-     ]
-    }
-   },
-   {
-    "label": "套裝不含",
-    "brl": {
-     "text": "國內線、保險、觀光稅、酒精飲料",
-     "status": "third_party",
-     "source_ids": [
-      "src_brl_3p"
-     ]
-    },
-    "dvfc": {
-     "text": "機票、保險、單眼相機攝影費（金額未列）、夜間車遊與日出、Day 1 午餐",
-     "status": "public_rate",
-     "source_ids": [
-      "src_dvfc_rates"
-     ]
-    }
-   },
-   {
-    "label": "資料完整程度",
-    "brl": {
-     "text": "官方無價格；第三方價格明確但頁面另有未標示數字",
-     "status": "third_party"
-    },
-    "dvfc": {
-     "text": "官方價目表（2026-01-01–2027-03-31）有各房型價格與付款條件；尚無本團日期的訂位確認",
-     "status": "public_rate"
-    }
-   },
-   {
-    "label": "已知風險",
-    "brl": {
-     "text": "新建工程至 2027-01-22（官方）；第三方另列 2026-12-12～21、2027-01-04～06 停業",
-     "status": "tbc",
-     "source_ids": [
-      "src_brl_official",
-      "src_brl_3p"
-     ]
-    },
-    "dvfc": {
-     "text": "交通班次資訊衝突；設施簡單；60% 訂金不可退，取消政策條文有矛盾處",
-     "status": "tbc",
-     "source_ids": [
-      "src_dvfc_official",
-      "src_dvfc_rates"
-     ]
-    }
-   }
-  ],
-  "questions": [
-   {
-    "zh": "Tabin 報價是「套裝＋私人加購」還是「私人行程取代套裝」？5D4N Base Package 是否已含排程接送、導覽步行、黃昏車遊、夜遊與 Lipad 觀景塔過夜？",
-    "en": "Is the Tabin quote a standard package plus private add-ons, or a private itinerary replacing the package? Does the 5D4N base package already include scheduled transfers, guided walks, dusk drive, night safari and the Lipad tower overnight?"
-   },
-   {
-    "zh": "Private Return Transfer 的起訖點？2/3 能否清晨出發（約 07:00），以銜接 Danum 在 Lahad Datu 09:30 的排程車？",
-    "en": "What are the pick-up/drop-off points of the Private Return Transfer? On 3 Feb, can we leave Tabin early (around 07:00) to connect with the 09:30 Danum scheduled transfer in Lahad Datu?"
-   },
-   {
-    "zh": "私人嚮導與私人車輛各 4 天是指哪 4 天？私人夜遊 3 晚是哪 3 晚？第 4 晚能否加購、價格多少？",
-    "en": "Which 4 days do the private guide and private vehicle cover? Which 3 nights are the private night safaris? Can we add a 4th night and at what price?"
-   },
-   {
-    "zh": "報價是否適用 2027 年 1–2 月（含春節）？訂金、付款方式與取消政策？",
-    "en": "Is the quote valid for Jan–Feb 2027 (including Chinese New Year)? What are the deposit, payment and cancellation terms?"
-   },
-   {
-    "zh": "單人入住或單數人數時的價格？",
-    "en": "What is the price for single occupancy or an odd number of travellers?"
-   },
-   {
-    "zh": "Lipad 泥火山觀景塔 2027 年 1–2 月是否開放？",
-    "en": "Will the Lipad mud volcano observation tower be open in Jan–Feb 2027?"
-   },
-   {
-    "zh": "BRL：2027/2/3–2/5（3D2N）4 人 2 房正式報價（各房型）、排程接送時刻、Day 7 下午私人接送費用、新建工程是否已完工、觀光稅計算方式。",
-    "en": "BRL: formal quote for 3–5 Feb 2027 (3D2N), 4 pax in 2 rooms by room type; scheduled transfer times; cost of a private afternoon transfer on 3 Feb; confirmation that construction is completed; how tourism tax is charged."
-   },
-   {
-    "zh": "DVFC：2027/2/3–2/5（3D2N）4 人 2 間 Standard Resthouse 是否有空房？價目表適用到 2027/3/31，春節期間是否加價？2/3 排程車 09:30 與 15:00 兩班是否都有 4 個座位、上車地點？2/5 回程 09:30 發車是否確定（官方網站寫週一三五 08:30）？單眼相機攝影費多少？夜間車遊能否抵達前先預約？",
-    "en": "DVFC: Are 2 Standard Resthouse rooms for 4 pax available for 3–5 Feb 2027 (3D2N)? The rate sheet runs to 31 Mar 2027 — is there a Chinese New Year surcharge? On 3 Feb, are 4 seats available on the 09:30 and 15:00 scheduled transfers, and where is the pick-up? Is the 09:30 return on 5 Feb confirmed (the website says 08:30 on Mon/Wed/Fri)? What is the DSLR camera fee? Can night drives be reserved before arrival?"
-   },
-   {
-    "zh": "DVFC 付款條件：60% 訂金「不可退」，但取消條款又寫 21 天前取消只收 22% 手續費、21 天內退 60%，兩者如何適用？入住前 60 天（2026/12/5）付清全額是否正確？",
-    "en": "DVFC payment terms: the 60% deposit is stated as non-refundable, yet the cancellation policy says only a 22% administration fee applies if cancelled more than 21 days before check-in and 60% is refunded within 21 days. Which applies? Is full payment due 60 days before arrival (5 Dec 2026)?"
-   },
-   {
-    "zh": "夜間活動的燈光與攝影規範？是否收相機費？",
-    "en": "What are the lighting and photography rules for night activities? Is there a camera fee?"
-   }
-  ]
- }
+ ]
 }
 </script>
 
@@ -5106,38 +4637,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ]
   },
   {
-   "id": "brl",
-   "name": "Borneo Rainforest Lodge（BRL）",
-   "type": "lodging",
-   "region": "danum",
-   "lat": 5.0196725,
-   "lng": 117.7460505,
-   "approximate": false,
-   "coord_note": "OSM 節點",
-   "summary": "Danum Valley 內的旅遊型住宿，約 30 棟木屋（官方）。官方公告新會館與木屋工程至 2027-01-22。",
-   "stay": "2 晚（方案 A）",
-   "activities": [
-    "導覽健行",
-    "樹冠步道",
-    "夜間車遊",
-    "夜間步行"
-   ],
-   "species": [
-    "orangutan",
-    "gibbon",
-    "red_leaf_monkey",
-    "bearded_pig",
-    "colugo"
-   ],
-   "safety": "依住宿安排參加導覽；不自行夜間進入步道。",
-   "guide": "套裝含導覽（第三方資料）",
-   "source_ids": [
-    "src_osm",
-    "src_brl_official",
-    "src_brl_3p"
-   ]
-  },
-  {
    "id": "dvfc",
    "name": "Danum Valley Field Centre（DVFC）",
    "type": "lodging",
@@ -5146,11 +4645,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "lng": 117.803,
    "approximate": true,
    "coord_note": "未在 OSM 找到具名地物；依公開觀測群聚與 International Parks 座標推估",
-   "summary": "研究站型住宿：VIP 房 2 間、Resthouse 7 間、Hostel 96 床與營地；供電 07:30–23:00（官方）。",
-   "stay": "2 晚（方案 B）",
+   "summary": "研究站型住宿：VIP 房 2 間、Resthouse 7 間、Hostel 96 床與營地；供電 07:30–23:00（官方）。設施較簡單。付款條件嚴：訂房後 7 天內付 60% 不可退訂金，入住前 60 天（2026-12-05）付清（價目表）。",
+   "stay": "2 晚（2/3–2/5）",
    "activities": [
-    "巡守員／嚮導步行",
-    "夜間車遊",
+    "導覽叢林健行與一次夜間步行（套裝內，併團）",
+    "夜間車遊、Bukit Atur 日出（加購，抵達後安排）",
     "40 m 樹冠觀景平台"
    ],
    "species": [
@@ -5161,10 +4660,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "colugo"
    ],
    "safety": "設施較簡單；備妥頭燈與個人用品。",
-   "guide": "嚮導與活動安排待確認",
+   "guide": "套裝為併團導覽（約 6–8 人一位嚮導）；私人嚮導 RM350／晚、最少 2 晚（價目表）",
    "source_ids": [
     "src_dvfc_official",
-    "src_dvfc_3p"
+    "src_dvfc_rates"
    ]
   }
  ],
@@ -5174,7 +4673,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   "ld_hotel",
   "tabin_resort",
   "ld_hotel",
-  "danum_choice",
+  "dvfc",
   "ld_hotel",
   "last_night_choice"
  ]
@@ -5209,14 +4708,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "reliability": "high"
   },
   {
-   "id": "src_brl_official",
-   "title": "Borneo Nature Tours（BRL 營運商）官方網站",
-   "url": "https://www.borneonaturetours.com/borneorainforestlodge/",
-   "type": "official",
-   "checked_on": "2026-11-10",
-   "reliability": "high"
-  },
-  {
    "id": "src_brl_3p",
    "title": "Amazing Borneo（第三方旅行社）：Danum Valley Rainforest Beauty Experience（BRL 3D2N）",
    "url": "https://www.amazingborneo.com/package/danum-valley-rainforest-beauty-experience",
@@ -5233,15 +4724,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "checked_on": "2026-11-10",
    "reliability": "high",
    "note": "官方價目頁 rates.html 於查核時回應 404。"
-  },
-  {
-   "id": "src_dvfc_3p",
-   "title": "Amazing Borneo（第三方旅行社）：4D3N Danum Valley Field Centre Nature Lover Experience",
-   "url": "https://amazingborneo.com/package/4d3n-danum-valley-field-centre-nature-lover-experience-budget",
-   "type": "third_party",
-   "checked_on": "2026-11-10",
-   "reliability": "medium",
-   "note": "價格頁有未標示的第二組數字；非官方。已由 DVFC 價目表（src_dvfc_rates）取代，僅留作對照。"
   },
   {
    "id": "src_dvfc_rates",
@@ -5330,7 +4812,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "src_assessment",
-   "title": "本工具人工評估（觀察難度、方案評分）",
+   "title": "本工具人工評估（觀察難度）",
    "type": "assessment",
    "checked_on": "2026-11-10",
    "reliability": "low",
@@ -6073,27 +5555,25 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "id": "r-transfer",
    "level": 2,
    "title": "Day 7 同日轉場銜接（Tabin → LD → Danum）",
-   "trigger": "Tabin 排程回程 14:30 發車、約 16:00 抵 LDU；BRL 排程車 09:30 從 LDU 出發（第三方資料，官方未公布）；DVFC 排程車週一至週五 09:30 或 15:00 從 LDU 出發（價目表；官方網站寫週一三五 15:00）",
+   "trigger": "Tabin 排程回程 14:30 發車、約 16:00 抵 LDU；DVFC 排程車週一至週五 09:30 或 15:00 從 LDU 出發（價目表；官方網站寫週一三五 15:00）",
    "impact": "只靠排程車無法在 2/3 同日轉場；可能損失 Danum 一晚。",
-   "action": "BRL 方案需協調 Tabin 私人接送提早抵達，銜接 09:30 排程車，或安排非排程接送；DVFC 方案需確認 09:30 或 15:00 排程車座位，或另訂包車。BRL 私人接送預設計入、DVFC 包車預設未計入，實際依費用勾選；出發前取得兩家業者書面時刻表與費用確認。",
+   "action": "協調 Tabin 私人接送提早抵達 Lahad Datu，銜接 DVFC 09:30 或 15:00 排程車，並確認訂得到 4 個座位；趕不上時改訂 DVFC 包車（費用試算預設未計入）。出發前取得 Tabin 與 DVFC 書面時刻表與費用確認。",
    "source_ids": [
     "src_tabin_official",
-    "src_brl_3p",
     "src_dvfc_official",
     "src_dvfc_transport",
     "src_dvfc_rates"
    ]
   },
   {
-   "id": "r-brl-works",
+   "id": "r-dvfc-payment",
    "level": 2,
-   "title": "BRL 新建工程（若選 BRL）",
-   "trigger": "官方公告新會館與木屋工程 2025-01-01 至 2027-01-22（白天 08:00–18:00）",
-   "impact": "若工程延誤，可能有噪音或設施限制。",
-   "action": "訂房時請 BRL 書面確認 2/3–2/5 工程已完成、設施正常。",
+   "title": "DVFC 付款期限與不可退訂金",
+   "trigger": "價目表：下訂後 7 天內付總額 60% 訂金（不可退、不可轉讓）；入住前 60 天（2026-12-05）付清全額",
+   "impact": "期限前沒付清，房間會被釋出；訂金不可退，之後改變計畫損失大。價目表的取消條款（21 天前取消只收 22% 行政費）與「不可退」互相矛盾。",
+   "action": "11/27 前取得 DVFC 對空房與付款條款矛盾的書面回覆，再下訂；付款前更新匯率；保險選含行程取消的方案。",
    "source_ids": [
-    "src_brl_official",
-    "src_brl_3p"
+    "src_dvfc_rates"
    ]
   },
   {
@@ -6184,7 +5664,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     },
     {
      "id": "c-f5",
-     "text": "向 Danum 方案確認 Day 7 去程與 Day 9 回程接送"
+     "text": "向 DVFC 確認 Day 7 去程與 Day 9 回程排程車座位"
     }
    ]
   },
@@ -6199,7 +5679,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     },
     {
      "id": "c-b2",
-     "text": "決定 BRL 或 DVFC 並取得正式報價",
+     "text": "確認 DVFC 空房與付款條款後下訂",
      "critical": true
     },
     {
@@ -6446,13 +5926,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "ask_danum",
-   "title": "向 BRL 索取 2/3–2/5 正式報價；向 DVFC 確認空房、春節加價與接送時刻（價目表已取得）",
+   "title": "向 DVFC 確認空房、春節加價、排程車座位與付款條款（價目表已取得）",
    "due": "2026-11-18",
    "due_kind": "self",
    "due_basis": "規劃自訂",
-   "consequence": "BRL 目前只有第三方價；DVFC 雖有價目表，空房與班次未確認，兩方案仍無法定案",
+   "consequence": "空房與班次未確認就無法下訂；付款條款的矛盾會影響取消時的損失",
    "source_ids": [
-    "src_brl_3p",
     "src_dvfc_rates"
    ]
   },
@@ -6467,19 +5946,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "src_cny",
     "src_airborneo"
    ]
-  },
-  {
-   "id": "decide_danum",
-   "title": "決定 Danum 方案（BRL 或 DVFC）",
-   "due": "2026-11-27",
-   "due_kind": "self",
-   "due_basis": "規劃自訂：原訂 12/5，提前是因為 DVFC 價目表要求入住前 60 天（2026-12-05）付清全額，決定後還要時間下訂與付款",
-   "depends_on": [
-    "ask_tabin",
-    "ask_danum"
-   ],
-   "consequence": "Danum 住宿與 Day 7 接送無法下訂",
-   "source_ids": []
   },
   {
    "id": "flights_out",
@@ -6511,12 +5977,12 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "book_danum",
-   "title": "Danum 住宿下訂並付款（含 Day 7 接送安排）",
+   "title": "DVFC 下訂並付款（訂金 60%、12/5 前付清；含 Day 7 接送安排）",
    "due": "2026-12-05",
    "due_kind": "external",
-   "due_basis": "DVFC 價目表：下訂後 7 天內付 60% 不可退訂金；入住前 60 天（2/3 入住 → 2026-12-05）付清全額，否則房間會被釋出。BRL 付款條款尚未取得",
+   "due_basis": "DVFC 價目表：下訂後 7 天內付 60% 不可退訂金；入住前 60 天（2/3 入住 → 2026-12-05）付清全額，否則房間會被釋出。自訂在 11/27 前確認回覆並下訂",
    "depends_on": [
-    "decide_danum"
+    "ask_danum"
    ],
    "consequence": "春節前後房間不足；DVFC 未在期限前付清會被取消訂房；Day 7 接送無法確認",
    "source_ids": [
@@ -6591,6 +6057,59 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "consequence": "入境馬來西亞時可能受阻",
    "source_ids": [
     "src_boca"
+   ]
+  }
+ ],
+ "questions": [
+  {
+   "group": "Tabin（當地業者 A）",
+   "items": [
+    {
+     "zh": "Tabin 報價是「套裝＋私人加購」還是「私人行程取代套裝」？5D4N Base Package 是否已含排程接送、導覽步行、黃昏車遊、夜遊與 Lipad 觀景塔過夜？",
+     "en": "Is the Tabin quote a standard package plus private add-ons, or a private itinerary replacing the package? Does the 5D4N base package already include scheduled transfers, guided walks, dusk drive, night safari and the Lipad tower overnight?"
+    },
+    {
+     "zh": "Private Return Transfer 的起訖點？2/3 能否清晨出發（約 07:00），以銜接 Danum 在 Lahad Datu 09:30 的排程車？",
+     "en": "What are the pick-up/drop-off points of the Private Return Transfer? On 3 Feb, can we leave Tabin early (around 07:00) to connect with the 09:30 Danum scheduled transfer in Lahad Datu?"
+    },
+    {
+     "zh": "私人嚮導與私人車輛各 4 天是指哪 4 天？私人夜遊 3 晚是哪 3 晚？第 4 晚能否加購、價格多少？",
+     "en": "Which 4 days do the private guide and private vehicle cover? Which 3 nights are the private night safaris? Can we add a 4th night and at what price?"
+    },
+    {
+     "zh": "報價是否適用 2027 年 1–2 月（含春節）？訂金、付款方式與取消政策？",
+     "en": "Is the quote valid for Jan–Feb 2027 (including Chinese New Year)? What are the deposit, payment and cancellation terms?"
+    },
+    {
+     "zh": "單人入住或單數人數時的價格？",
+     "en": "What is the price for single occupancy or an odd number of travellers?"
+    },
+    {
+     "zh": "Lipad 泥火山觀景塔 2027 年 1–2 月是否開放？",
+     "en": "Will the Lipad mud volcano observation tower be open in Jan–Feb 2027?"
+    }
+   ]
+  },
+  {
+   "group": "Danum Valley Field Centre（DVFC）",
+   "items": [
+    {
+     "zh": "DVFC：2027/2/3–2/5（3D2N）4 人 2 間 Standard Resthouse 是否有空房？價目表適用到 2027/3/31，春節期間是否加價？2/3 排程車 09:30 與 15:00 兩班是否都有 4 個座位、上車地點？2/5 回程 09:30 發車是否確定（官方網站寫週一三五 08:30）？單眼相機攝影費多少？夜間車遊能否抵達前先預約？",
+     "en": "DVFC: Are 2 Standard Resthouse rooms for 4 pax available for 3–5 Feb 2027 (3D2N)? The rate sheet runs to 31 Mar 2027 — is there a Chinese New Year surcharge? On 3 Feb, are 4 seats available on the 09:30 and 15:00 scheduled transfers, and where is the pick-up? Is the 09:30 return on 5 Feb confirmed (the website says 08:30 on Mon/Wed/Fri)? What is the DSLR camera fee? Can night drives be reserved before arrival?"
+    },
+    {
+     "zh": "DVFC 付款條件：60% 訂金「不可退」，但取消條款又寫 21 天前取消只收 22% 手續費、21 天內退 60%，兩者如何適用？入住前 60 天（2026/12/5）付清全額是否正確？",
+     "en": "DVFC payment terms: the 60% deposit is stated as non-refundable, yet the cancellation policy says only a 22% administration fee applies if cancelled more than 21 days before check-in and 60% is refunded within 21 days. Which applies? Is full payment due 60 days before arrival (5 Dec 2026)?"
+    }
+   ]
+  },
+  {
+   "group": "共通",
+   "items": [
+    {
+     "zh": "夜間活動的燈光與攝影規範？是否收相機費？",
+     "en": "What are the lighting and photography rules for night activities? Is there a camera fee?"
+    }
    ]
   }
  ]
@@ -6867,7 +6386,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (tbc) out.push({ level: "info", code: "tbc", msg: `共有 ${tbc} 項活動標記為「待確認」。` });
     // 與報價的交叉檢查
     const ctx = computeCtx(data, state);
-    for (const it of data.costs.items) if (it.itinerary_check && optionSelected(data, state, it.itinerary_check.plan) && !itemActive(it, state, ctx, data))
+    for (const it of data.costs.items) if (it.itinerary_check && (it.itinerary_check.plan == null || optionSelected(data, state, it.itinerary_check.plan)) && !itemActive(it, state, ctx, data))
       out.push({ level: "warn", code: "feasibility", day: it.itinerary_check.day, msg: it.itinerary_check.msg });
     // 報價晚數 vs 行程選擇（費用項目的 qty.nights_from = "activity_count" 且有 quoted_nights）
     for (const it of data.costs.items) {
@@ -7016,6 +6535,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         for (const k of ["checklist", "risks", "ethics", "night"]) if (!Array.isArray(d[k])) e.push(`essentials.${k} 需為陣列`);
         if (d.tasks != null && !Array.isArray(d.tasks)) e.push("essentials.tasks 需為陣列");
         else for (const t of d.tasks || []) { if (typeof t.id !== "string" || typeof t.title !== "string") e.push("essentials.tasks 每筆需有 id 與 title"); if (t.due != null && !/^\d{4}-\d{2}-\d{2}$/.test(t.due)) e.push(`essentials.tasks（${t.id}）due 需為 YYYY-MM-DD 或 null`); }
+        // 向業者確認的問題（選填）：[{group, items:[{zh, en?}]}]
+        if (d.questions != null && (!Array.isArray(d.questions) || !d.questions.every(g => g && typeof g.group === "string" && Array.isArray(g.items) && g.items.every(q => q && typeof q.zh === "string"))))
+          e.push("essentials.questions 需為 [{group, items:[{zh, en}]}] 陣列");
         break;
       default: e.push(`未知資料集 ${name}`);
     }
@@ -7081,7 +6603,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       if (!BUILTIN_APPLIES.includes(it.applies) && !optionKeys.has(it.applies)) out.push(`費用 ${it.id} applies「${it.applies}」不是內建值，也不是任何選擇題的選項`);
       if (it.when != null && it.when !== "singles" && !(String(it.when).indexOf("plan_") === 0 && optionKeys.has(String(it.when).slice(5)))) out.push(`費用 ${it.id} when「${it.when}」不合法`);
       if (it.price_currency != null && !currencies.has(it.price_currency)) out.push(`費用 ${it.id} 幣別「${it.price_currency}」未在 trip.currency 中設定`);
-      if (it.itinerary_check && !optionKeys.has(it.itinerary_check.plan)) out.push(`費用 ${it.id} itinerary_check.plan「${it.itinerary_check.plan}」不是任何選擇題的選項`);
+      if (it.itinerary_check && it.itinerary_check.plan != null && !optionKeys.has(it.itinerary_check.plan)) out.push(`費用 ${it.id} itinerary_check.plan「${it.itinerary_check.plan}」不是任何選擇題的選項`);
     }
     for (const s of data.species.items) {
       for (const x of s.source_ids || []) if (!src.has(x)) out.push(`物種 ${s.id} 來源「${x}」不存在`);
@@ -7275,12 +6797,22 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   function defaultState(data) {
     const ch = {}; for (const c of C.choiceDefs(data)) ch[c.id] = c.default;
     const w = {}; for (const c of ((data.costs.compare || {}).criteria || [])) w[c.key] = Number.isInteger(c.default_weight) ? c.default_weight : 3;
-    return { v: 1, pax: data.trip.default_pax, fx: data.trip.default_fx, rates: Object.assign({}, C.currencyOf(data).defaultRates), choices: ch,
+    return { v: 1, pax: data.trip.default_pax, fx: data.trip.default_fx, rates: Object.assign({}, C.currencyOf(data).defaultRates), fxCustom: false, ratesCustom: {}, choices: ch,
       rooms: data.trip.default_rooms || Math.ceil(data.trip.default_pax / 2), scenario: "mid",
       contingencyPct: 10, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {},
       targets: data.species.items.filter(s => s.flagship).map(s => s.id), activity: {}, dayNotes: {}, checklist: {}, actuals: {}, riskLog: {},
       weights: w, gasUrl: "", dataSource: "local",
       selectedDay: 1, dayFilter: "all", spFilter: { area: "all", flags: [], difficulty: "all", q: "" }, tab: "dashboard" };
+  }
+  const obj0 = v => v && typeof v === "object" && !Array.isArray(v) ? v : {};
+  /** 沒自訂的匯率一律採用目前資料（內建或遠端）的預設值 */
+  function syncFxDefaults(st, data) {
+    if (!st || !data) return st;
+    if (!st.fxCustom) st.fx = data.trip.default_fx;
+    const dr = C.currencyOf(data).defaultRates || {};
+    st.rates = st.rates || {}; st.ratesCustom = st.ratesCustom || {};
+    for (const k of Object.keys(dr)) if (!st.ratesCustom[k]) st.rates[k] = dr[k];
+    return st;
   }
   /** 合併已存設定並做型別防護（匯入 JSON 也走這裡） */
   function sanitizeState(raw, data) {
@@ -7300,6 +6832,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     s.rooms = Math.floor(num(raw.rooms, 1, 12, d.rooms));
     s.fx = num(raw.fx, 0.1, 100, d.fx);
     s.rates = {}; for (const k of Object.keys(d.rates)) s.rates[k] = num(raw.rates && raw.rates[k], 0.0001, 100000, d.rates[k]);
+    // 匯率只在使用者自己改過時才保留；沒改過就跟著行程資料的預設值走（syncFxDefaults）。
+    // 舊版存檔沒有 fxCustom／ratesCustom：數字等於現在或以前的預設值（trip.legacy_defaults）就視為沒改過。
+    const legacy = obj0(data.trip.legacy_defaults), oldFx = [d.fx].concat(legacy.fx || []), oldRates = obj0(legacy.rates);
+    s.fxCustom = typeof raw.fxCustom === "boolean" ? raw.fxCustom : !oldFx.includes(s.fx);
+    s.ratesCustom = {}; for (const k of Object.keys(d.rates)) {
+      const c = obj0(raw.ratesCustom)[k];
+      s.ratesCustom[k] = typeof c === "boolean" ? c : raw.ratesCustom != null ? false : ![d.rates[k]].concat(oldRates[k] || []).includes(s.rates[k]);
+    }
+    syncFxDefaults(s, data);
     s.choices = {}; for (const c of C.choiceDefs(data)) { const v = raw.choices && raw.choices[c.id]; s.choices[c.id] = c.options.some(o => o.key === v) ? v : c.default; }
     s.contingencyPct = num(raw.contingencyPct, 0, 50, d.contingencyPct);
     s.scenario = ["low", "mid", "high"].includes(raw.scenario) ? raw.scenario : "mid";
@@ -7419,7 +6960,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 
   /* ================= 共用：查詢 ================= */
   const D = () => App.data;
-  const S = () => App.state;
+  const S = () => syncFxDefaults(App.state, App.data);
   const speciesById = id => D().species.items.find(s => s.id === id);
   const sourceById = id => D().sources.items.find(s => s.id === id);
   function speciesName(sp) { return sp.zh || sp.en; }
@@ -7644,6 +7185,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const base = money().base, home = money().home, catLabel = C.categoryLabels(D()), toggles = D().costs.toggle_labels || {};
     P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "費用試算"),
       h("p", { class: "muted small" }, "依 costs 資料即時計算。未報價項目顯示「未報價」且不計入總計，不代表免費。示範資料不是報價。"))));
+    const fxHelp = (custom, def, id, reset, extra) => h("div", { class: "small dim" }, extra ? extra + "；" : "",
+      custom ? ["已自訂（預設 ", String(def), "） ", h("button", { type: "button", class: "btn small", id, onclick: reset }, "恢復預設")] : "使用預設值，資料更新時會自動跟著改");
     const numField = (id, label, val, min, max, step, key, help) => h("div", { class: "field" }, h("label", { for: id }, label),
       h("input", { id, type: "number", inputmode: "decimal", min, max, step, value: val, onchange: e => { const v = Number(e.target.value); if (Number.isFinite(v) && v >= min && v <= max) update(x => { x[key] = v; }); else { e.target.value = val; } } }),
       help ? h("div", { class: "small dim" }, help) : null);
@@ -7653,10 +7196,13 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("div", { class: "grid g2" },
         numField("in-pax", "總人數", s.pax, 1, 20, 1, "pax"),
         numField("in-rooms", "客房數", s.rooms, 1, 12, 1, "rooms", "報價以兩人同房計；單人入住差額未報價"),
-        hasHome() ? numField("in-fx", `匯率：1 ${base} = ? ${home}`, s.fx, 0.0001, 100000, 0.01, "fx", "試算值，非即時匯率") : null,
+        hasHome() ? h("div", { class: "field" }, h("label", { for: "in-fx" }, `匯率：1 ${base} = ? ${home}`),
+          h("input", { id: "in-fx", type: "number", inputmode: "decimal", min: 0.0001, max: 100000, step: 0.001, value: s.fx, onchange: e => { const v = Number(e.target.value); if (Number.isFinite(v) && v > 0 && v <= 100000) update(x => { x.fx = v; x.fxCustom = true; }); else e.target.value = s.fx; } }),
+          fxHelp(s.fxCustom, D().trip.default_fx, "reset-fx", () => update(x => { x.fxCustom = false; }))) : null,
         Object.keys(s.rates).map(cur => h("div", { class: "field" }, h("label", { for: "in-rate-" + cur }, `匯率：1 ${cur} = ? ${base}`),
-          h("input", { id: "in-rate-" + cur, type: "number", inputmode: "decimal", min: 0.0001, max: 100000, step: 0.01, value: s.rates[cur], onchange: e => { const v = Number(e.target.value); if (Number.isFinite(v) && v > 0 && v <= 100000) update(x => { x.rates[cur] = v; }); else e.target.value = s.rates[cur]; } }),
-          h("div", { class: "small dim" }, `部分項目以 ${cur} 計價；試算值`))),
+          h("input", { id: "in-rate-" + cur, type: "number", inputmode: "decimal", min: 0.0001, max: 100000, step: 0.001, value: s.rates[cur], onchange: e => { const v = Number(e.target.value); if (Number.isFinite(v) && v > 0 && v <= 100000) update(x => { x.rates[cur] = v; x.ratesCustom = Object.assign({}, x.ratesCustom, { [cur]: true }); }); else e.target.value = s.rates[cur]; } }),
+          fxHelp(s.ratesCustom[cur], C.currencyOf(D()).defaultRates[cur], "reset-rate-" + cur, () => update(x => { x.ratesCustom = Object.assign({}, x.ratesCustom, { [cur]: false }); }), `部分項目以 ${cur} 計價`))),
+        D().trip.fx_note ? h("p", { class: "small dim", style: "grid-column:1/-1;margin:0" }, "匯率說明：", D().trip.fx_note) : null,
         h("div", { class: "field" }, h("label", { for: "in-cont" }, `預備金比例：${s.contingencyPct}%`),
           h("input", { id: "in-cont", type: "range", min: 0, max: 30, step: 1, value: s.contingencyPct,
             oninput: e => { e.target.previousElementSibling.textContent = `預備金比例：${e.target.value}%`; },
@@ -8211,6 +7757,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("thead", null, h("tr", null, h("th", null, "等級"), h("th", null, "風險"), h("th", null, "觸發條件"), h("th", null, "影響"), h("th", null, "可執行的備案"))),
       h("tbody", null, E.risks.map(r => h("tr", null, h("td", null, badge(r.level === 1 ? "tbc" : r.level === 2 ? "estimate" : "user", ["", "一級", "二級", "三級"][r.level])),
         h("td", null, h("b", null, r.title)), h("td", { class: "small" }, r.trigger), h("td", { class: "small" }, r.impact), h("td", { class: "small" }, r.action, r.source_ids ? h("div", null, sourceLine(r.source_ids)) : null))))))));
+    if (Array.isArray(E.questions) && E.questions.some(g => g.items.length))
+      P.append(h("div", { class: "card", style: "margin-top:14px" }, h("h3", null, "向業者確認的問題"),
+        h("p", { class: "small muted" }, "依業者分組；中文在上、英文在下，可直接複製寄出。業者回覆後，請更新費用、待辦期限與銜接時間。"),
+        E.questions.filter(g => g.items.length).map(g => h("div", { style: "margin-top:8px" }, h("h4", null, g.group),
+          h("ol", null, g.items.map(q => h("li", null, q.zh, q.en ? h("div", { class: "small dim" }, q.en) : null)))))));
     const grid = h("div", { class: "grid g2", style: "margin-top:14px" });
     for (const cat of E.checklist) {
       const n = cat.items.filter(i => s.checklist[i.id]).length;

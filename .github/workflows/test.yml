@@ -20,6 +20,8 @@ jobs:
         run: node docs/tests/contrast.test.mjs
       - name: P0費用範圍與資料一致性
         run: node docs/tests/p0.test.mjs
+      - name: 匯率存檔規則（只保留使用者自訂的匯率）
+        run: node docs/tests/fx-state.test.mjs
       - name: 對照旅行可以產生網頁
         run: node tools/build-trip.mjs docs/tests/fixtures/contrast-trip.json /tmp/contrast.html
       - name: 首頁與各行程網頁是最新的

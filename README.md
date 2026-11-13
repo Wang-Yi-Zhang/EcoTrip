@@ -65,7 +65,7 @@ node tools/build-site.mjs
 | [docs/向業者確認問題清單.md](docs/向業者確認問題清單.md) | 寄給 Tabin、BRL、DVFC 的中英對照問題 |
 | `gas/Code.gs` | Google Apps Script 遠端資料端點範例，含 `setupSheets()` 自動建立欄位 |
 | `docs/tests/core.test.mjs` | 核心計算與檢查邏輯的單元測試 |
-| `docs/tests/golden.test.mjs` | 黃金檔：沙巴行程在 36 組設定下的結果不得改變 |
+| `docs/tests/golden.test.mjs` | 黃金檔：沙巴行程在 24 組設定下的結果不得改變（2026-11-13 定案 DVFC 前是 36 組） |
 | `docs/tests/contrast.test.mjs` | 對照旅行（結構不同的另一趟行程）跑同一個引擎；程式碼不得含行程專有字樣 |
 | [docs/05-報價信對照.md](docs/05-報價信對照.md) | Tabin 報價信原文與費用資料逐項對照 |
 | [docs/06-旅伴三題測試與手機離線確認.md](docs/06-旅伴三題測試與手機離線確認.md) | 需要人來做的兩項驗證 |
@@ -76,6 +76,8 @@ node tools/build-site.mjs
 | `tools/sheet-export.mjs` | 把內建費用轉成可貼進 Google 試算表的檔案；`--check <網址>` 檢查已部署的端點 |
 | `tools/build-trip.mjs` | 用另一趟行程的資料檔產生網頁 |
 | `tools/gas-allowed.mjs` | 依行程資料重寫 `gas/Code.gs` 的下拉允許值 |
+| `tools/update-fx.mjs` | 依臺灣銀行牌告匯率（人工讀取的數字）更新行程的預設匯率與匯率說明，見 docs/03 D.2a |
+| `docs/tests/fx-state.test.mjs` | 匯率存檔規則：只保留使用者自訂的匯率，沒改過的跟著預設值走 |
 | `docs/tests/gas.test.mjs` | `Code.gs` 模擬測試（假試算表，不連 Google） |
 
 ## 資料授權與限制

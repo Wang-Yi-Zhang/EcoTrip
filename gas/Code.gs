@@ -41,9 +41,9 @@ var ALLOWED = {
   category: ["group_fixed", "per_person", "danum", "other"],
   unit: ["per_person", "per_group", "per_group_per_day", "per_person_per_night", "per_room_per_night", "per_person_trip", "per_person_day", "per_room"],
   status: ["confirmed", "quoted", "public_rate", "third_party", "estimate", "demo", "unquoted"],
-  applies: ["always", "flights", "extras", "optional", "brl", "dvfc"],
+  applies: ["always", "flights", "extras", "optional"],
   price_currency: ["MYR", "TWD", "USD"],
-  when: ["singles", "plan_brl", "plan_dvfc"],
+  when: ["singles"],
   qty_from: ["pax", "rooms", "singles", "triples", "activity_count"],
   dataset: ["trip", "itinerary", "costs", "species", "locations", "sources", "essentials"]
 };

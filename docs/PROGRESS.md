@@ -1,6 +1,6 @@
 # 進度紀錄（供新 session 接手）
 
-最後更新：2026-11-13（DVFC 價目表、匯率）。已推送到 https://github.com/Wang-Yi-Zhang/EcoTrip（`main`），GitHub Pages 已開啟。
+最後更新：2026-11-13（定案 DVFC、匯率存檔規則）。已推送到 https://github.com/Wang-Yi-Zhang/EcoTrip（`main`），GitHub Pages 已開啟。
 
 ## 現況
 
@@ -8,7 +8,7 @@
 - 2026-11-12 部署後實測：7 個分頁正常、主控台無錯誤、離線支援已註冊、從正式網址讀取 Apps Script 端點成功（24 個費用項目通過驗證）。GitHub Actions 第一次執行全部通過。
 
 - 網站結構：每趟旅行一個資料夾，根目錄 `index.html` 是首頁（由 `tools/build-site.mjs` 產生）。`sabah2027/index.html` 是程式碼來源：引擎（`core-js`）與介面（`ui-js`）不含任何行程專有內容；沙巴的細節全部在 7 個 `data-*` 區塊。
-- 測試 4 支，全部通過：`core`（31）、`gas`（10）、`golden`（36 組設定）、`contrast`（16）。
+- 測試 6 支，全部通過：`core`（31）、`gas`（12）、`golden`（24 組設定）、`contrast`（16）、`p0`、`fx-state`（7）。
 - 功能：待辦與期限、銜接餘裕、每日備案表、單日列印、離線（`sw.js`）、旅程後回填。
 - 兩個試算表工具都接受 `--trip <資料夾>`，其他行程也能用各自的 Google 試算表。
 - 使用者的 Apps Script 端點於 2026-11-12 下午檢查：新版程式已部署、24 個費用項目、與內建資料算出來完全相同。
@@ -42,6 +42,18 @@
 - 在正式網址的「⚙ 資料／匯出」貼上 Apps Script 網址並按「使用遠端資料」（每個裝置各做一次）。
 - 旅伴三題測試、手機飛航模式測試（`docs/06`），現在有正式網址可以做了。
 - 業者回覆後：更新 `data-costs`、`essentials.tasks` 的期限、`itinerary.connections` 的出發時間與 `status`。
+
+## 2026-11-13 定案 DVFC、匯率存檔規則（使用者指示）
+
+- **Danum 定案住 DVFC**。網站資料拿掉 BRL：刪除「Danum 方案」選擇題、BRL 的 4 個費用項目、方案比較（`costs.compare`）、BRL 地圖點、BRL 的銜接檢查與風險、BRL 的確認問題。「方案比較」分頁因此自動隱藏。BRL 的查證紀錄留在 `docs/research.md` 與 git 歷史。DVFC 的缺點改寫進地圖點說明與新風險「DVFC 付款期限與不可退訂金」。
+- 只剩 `src_brl_3p` 一個 BRL 來源，因為觀光稅 RM10／房／晚的估算出自它。
+- **向業者確認的問題**從方案比較搬到「旅遊準備與風險」頁（`essentials.questions`，依業者分組；引擎新增通用的顯示與驗證）。
+- 待辦：刪除「決定 Danum 方案」；「DVFC 下訂並付款」期限 12/5，依賴「向 DVFC 確認」。
+- 引擎：`itinerary_check.plan` 改為選填，沒填就一律檢查（DVFC 包車沒勾時提醒要搭排程車）。
+- **匯率存檔**：舊版把預設匯率也存進瀏覽器，所以預設值改了，開過網頁的人仍看到 7.2。現在只保存使用者自己改過的匯率（`fxCustom`／`ratesCustom`），沒改過就跟著資料的預設值；舊存檔等於舊預設值（`trip.legacy_defaults`）的視為沒改過。費用試算頁的匯率欄顯示「使用預設值」或「已自訂（預設 …） 恢復預設」，下方顯示匯率說明。
+- **匯率工具** `tools/update-fx.mjs`：臺銀 CSV 有機器人驗證，不能自動抓，由人讀牌告頁的數字當參數。用法見 `docs/03` D.2a。USD 匯率因此變成 3.8719（多一位小數）。
+- 測試：新增 `fx-state`；黃金檔拿掉方案維度（36 → 24 組）；`core`、`contrast`、`p0`、`gas` 中 BRL 相關斷言改寫成 DVFC 版本。`gas/Code.gs` 的允許值已重寫（applies 少了 brl、dvfc）。
+- **待使用者做**：Apps Script 重新貼上 `gas/Code.gs` 並執行 `setupSheets()`，再把 `gas/costs-for-sheet.tsv` 貼進 costs 工作表；否則試算表裡的 BRL 列會讓遠端費用資料被參照檢查擋下。
 
 ## 2026-11-13 DVFC 價目表與匯率更新（使用者指示）
 

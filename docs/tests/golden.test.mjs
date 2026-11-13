@@ -20,9 +20,9 @@ const pick = (...v) => v.find(x => x !== undefined);
 
 // 同時提供新舊兩種設定鍵名：舊引擎讀 danumPlan／lastNight／fxUsd，新引擎讀 choices／rates。
 function mkState(o) {
-  const plan = o.plan || "brl", last = o.last || "ld";
+  const last = o.last || "ld";   // 2026-11-13 Danum 定案 DVFC，不再有 danum_choice
   return { pax: o.pax ?? 4, rooms: o.rooms ?? 2, fx: o.fx ?? 7.2, fxUsd: 4.2, rates: { USD: 4.2 },
-    danumPlan: plan, lastNight: last, choices: { danum_choice: plan, last_night_choice: last },
+    lastNight: last, choices: { last_night_choice: last },
     scenario: o.scenario || "mid", contingencyPct: o.cont ?? 10, includeFlights: !!o.flights, includeExtras: !!o.extras,
     optionalOn: o.optionalOn || {}, overrides: o.overrides || {}, activity: o.activity || {} };
 }
@@ -42,10 +42,10 @@ function projBudget(b) {
   };
 }
 function projCompare(s) {
-  if (C.compareDanum) { const c = C.compareDanum(data, s); return { total: { brl: c.brl.total, dvfc: c.dvfc.total }, cat: { brl: c.brlDanum, dvfc: c.dvfcDanum }, diff: c.diffTotal, comparable: c.comparable }; }
-  const c = C.compareChoice(data, s, "danum_choice");
-  return { total: { brl: c.options.brl.budget.total, dvfc: c.options.dvfc.budget.total }, cat: { brl: c.options.brl.categoryTotal, dvfc: c.options.dvfc.categoryTotal },
-    diff: c.options.brl.budget.total - c.options.dvfc.budget.total, comparable: c.comparable };
+  // 有並列比較的選擇題時才投影；目前沙巴行程沒有（回傳空陣列）
+  return C.choiceDefs(data).filter(c => c.compare_category).map(def => { const c = C.compareChoice(data, s, def.id);
+    return { choice: def.id, total: Object.fromEntries(Object.entries(c.options).map(([k, o]) => [k, o.budget.total])),
+      cat: Object.fromEntries(Object.entries(c.options).map(([k, o]) => [k, o.categoryTotal])), comparable: c.comparable }; });
 }
 function snapshot(o) {
   const s = mkState(o), sc = C.scenarios(data, s);
@@ -55,13 +55,13 @@ function snapshot(o) {
 }
 
 const cases = {};
-for (const [pax, rooms] of [[4, 2], [2, 1], [6, 3], [3, 2], [1, 1], [5, 2]]) for (const plan of ["brl", "dvfc"]) for (const all of [false, true])
-  cases[`pax${pax}-rooms${rooms}-${plan}-${all ? "all" : "core"}`] = { pax, rooms, plan, flights: all, extras: all };
+for (const [pax, rooms] of [[4, 2], [2, 1], [6, 3], [3, 2], [1, 1], [5, 2]]) for (const all of [false, true])
+  cases[`pax${pax}-rooms${rooms}-${all ? "all" : "core"}`] = { pax, rooms, flights: all, extras: all };
 Object.assign(cases, {
-  "scenario-low": { scenario: "low", flights: true, extras: true }, "scenario-high": { scenario: "high", flights: true, extras: true, plan: "dvfc" },
+  "scenario-low": { scenario: "low", flights: true, extras: true }, "scenario-high": { scenario: "high", flights: true, extras: true },
   "last-kk": { last: "kk" }, "last-tbd": { last: "tbd" }, "cont0": { cont: 0 }, "fx68": { fx: 6.8, flights: true },
   "night4": { activity: { "d5-night": { choice: 1 } } }, "night-rest": { activity: { "d2-night": { choice: 2 }, "d3-night": { choice: 1 } } },
-  "no-brl-transfer": { optionalOn: { brl_private_transfer: false } }, "dvfc-guide-on": { plan: "dvfc", optionalOn: { dvfc_private_guide: true, dvfc_private_transfer: false } },
+  "dvfc-transfer-on": { optionalOn: { dvfc_private_transfer: true } }, "dvfc-guide-on": { optionalOn: { dvfc_private_guide: true, dvfc_night_drive: false } },
   "override": { extras: true, overrides: { fees_permits: 50, tabin_single: 0 }, pax: 3, rooms: 2 },
   "status-override": { activity: { "d6-t1": { status: "confirmed" }, "d3-am": { status: "confirmed" } } }
 });
