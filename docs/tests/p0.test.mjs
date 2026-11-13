@@ -32,4 +32,8 @@ assert.ok(!html.includes('兩者都已預設納入試算'));
 assert.ok(!ui.includes('估算完整度'));
 assert.ok(ui.includes('已取得訂房確認 ${ln.booked} / ${ln.total} 晚'));
 assert.equal(Math.round(C.computeBudget(data,base).perPerson),10354);   // 2026-11-13 定案 DVFC Standard Resthouse＋抵達日午餐（原 BRL 16859）
+// 時間數值最多顯示到小數點第一位（2026-11-13 使用者要求）：介面不得直接印出 duration_h
+assert.ok(!/\$\{a\.duration_h\}/.test(ui));
+const hours1 = vm.runInNewContext(ui.match(/const hours1 = (v => [^;]+);/)[1]);
+assert.deepEqual([0.9167, 3.5833, 3.4167, 1.5, 2, 2.5].map(hours1), ['0.9', '3.6', '3.4', '1.5', '2', '2.5']);
 console.log('✔ P0範圍四組開關、單人缺價、備案差額、日期、住宿語意及UI語法通過');
