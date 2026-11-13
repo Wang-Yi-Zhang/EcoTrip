@@ -340,37 +340,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   "danum": "Danum Valley",
   "transit": "交通／轉運"
  },
- "choices": [
-  {
-   "id": "last_night_choice",
-   "label": "最後一晚住宿",
-   "default": "ld",
-   "options": [
-    {
-     "key": "ld",
-     "label": "Lahad Datu（2/6 從 LDU 出發）",
-     "lodging": "ld_hotel"
-    },
-    {
-     "key": "kk",
-     "label": "Kota Kinabalu（2/5 先飛 KK）",
-     "lodging": "kk_hotel"
-    },
-    {
-     "key": "tbd",
-     "label": "尚未決定",
-     "lodging": null
-    }
-   ]
-  }
- ],
+ "choices": [],
  "storage_prefix": "ecotrip2027",
  "transit_region": "transit",
  "legacy_state": {
-  "lastNight": [
-   "choices",
-   "last_night_choice"
-  ],
   "fxUsd": [
    "rates",
    "USD"
@@ -418,16 +391,16 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "lodging_prev": null,
    "lodging": "bki_hotel",
    "lodging_status": "tbc",
-   "lodging_note": "亞庇機場附近過夜（待規劃）：約 23:00 抵達、隔天清晨離開，選離機場近、可深夜入住的住宿。",
+   "lodging_note": "亞庇機場附近過夜（待規劃）：23:05 抵達、隔天 07:20 的國內線，選離機場近、可深夜入住的住宿。",
    "activities": [
     {
      "id": "out-flight",
      "slot": "evening",
      "type": "flight",
-     "title": "台灣 → Kota Kinabalu（BKI）國際航班",
+     "title": "台北（TPE）→ Kota Kinabalu（BKI）AirAsia 直飛",
      "start": "19:30",
-     "duration_h": 3.5,
-     "duration_basis": "使用者規劃：19:30 起飛、約 23:00 抵達",
+     "duration_h": 3.5833,
+     "duration_basis": "AirAsia 訂位查詢：19:30 起飛、23:05 抵達",
      "effort": 1,
      "status": "tbc",
      "location": "bki_hotel",
@@ -436,7 +409,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "booking"
      ],
      "species": [],
-     "detail": "使用者規劃的時刻，尚未訂位；實際班次與時刻以航空公司為準（2027 年班表未查證）。"
+     "detail": "預計搭乘的班次（AirAsia 訂位查詢，2026-11-13），尚未訂位。"
     },
     {
      "id": "out-hotel",
@@ -451,14 +424,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "booking"
      ],
      "species": [],
-     "detail": "抵達已近午夜：入境與領行李後才出機場。訂房前確認最晚入住時間、是否有機場接送，以及清晨回機場的交通。隔天 07:30 的班機，清晨就要回到機場（報到截止時間未查證）。"
+     "detail": "抵達已近午夜：入境與領行李後才出機場。訂房前確認最晚入住時間、是否有機場接送，以及清晨回機場的交通。隔天 07:20 的國內線（BKI 第一航廈），清晨就要回到機場（報到截止時間未查證）。"
     }
    ],
    "notes": [
     "每位旅客要在入境前 3 天內填好 MDAC（見待辦）。",
     "深夜抵達、清晨出發：這一晚以睡得到覺為主，住宿離機場越近越好。"
    ],
-   "weather_alt": "國際線延誤：抵達時間再晚，就直接影響隔天 07:30 的國內線與 09:30 的 DVFC 排程車；延誤超過 2–3 小時時，先聯絡住宿保留房間，並查隔天稍晚的 BKI → LDU 班次（DVFC 另有 15:00 班）。",
+   "weather_alt": "國際線延誤：抵達時間再晚，就直接影響隔天 07:20 的國內線與 09:30 的 DVFC 排程車；延誤超過 2–3 小時時，先聯絡住宿保留房間，並查隔天稍晚的 BKI → LDU 班次（DVFC 另有 15:00 班）。",
    "contingencies": [
     {
      "sign": "國際線延誤或取消通知",
@@ -489,7 +462,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "lodging_note": "Danum 3D2N 第一天：住 DVFC，尚未訂房。",
    "notes": [
     "前一晚約 23:00 才抵達亞庇，清晨就要回機場，實際睡眠時間很短；到 Danum 後只排低強度活動。",
-    "DVFC 排程車（價目表）：週一至週五 09:30 或 15:00 從 Lahad Datu 發車（1/29 是週五）。預定搭 09:30 班，班機延誤改搭 15:00 班。"
+    "DVFC 排程車（價目表）：週一至週五 09:30 或 15:00 從 Lahad Datu 發車（1/29 是週五）。07:20 班機 08:15 落地，預定搭 09:30 班；班機延誤改搭 15:00 班。"
    ],
    "weather_alt": "早班機延誤：改搭 15:00 的 DVFC 排程車；當天都飛不了就在亞庇多住一晚，隔天搭最早班機，請 DVFC 安排包車進場（Danum 剩 1 晚）。",
    "contingencies": [
@@ -519,8 +492,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "id": "d1-flight",
      "slot": "dawn",
      "type": "flight",
-     "title": "Kota Kinabalu（BKI）→ Lahad Datu（LDU）國內航班",
-     "duration_h": null,
+     "title": "Kota Kinabalu（BKI）→ Lahad Datu（LDU）AirBorneo 國內航班",
+     "duration_h": 0.9167,
      "effort": 1,
      "status": "tbc",
      "location": "ldu",
@@ -529,8 +502,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "booking"
      ],
      "species": [],
-     "detail": "使用者規劃：07:30 左右起飛，尚未訂位。BKI–LDU 由 AirBorneo 經營，官網沒有公布班表，實際班次時刻要在訂位查詢時確認；航程第三方稱約 55 分鐘，未查證。",
-     "start": "07:30"
+     "detail": "預計搭乘 07:20 班（BKI 第一航廈，AirBorneo 訂位查詢，2026-11-13），尚未訂位。DVFC 價目表把 09:30 排程車對應這個時段的班機（MH3012，08:15 抵達）。同日另有 08:20 → 09:15 班，但落地後只剩 15 分鐘，趕不上 09:30 排程車。",
+     "start": "07:20",
+     "duration_basis": "AirBorneo 訂位查詢：07:20 起飛、08:15 抵達，航程 55 分鐘"
     },
     {
      "id": "d6-t2",
@@ -1291,7 +1265,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "day": 9,
    "date": "2027-02-05",
    "region": "transit",
-   "short": "Tabin → LD/KK（除夕）",
+   "short": "Tabin → LDU → 亞庇（除夕）",
    "kind": [
     "transfer"
    ],
@@ -1299,9 +1273,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "tabin"
    ],
    "lodging_prev": "tabin_resort",
-   "lodging": "last_night_choice",
+   "lodging": "kk_hotel",
    "lodging_status": "tbc",
-   "lodging_note": "緩衝晚（待規劃）：可選 Lahad Datu（隔天從 LDU 出發）或先飛 Kota Kinabalu（隔天從 BKI 搭國際線）。",
+   "lodging_note": "住亞庇機場附近（待規劃）：隔天 07:30 國際線，選離機場近的住宿。回程是 2/6 07:30 從 BKI 起飛，所以這一晚不能住 Lahad Datu。",
    "activities": [
     {
      "id": "d6-dawn",
@@ -1330,29 +1304,29 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_h": 1.5,
      "effort": 1,
      "status": "tbc",
-     "location": "ld_hotel",
+     "location": "ldu",
      "needs": [
       "booking"
      ],
      "species": [],
-     "detail": "對應報價「Private Return Transfer」的回程。官方排程回程 14:30 發車、約 16:00 抵 LDU；若最後一晚選 KK 要趕當天的國內線，私人接送可提早出發。實際出發時間待業者確認。",
+     "detail": "對應報價「Private Return Transfer」的回程。官方排程回程 14:30 發車、約 16:00 抵 LDU；2/5 要趕國內線飛亞庇，私人接送可提早出發。實際出發時間待業者確認。",
      "duration_basis": "官方：約 1.5 小時"
     },
     {
      "id": "d8-pm",
      "slot": "afternoon",
      "type": "flight",
-     "title": "（若選 KK）LDU → BKI 國內航班；（若選 LD）入住休息",
+     "title": "LDU → BKI 國內航班（除夕）",
      "duration_h": null,
      "effort": 1,
      "status": "tbc",
-     "location": "last_night_choice",
+     "location": "kk_hotel",
      "needs": [
       "flight",
       "booking"
      ],
      "species": [],
-     "detail": "除夕當天國內線可能較滿，越早訂位越好。"
+     "detail": "班次尚未選定（訂位查詢只看到 1/29 去程）。除夕當天國內線可能較滿，越早訂位越好。"
     },
     {
      "id": "d8-eve",
@@ -1362,7 +1336,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_h": null,
      "effort": 1,
      "status": "tbc",
-     "location": "last_night_choice",
+     "location": "kk_hotel",
      "needs": [
       "booking"
      ],
@@ -1373,18 +1347,18 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "除夕：交通與餐飲需求高。",
     "這一晚是回程前的最後緩衝。",
-    "Tabin 官方排程回程約 16:00 才到 LDU；最後一晚選 KK 時，要訂傍晚以後的國內線，或請 Tabin 私人接送提早出發。"
+    "Tabin 官方排程回程約 16:00 才到 LDU；要訂 17:30 以後的國內線，或請 Tabin 私人接送提早出發，改訂中午前後的班次（較保險）。"
    ],
-   "weather_alt": "道路延誤：若選 KK 而趕不上國內線，改住 Lahad Datu，隔天一早飛 BKI 再轉國際線（需確認轉機時間）。",
+   "weather_alt": "道路延誤：改搭當天晚一點的 LDU → BKI 班次。2/6 一早就要搭國際線，當天沒有國內線能銜接，所以 2/5 一定要飛到亞庇。",
    "contingencies": [
     {
      "sign": "Tabin 回程延誤",
-     "trigger": "（最後一晚選 KK 時）抵達 LDU 的時間趕不上當天國內線",
+     "trigger": "抵達 LDU 的時間趕不上 2/5 訂好的國內線",
      "decider": "團員聯絡人（出發前指定一位）",
-     "fallback": "改住 Lahad Datu，隔天最早班機飛 BKI 再接國際線",
+     "fallback": "改搭 2/5 晚一點的 LDU → BKI 班次；當天都沒有時，只能改 2/6 的國際線（初一機位最緊，損失大）",
      "extra_cost": {
       "amount": null,
-      "note": "Lahad Datu 一晚住宿與國內線改票費；KK 已訂住宿能否退費未知；除夕當天選擇有限"
+      "note": "國內線改票費；若要改國際線，費用與座位都不確定。所以 2/5 的國內線建議選中午前後，讓 Tabin 私人接送提早出發。"
      }
     }
    ]
@@ -1397,7 +1371,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "kind": [
     "departure"
    ],
-   "lodging_prev": "last_night_choice",
+   "lodging_prev": "kk_hotel",
    "lodging": null,
    "lodging_status": null,
    "activities": [
@@ -1405,27 +1379,30 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "id": "d9-flight",
      "slot": "morning",
      "type": "flight",
-     "title": "返回台灣（國際航班；若住 LD 需先搭國內線）",
-     "duration_h": null,
+     "title": "Kota Kinabalu（BKI）→ 台北（TPE）AirAsia 直飛",
+     "duration_h": 3.4167,
      "effort": 1,
      "status": "tbc",
-     "location": "last_night_choice",
+     "location": "kk_hotel",
      "needs": [
       "flight",
       "booking"
      ],
      "species": [],
-     "detail": "初一回程：需優先鎖定機位，並保留足夠轉機時間。"
+     "detail": "預計搭乘的班次（AirAsia 訂位查詢，2026-11-13），尚未訂位。初一清晨出發：先確認住宿到機場的交通（計程車、Grab 在初一清晨是否叫得到）。",
+     "start": "07:30",
+     "duration_basis": "AirAsia 訂位查詢：07:30 起飛、10:55 抵達"
     }
    ],
    "notes": [
-    "農曆新年初一。"
+    "農曆新年初一。",
+    "AirAsia 07:30 BKI → 10:55 台北，直飛；清晨就要從亞庇住宿出發。"
    ],
    "weather_alt": "航班取消：聯絡航空公司與旅遊保險；春節期間改票選擇有限。",
    "contingencies": [
     {
      "sign": "航班取消或大幅延誤通知",
-     "trigger": "國內段延誤，使轉機時間低於航空公司最短轉機時間（未查證）",
+     "trigger": "國際線延誤或取消",
      "decider": "團員聯絡人（出發前指定一位）",
      "fallback": "聯絡航空公司改票並通知保險公司；春節期間可能要多留 1 晚以上",
      "extra_cost": {
@@ -1440,7 +1417,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "c-d2-bki",
    "day": 2,
-   "title": "亞庇機場附近住宿 → BKI，銜接 07:30 國內線",
+   "title": "亞庇機場附近住宿 → BKI，銜接 07:20 國內線",
    "buffer_min": 30,
    "depart": {
     "time": null,
@@ -1455,29 +1432,29 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "deadline": {
     "time": null,
-    "label": "07:30 班機的報到截止"
+    "label": "07:20 班機的報到截止"
    },
    "missing": [
-    "國內線尚未訂位，07:30 是規劃時刻",
+    "國內線尚未訂位",
     "航空公司的報到截止時間（未查證）"
    ],
-   "basis": "前一晚約 23:00 抵達，扣掉入境、領行李、到住宿與清晨回機場，實際可睡的時間很短；選住宿時以離機場近為優先"
+   "basis": "前一晚 23:05 才抵達，扣掉入境、領行李、到住宿與清晨回機場，實際可睡的時間很短；選住宿時以離機場近為優先"
   },
   {
    "id": "c-d2-dvfc",
    "day": 2,
-   "title": "BKI → LDU 國內線，銜接 DVFC 09:30 排程車",
+   "title": "BKI → LDU 國內線（07:20），銜接 DVFC 09:30 排程車",
    "buffer_min": 30,
    "depart": {
-    "time": "07:30",
+    "time": "07:20",
     "status": "tbc",
-    "label": "BKI → LDU 國內線起飛（規劃時刻，尚未訂位）"
+    "label": "AirBorneo 07:20 起飛（預計搭乘，尚未訂位）"
    },
    "legs": [
     {
      "label": "BKI → LDU 航程",
-     "duration_h": 1,
-     "basis": "第三方稱約 55 分鐘，未查證；以 1 小時計"
+     "duration_h": 0.9167,
+     "basis": "AirBorneo 訂位查詢：55 分鐘"
     },
     {
      "label": "領行李、走到機場對面的 DVFC 辦公室",
@@ -1490,16 +1467,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "DVFC 排程車從 Lahad Datu 發車（價目表：週一至週五 09:30 或 15:00；1/29 是週五）"
    },
    "missing": [
-    "國內線尚未訂位，07:30 是規劃時刻",
+    "國內線尚未訂位",
     "排程車只有 8 個座位，需事先預約，4 人是否訂得到未確認",
     "價目表寫週一至週五 09:30／15:00，官方網站寫週一、三、五 15:00，兩者不一致"
    ],
-   "basis": "07:30 起飛、約 08:30 落地，領行李走到對面辦公室約 09:00，只剩規劃的 30 分鐘緩衝；趕不上就改搭 15:00 班（套裝內，不另收費），兩班都趕不上才叫包車"
+   "basis": "07:20 起飛、08:15 落地，領行李走到對面辦公室約 08:45，扣掉規劃的 30 分鐘緩衝還多 15 分鐘；趕不上就改搭 15:00 班（套裝內，不另收費），兩班都趕不上才叫包車"
   },
   {
    "id": "c-d9-kk-tabin",
    "day": 9,
-   "option": "kk",
    "title": "Tabin → Lahad Datu，銜接 LDU → BKI 國內線",
    "buffer_min": 90,
    "depart": {
@@ -1525,32 +1501,32 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "basis": "搭官方排程回程約 16:00 抵達 LDU，要訂 17:30 以後起飛的班機才留得出 90 分鐘緩衝（緩衝為規劃自訂）；私人接送可提早出發"
   },
   {
-   "id": "c-d9-ld",
+   "id": "c-d10-bki",
    "day": 10,
-   "option": "ld",
-   "title": "LDU → BKI 國內線，銜接返台國際線",
+   "title": "亞庇住宿 → BKI，銜接 07:30 返台國際線",
    "buffer_min": 120,
    "depart": {
     "time": null,
-    "label": "2/6 LDU → BKI 班機起飛"
+    "label": "從住宿出發"
    },
    "legs": [
     {
-     "label": "LDU → BKI",
+     "label": "住宿 → 機場",
      "duration_h": null,
-     "basis": "AirBorneo 官網沒有公布班表；第三方行程稱約 55 分鐘，未查證"
+     "basis": "住宿尚未選定"
     }
    ],
    "deadline": {
-    "time": null,
-    "label": "返台國際線報到截止"
+    "time": "07:30",
+    "label": "AirAsia 07:30 起飛（BKI → TPE）"
    },
    "missing": [
-    "國內線與國際線皆未訂位",
-    "兩段是否同一張機票（不同機票時延誤不保障）",
-    "航空公司規定的最短轉機時間"
+    "國際線尚未訂位",
+    "住宿尚未選定，到機場的時間未知",
+    "AirAsia 的報到截止時間（未查證）",
+    "初一清晨叫得到車嗎（未查證）"
    ],
-   "basis": "緩衝 120 分鐘為規劃自訂，非航空公司規定"
+   "basis": "國際線起飛前 120 分鐘到機場為規劃自訂（報到、託運、出境），非航空公司規定；所以最晚約 05:30 要到機場"
   }
  ]
 }
@@ -1640,7 +1616,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "includes": [
     "來回接送一趟"
    ],
-   "assumption": "起訖點假設為 Lahad Datu ↔ Tabin（待確認）。官方套裝含排程接送（LDU 08:00／12:00 出發；Tabin 14:30 回程）。行程改為先 Danum 後 Tabin 後，2/1 從 Lahad Datu 住宿出發、2/5 回 Lahad Datu，排程接送的時間也搭得上；只有 2/5 要趕飛亞庇時，私人接送才有幫助。是否改用排程接送、能省多少已列入確認問題；業者回覆前沿用報價。",
+   "assumption": "起訖點假設為 Lahad Datu ↔ Tabin（待確認）。官方套裝含排程接送（LDU 08:00／12:00 出發；Tabin 14:30 回程）。2/1 從 Lahad Datu 住宿出發，排程車時間搭得上；2/5 要趕國內線飛亞庇（隔天 07:30 國際線），私人接送可提早出發，有實際用處。是否 2/1 改排程、2/5 留私人接送，已列入確認問題；業者回覆前沿用報價。",
    "notes": "規格將此項歸為團體固定成本，但報價以「每人」計價，試算依報價隨人數變動。",
    "source_ids": [
     "src_quote_a",
@@ -1760,38 +1736,49 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "intl_flight",
-   "name": "國際機票（台灣 ↔ 沙巴，來回）",
+   "name": "國際機票（台北 ⇄ 亞庇，AirAsia 來回）",
    "category": "other",
    "unit": "per_person_trip",
    "price_currency": "TWD",
-   "price": {
-    "low": 14000,
-    "mid": 20000,
-    "high": 30000
-   },
-   "status": "demo",
+   "price": 14918,
+   "status": "public_rate",
    "applies": "flights",
-   "assumption": "示範數字，未查票價；去程規劃為 1/28 19:30 台灣 → 亞庇，回程為春節初一，實際可能更高。請改填實際票價。",
-   "source_ids": []
+   "assumption": "AirAsia 訂位查詢（2026-11-13）：1/28 19:30 TPE → BKI、2/6 07:30 BKI → TPE，1 位成人來回 TWD 14,918.39；尚未訂位，價格會變動。不含加購（託運行李、選位、餐點），實際會更高。",
+   "source_ids": [
+    "src_flight_search"
+   ]
   },
   {
    "id": "domestic_flight",
-   "name": "國內機票（BKI ↔ LDU，來回）",
+   "name": "國內機票去程（BKI → LDU，1/29 07:20）",
+   "category": "other",
+   "unit": "per_person_trip",
+   "price": 219,
+   "status": "public_rate",
+   "applies": "flights",
+   "assumption": "AirBorneo 訂位查詢（2026-11-13）：1/29 07:20 BKI → 08:15 LDU，經濟艙 MYR 219 起；尚未訂位，價格會變動。託運行李額度未確認。",
+   "source_ids": [
+    "src_flight_search"
+   ]
+  },
+  {
+   "id": "domestic_flight_return",
+   "name": "國內機票回程（LDU → BKI，2/5 除夕）",
    "category": "other",
    "unit": "per_person_trip",
    "price": {
-    "low": 300,
-    "mid": 500,
-    "high": 800
+    "low": 219,
+    "mid": 219,
+    "high": 400
    },
-   "status": "demo",
+   "status": "estimate",
    "applies": "flights",
-   "assumption": "示範數字，未查票價。去程規劃為 1/29 07:30 BKI → LDU；由 AirBorneo 經營。",
+   "assumption": "班次與價格未查。低、中情境假設與去程同為 MYR 219；高情境以除夕需求高估 MYR 400。請訂位後改填實際票價。",
    "source_ids": []
   },
   {
    "id": "buffer_hotel",
-   "name": "緩衝晚住宿（Day 1 亞庇、Day 4 Lahad Datu、Day 9）",
+   "name": "緩衝晚住宿（Day 1 亞庇、Day 4 Lahad Datu、Day 9 亞庇）",
    "category": "other",
    "unit": "per_room_per_night",
    "qty": {
@@ -1804,7 +1791,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    },
    "status": "demo",
    "applies": "extras",
-   "assumption": "示範數字，未查房價；共 3 晚：1/28 亞庇機場附近、1/31 Lahad Datu、2/5（Lahad Datu 或亞庇）。各地價格不同。",
+   "assumption": "示範數字，未查房價；共 3 晚：1/28 亞庇機場附近、1/31 Lahad Datu、2/5 亞庇（隔天 07:30 國際線，選機場附近）。各地價格不同。",
    "source_ids": []
   },
   {
@@ -4469,7 +4456,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "lat": 5.937,
    "lng": 116.051,
    "approximate": true,
-   "summary": "1/28 深夜抵達亞庇（BKI）後過夜，1/29 一早搭國內線到 Lahad Datu。",
+   "summary": "1/28 23:05 抵達亞庇（BKI）後過夜，1/29 07:20 搭國內線到 Lahad Datu。",
    "stay": "1 晚（實際停留約 6–7 小時）",
    "species": [],
    "activities": [
@@ -4512,7 +4499,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "lng": 118.3275533,
    "approximate": true,
    "coord_note": "以 Lahad Datu 市區中心點標示，住宿尚未選定",
-   "summary": "Day 4（1/31，Danum 回程後）與（選 LD 時）Day 9 的緩衝住宿；也是 Tabin 與 Danum 接送的轉運點。",
+   "summary": "Day 4（1/31，Danum 回程後）的緩衝住宿；也是 Tabin 與 Danum 接送的轉運點。",
    "stay": "1 晚",
    "activities": [
     "補給",
@@ -4527,19 +4514,19 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "kk_hotel",
-   "name": "Kota Kinabalu 住宿（Day 9 選項，待規劃）",
+   "name": "Kota Kinabalu 住宿（Day 9，待規劃）",
    "type": "lodging",
    "region": "transit",
    "lat": 5.9804,
    "lng": 116.0735,
    "approximate": true,
    "coord_note": "市區概略位置，未查證",
-   "summary": "若 2/5 先飛 KK，隔天從 BKI 搭國際線返台。",
+   "summary": "2/5 從 Lahad Datu 飛回亞庇後過夜，2/6 07:30 從 BKI 搭國際線返台；選離機場近的住宿。",
    "stay": "1 晚",
    "activities": [
     "休息"
    ],
-   "safety": "除夕夜餐廳營業狀況待確認。",
+   "safety": "除夕夜餐廳營業狀況待確認；初一清晨到機場的交通要先安排。",
    "guide": "不需要",
    "source_ids": [],
    "species": []
@@ -4673,8 +4660,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   "dvfc",
   "ld_hotel",
   "tabin_resort",
-  "ld_hotel",
-  "last_night_choice"
+  "ldu",
+  "kk_hotel"
  ]
 }
 </script>
@@ -5530,6 +5517,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "checked_on": "2026-11-12",
    "reliability": "high",
    "note": "官網有 BKI–LDU 航線頁，確認這條航線由 AirBorneo 經營；但網站沒有公布班表，班次時刻只能用訂位查詢表單逐日查（本工具沒有代為查詢）。官網 2026-03-09 公告：新訂位、改票、退票請洽客服中心 1300-22-1388。"
+  },
+  {
+   "id": "src_flight_search",
+   "title": "航空公司網站訂位查詢畫面（AirAsia TPE ⇄ BKI、AirBorneo BKI → LDU；使用者提供截圖）",
+   "type": "official",
+   "checked_on": "2026-11-13",
+   "reliability": "medium",
+   "note": "訂位前的查詢結果，尚未訂位，價格與座位會變動。AirAsia：1/28（四）19:30 TPE → 23:05 BKI、2/6（六）07:30 BKI → 10:55 TPE，直飛，1 位成人來回 TWD 14,918.39（加購行李、選位、餐點前）。AirBorneo：1/29（五）07:20 BKI 第一航廈 → 08:15 LDU，航程 55 分鐘，經濟艙 MYR 219 起（同日另有 08:20 → 09:15）。"
   }
  ]
 }
@@ -5644,17 +5639,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "items": [
     {
      "id": "c-f1",
-     "text": "訂 2/6（初一）回程國際機位",
+     "text": "訂 2/6（初一）07:30 BKI → 台北 回程國際機位",
      "critical": true
     },
     {
      "id": "c-f2",
-     "text": "訂 1/28 去程國際線與 1/29 BKI → LDU 國內線，確認過夜住宿及銜接時間足夠",
+     "text": "訂 1/28 去程國際線與 1/29 07:20 BKI → LDU 國內線，確認過夜住宿及銜接時間足夠",
      "critical": true
     },
     {
      "id": "c-f3",
-     "text": "決定 Day 9 住 Lahad Datu 或 Kota Kinabalu，並訂對應國內線"
+     "text": "訂 2/5 LDU → BKI 國內線（中午前後較保險）與亞庇機場附近住宿"
     },
     {
      "id": "c-f4",
@@ -5935,19 +5930,20 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "flights_return",
-   "title": "鎖定回程機位：2/5 或 2/6 LDU → BKI、2/6 BKI → 台灣",
+   "title": "鎖定回程機位：2/5 LDU → BKI（除夕）、2/6 07:30 BKI → 台北（AirAsia）",
    "due": "2026-11-30",
    "due_kind": "self",
    "due_basis": "規劃自訂：2/6 是初一，機位最緊。BKI–LDU 由 AirBorneo 經營，官網沒有公布班表，要用訂位查詢或致電客服 1300-22-1388",
    "consequence": "春節機位售完或票價大漲；整趟行程的結束日被迫更動",
    "source_ids": [
     "src_cny",
-    "src_airborneo"
+    "src_airborneo",
+    "src_flight_search"
    ]
   },
   {
    "id": "flights_out",
-   "title": "訂去程：1/28 19:30 台灣 → 亞庇（BKI），1/29 07:30 亞庇 → Lahad Datu（LDU）",
+   "title": "訂去程：1/28 19:30 台北 → 亞庇（AirAsia），1/29 07:20 亞庇 → Lahad Datu（AirBorneo）",
    "due": "2026-12-15",
    "due_kind": "self",
    "due_basis": "規劃自訂",
@@ -5956,7 +5952,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    ],
    "consequence": "1/29 到不了 Lahad Datu，趕不上 DVFC 排程車，Danum 少半天到一晚；兩段分開買票時，前段延誤不保障後段",
    "source_ids": [
-    "src_airborneo"
+    "src_airborneo",
+    "src_flight_search"
    ]
   },
   {
@@ -6004,14 +6001,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "book_buffer",
-   "title": "訂三個緩衝晚的住宿：1/28 亞庇機場附近（可深夜入住）、1/31 Lahad Datu、2/5（選可免費取消的房型）",
+   "title": "訂三個緩衝晚的住宿：1/28 亞庇機場附近（可深夜入住）、1/31 Lahad Datu、2/5 亞庇機場附近（選可免費取消的房型）",
    "due": "2026-12-20",
    "due_kind": "self",
    "due_basis": "規劃自訂：2/5 是除夕",
    "depends_on": [
     "flights_return"
    ],
-   "consequence": "1/28 深夜抵達卻無法入住；除夕當晚 Lahad Datu／亞庇住宿選擇變少、變貴",
+   "consequence": "1/28 深夜抵達卻無法入住；除夕當晚亞庇住宿選擇變少、變貴",
    "source_ids": [
     "src_cny"
    ]
@@ -6067,8 +6064,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "en": "Is the Tabin quote a standard package plus private add-ons, or a private itinerary replacing the package? Does the 5D4N base package already include scheduled transfers, guided walks, dusk drive, night safari and the Lipad tower overnight?"
     },
     {
-     "zh": "Private Return Transfer 的起訖點？我們改為 2/1（一）從 Lahad Datu 入住、2/5（五）退房回 Lahad Datu，可否改用官方排程接送（LDU 08:00／12:00 出發、14:30 回程）？改用的話能省多少？",
-     "en": "What are the pick-up/drop-off points of the Private Return Transfer? Our stay is now check-in Mon 1 Feb from Lahad Datu and check-out Fri 5 Feb back to Lahad Datu. Could we use the scheduled transfers instead (08:00/12:00 from LDU, 14:30 return), and how much would that save?"
+     "zh": "Private Return Transfer 的起訖點？我們 2/1（一）從 Lahad Datu 入住、2/5（五）退房回 Lahad Datu 機場，當天要搭國內線飛亞庇。2/1 去程可否改用官方排程車（LDU 08:00／12:00 出發）、只保留 2/5 回程的私人接送？價格會怎麼變？2/5 最早幾點可以從 Tabin 出發？",
+     "en": "What are the pick-up/drop-off points of the Private Return Transfer? We check in on Mon 1 Feb from Lahad Datu and check out on Fri 5 Feb back to Lahad Datu airport, where we fly to Kota Kinabalu the same day. Could we use the scheduled transfer for the 1 Feb arrival (08:00/12:00 from LDU) and keep only the private transfer for the 5 Feb return? How would the price change? What is the earliest we could leave Tabin on 5 Feb?"
     },
     {
      "zh": "私人嚮導與私人車輛各 4 天是指哪 4 天？私人夜遊 3 晚是哪 3 晚？第 4 晚能否加購、價格多少？",

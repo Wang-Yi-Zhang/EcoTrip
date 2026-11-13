@@ -26,7 +26,7 @@ assert.equal(extra.amount,null);
 assert.ok(extra.note.includes('不可再重複加算'));
 assert.equal(data.costs.items.find(i=>i.id==='dvfc_private_transfer').default_on,false);
 const checklist = data.essentials.checklist.flatMap(c=>c.items).map(i=>i.text).join('\n');
-assert.ok(checklist.includes('訂 1/28 去程國際線與 1/29 BKI → LDU'));
+assert.ok(checklist.includes('訂 1/28 去程國際線與 1/29 07:20 BKI → LDU'));
 assert.ok(checklist.includes('Day 1、Day 4 與 Day 9'));
 assert.ok(!html.includes('兩者都已預設納入試算'));
 assert.ok(!ui.includes('估算完整度'));

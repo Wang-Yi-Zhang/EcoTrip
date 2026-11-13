@@ -20,9 +20,9 @@ const pick = (...v) => v.find(x => x !== undefined);
 
 // 同時提供新舊兩種設定鍵名：舊引擎讀 danumPlan／lastNight／fxUsd，新引擎讀 choices／rates。
 function mkState(o) {
-  const last = o.last || "ld";   // 2026-11-13 Danum 定案 DVFC，不再有 danum_choice
+  // 2026-11-13：Danum 定案 DVFC、最後一晚固定住亞庇，沙巴行程已沒有選擇題
   return { pax: o.pax ?? 4, rooms: o.rooms ?? 2, fx: o.fx ?? 7.2, fxUsd: 4.2, rates: { USD: 4.2 },
-    lastNight: last, choices: { last_night_choice: last },
+    choices: {},
     scenario: o.scenario || "mid", contingencyPct: o.cont ?? 10, includeFlights: !!o.flights, includeExtras: !!o.extras,
     optionalOn: o.optionalOn || {}, overrides: o.overrides || {}, activity: o.activity || {} };
 }
@@ -59,7 +59,7 @@ for (const [pax, rooms] of [[4, 2], [2, 1], [6, 3], [3, 2], [1, 1], [5, 2]]) for
   cases[`pax${pax}-rooms${rooms}-${all ? "all" : "core"}`] = { pax, rooms, flights: all, extras: all };
 Object.assign(cases, {
   "scenario-low": { scenario: "low", flights: true, extras: true }, "scenario-high": { scenario: "high", flights: true, extras: true },
-  "last-kk": { last: "kk" }, "last-tbd": { last: "tbd" }, "cont0": { cont: 0 }, "fx68": { fx: 6.8, flights: true },
+  "cont0": { cont: 0 }, "fx68": { fx: 6.8, flights: true },
   "night4": { activity: { "d5-night": { choice: 1 } } }, "night-rest": { activity: { "d2-night": { choice: 2 }, "d3-night": { choice: 1 } } },
   "dvfc-transfer-on": { optionalOn: { dvfc_private_transfer: true } }, "dvfc-guide-on": { optionalOn: { dvfc_private_guide: true, dvfc_night_drive: false } },
   "override": { extras: true, overrides: { fees_permits: 50, tabin_single: 0 }, pax: 3, rooms: 2 },

@@ -15,7 +15,7 @@ const data = {};
 for (const m of html.matchAll(/<script type="application\/json" id="data-([a-z]+)">([\s\S]*?)<\/script>/g)) data[m[1]] = JSON.parse(m[2]);
 const clone = o => JSON.parse(JSON.stringify(o));
 const eq = (a, b, m) => assert.deepEqual(JSON.parse(JSON.stringify(a)), b, m); // vm 跨 realm 陣列需先序列化
-const base = { pax: 4, rooms: 2, fx: 7.2, rates: { USD: 4.2 }, choices: { last_night_choice: "ld" }, scenario: "mid", contingencyPct: 0, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {}, activity: {} };
+const base = { pax: 4, rooms: 2, fx: 7.2, rates: { USD: 4.2 }, choices: {}, scenario: "mid", contingencyPct: 0, includeFlights: false, includeExtras: false, optionalOn: {}, overrides: {}, activity: {} };
 const tabinIds = ["tabin_base", "river_surcharge", "private_guide", "private_vehicle", "private_transfer", "night_safari"];
 const tabinSum = b => b.lines.filter(l => tabinIds.includes(l.id)).reduce((a, l) => a + l.amountBase, 0);
 const line = (b, id) => b.lines.find(l => l.id === id);
@@ -58,10 +58,11 @@ t("匯率變更：TWD = MYR × 匯率", () => {
 t("TWD 計價項目（國際機票）換算成 MYR", () => {
   const b = C.computeBudget(data, { ...base, includeFlights: true });
   const f = line(b, "intl_flight");
-  assert.equal(f.amountHome, 20000 * 4); assert.ok(Math.abs(f.amountBase - 80000 / 7.2) < 1e-6);
+  assert.equal(f.amountHome, 14918 * 4); assert.ok(Math.abs(f.amountBase - 14918 * 4 / 7.2) < 1e-6);   // AirAsia 查詢價（2026-11-13）
 });
-t("Danum 已定案為 DVFC：不需選擇題就計入，選擇題只剩最後一晚", () => {
-  eq(C.choiceDefs(data).map(c => c.id), ["last_night_choice"]);
+t("Danum 已定案為 DVFC、最後一晚固定住亞庇（2/6 07:30 從 BKI 起飛）：沒有選擇題", () => {
+  eq(C.choiceDefs(data).map(c => c.id), []);
+  eq([9, 10].map(n => data.itinerary.days.find(d => d.day === n)[n === 9 ? "lodging" : "lodging_prev"]), ["kk_hotel", "kk_hotel"]);
   assert.equal(line(C.computeBudget(data, base), "dvfc_package").active, true);
   assert.ok(!data.costs.items.some(i => /^brl_/.test(i.id))); assert.equal(data.costs.compare, undefined);
 });
@@ -110,8 +111,10 @@ t("時間衝突：同日兩活動時間重疊 → 錯誤", () => {
   const d2 = clone(data); const acts = d2.itinerary.days[3].activities; acts[1].start = "06:30";
   assert.ok(C.checkItinerary(d2, base).some(c => c.code === "overlap"));
 });
-t("最後一晚未決定 → Day 9 住宿待確認（警告，不是假資料）", () => {
-  const c = C.checkItinerary(data, { ...base, choices: { last_night_choice: "tbd" } });
+t("選擇題的選項沒有住宿 → 當天住宿待確認（警告，不是假資料）", () => {
+  const d2 = clone(data); d2.trip.choices = [{ id: "x", label: "最後一晚", default: "tbd", options: [{ key: "kk", lodging: "kk_hotel" }, { key: "tbd", lodging: null }] }];
+  d2.itinerary.days.find(d => d.day === 9).lodging = "x"; d2.itinerary.days.find(d => d.day === 10).lodging_prev = "x";
+  const c = C.checkItinerary(d2, base);
   assert.ok(c.some(x => x.code === "lodging" && x.day === 9));
 });
 t("春節提醒出現在 Day 9、Day 10", () => {

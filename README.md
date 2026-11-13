@@ -65,7 +65,7 @@ node tools/build-site.mjs
 | [docs/向業者確認問題清單.md](docs/向業者確認問題清單.md) | 寄給 Tabin、BRL、DVFC 的中英對照問題 |
 | `gas/Code.gs` | Google Apps Script 遠端資料端點範例，含 `setupSheets()` 自動建立欄位 |
 | `docs/tests/core.test.mjs` | 核心計算與檢查邏輯的單元測試 |
-| `docs/tests/golden.test.mjs` | 黃金檔：沙巴行程在 24 組設定下的結果不得改變（2026-11-13 定案 DVFC 前是 36 組） |
+| `docs/tests/golden.test.mjs` | 黃金檔：沙巴行程在 22 組設定下的結果不得改變（2026-11-13 拿掉 Danum 方案與最後一晚的選擇前是 36 組） |
 | `docs/tests/contrast.test.mjs` | 對照旅行（結構不同的另一趟行程）跑同一個引擎；程式碼不得含行程專有字樣 |
 | [docs/05-報價信對照.md](docs/05-報價信對照.md) | Tabin 報價信原文與費用資料逐項對照 |
 | [docs/06-旅伴三題測試與手機離線確認.md](docs/06-旅伴三題測試與手機離線確認.md) | 需要人來做的兩項驗證 |
