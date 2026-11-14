@@ -6704,11 +6704,65 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       applies: BUILTIN_APPLIES.concat(opts), when: ["singles"].concat(opts.map(k => "plan_" + k)) };
   }
 
+  /* ---------- 地圖匯出（KML：可匯入 Google My Maps、Google Earth、Organic Maps、OsmAnd） ---------- */
+  const POI_KML = { lodging: { label: "住宿", color: "D97706" }, wildlife: { label: "生態觀察地點", color: "5DBB82" }, transport: { label: "交通轉運", color: "7DB3E0" }, landscape: { label: "自然地景", color: "C49BE8" } };
+  const xmlEsc = s => String(s == null ? "" : s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+  const kmlColor = (hex, alpha) => (alpha || "ff") + hex.slice(4, 6) + hex.slice(2, 4) + hex.slice(0, 2);   // KML 顏色順序是 aabbggrr
+  /** 在 Google 地圖開啟某個座標（只帶座標，不帶任何個人資料） */
+  function googleMapsUrl(p) { return `https://www.google.com/maps/search/?api=1&query=${p.lat.toFixed(6)},${p.lng.toFixed(6)}`; }
+  /** 某地點出現在哪幾天（當天活動或住宿在此） */
+  function poiDays(data, state, id) {
+    return data.itinerary.days.filter(d => (d.activities || []).some(a => resolveLodging(a.location, state, data) === id) || resolveLodging(d.lodging, state, data) === id).map(d => d.day);
+  }
+  /** 地點說明（純文字；My Maps 會把 HTML 當成文字顯示，所以不用 HTML） */
+  function poiText(data, state, p) {
+    const sp = id => { const s = (data.species && data.species.items || []).find(x => x.id === id); return s ? (s.zh || s.en) : null; };
+    const days = poiDays(data, state, p.id), L = [];
+    L.push(`${POI_KML[p.type].label}｜${p.approximate ? "近似位置" : "座標已查核"}`);
+    if (p.summary) L.push(p.summary);
+    if (p.stay) L.push(`建議停留：${p.stay}`);
+    if (p.activities && p.activities.length) L.push(`常見活動：${p.activities.join("、")}`);
+    const names = (p.species || []).map(sp).filter(Boolean);
+    if (names.length) L.push(`可能觀察物種：${names.join("、")}（不保證）`);
+    if (p.safety) L.push(`安全注意：${p.safety}`);
+    if (p.guide != null) L.push(`嚮導／許可：${p.guide}`);
+    if (days.length) L.push(`相關日期：${days.map(d => "Day " + d).join("、")}`);
+    L.push(`座標 ${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}${p.coord_note ? "｜" + p.coord_note : ""}`);
+    return L.join("\n");
+  }
+  /** 產生整趟行程的地圖 KML：地點（依類別分資料夾）、行程示意連線、保護區近似範圍。不含任何物種觀測點位。 */
+  function locationsKML(data, state) {
+    const loc = data.locations, pois = loc.pois || [], t = data.trip || {};
+    const route = (loc.route || []).map(id => resolveLodging(id, state, data)).filter(Boolean).map(id => poiById(data, id)).filter(Boolean);
+    const out = ['<?xml version="1.0" encoding="UTF-8"?>', '<kml xmlns="http://www.opengis.net/kml/2.2">', "<Document>",
+      `<name>${xmlEsc(t.title || "行程地圖")}</name>`,
+      `<description>${xmlEsc(`由旅行規劃網頁匯出（${t.id || ""}）。虛線外框／「近似位置」＝座標只是大概；行程連線是直線示意，不是道路。不含物種觀測點位。地圖資料以網頁為準，行程更新後請重新匯出。`)}</description>`];
+    for (const [k, v] of Object.entries(POI_KML)) out.push(`<Style id="poi-${k}"><IconStyle><color>${kmlColor(v.color)}</color><scale>1.1</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon></IconStyle></Style>`);
+    out.push(`<Style id="route"><LineStyle><color>${kmlColor("F2B45A")}</color><width>3</width></LineStyle></Style>`,
+      `<Style id="area"><LineStyle><color>${kmlColor("5DBB82")}</color><width>2</width></LineStyle><PolyStyle><color>${kmlColor("9BD3A8", "33")}</color></PolyStyle></Style>`);
+    for (const [k, v] of Object.entries(POI_KML)) {
+      const list = pois.filter(p => p.type === k); if (!list.length) continue;
+      out.push(`<Folder><name>${xmlEsc(v.label)}</name>`);
+      for (const p of list) out.push(`<Placemark id="${xmlEsc(p.id)}"><name>${xmlEsc(p.name + (p.approximate ? "（近似位置）" : ""))}</name><description>${xmlEsc(poiText(data, state, p))}</description><styleUrl>#poi-${k}</styleUrl><Point><coordinates>${p.lng},${p.lat},0</coordinates></Point></Placemark>`);
+      out.push("</Folder>");
+    }
+    if (route.length > 1) out.push(`<Placemark><name>行程順序示意連線</name><description>依行程順序連接的直線，不是實際道路或交通時間。</description><styleUrl>#route</styleUrl><LineString><tessellate>1</tessellate><coordinates>${route.map(p => `${p.lng},${p.lat},0`).join(" ")}</coordinates></LineString></Placemark>`);
+    const areas = (loc.areas || []).filter(a => a.bbox);
+    if (areas.length) {
+      out.push("<Folder><name>保護區近似範圍</name>");
+      for (const a of areas) { const b = a.bbox, ring = [[b.swlng, b.swlat], [b.nelng, b.swlat], [b.nelng, b.nelat], [b.swlng, b.nelat], [b.swlng, b.swlat]];
+        out.push(`<Placemark><name>${xmlEsc(a.name + "（近似範圍）")}</name><description>${xmlEsc("iNaturalist 查詢用的近似方框，含周邊區域，不等於保護區實際邊界。")}</description><styleUrl>#area</styleUrl><Polygon><outerBoundaryIs><LinearRing><coordinates>${ring.map(c => c.join(",") + ",0").join(" ")}</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>`); }
+      out.push("</Folder>");
+    }
+    out.push("</Document>", "</kml>");
+    return out.join("\n") + "\n";
+  }
+
   global.EcoCore = { allowedValues, COST_STATUSES, taskList, connections, actualsSummary, STATUS_LABEL, UNIT_LABEL, OBS_LABELS, WEEKDAY, DATASETS, BUILTIN_APPLIES, CTX_KEYS, ENVELOPE_SCHEMA, isNum, addDaysISO, weekdayZh,
     categoryLabels, currencyOf, choiceDefs, choiceDef, choiceValue, optionSelected, itemActive,
     resolveLodging, poiById, activityChoice, activityStatus, activityCostRef, computeCtx, computeBudget, compareChoice,
     scenarios, checkItinerary, lodgingNightsSummary, observabilityLabel, validateDataset, validateEnvelope,
-    validateReferences, budgetCSV, toMinutes };
+    validateReferences, budgetCSV, toMinutes, locationsKML, googleMapsUrl, poiDays };
 })(typeof window !== "undefined" ? window : globalThis);
 </script>
 
@@ -7427,8 +7481,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       p.safety ? h("div", null, h("b", null, "安全注意："), p.safety) : null,
       p.guide != null ? h("div", null, h("b", null, "嚮導／許可："), p.guide) : null,
       days.length ? h("div", { style: "margin-top:4px" }, h("b", null, "相關日期："), days.map(d => h("button", { type: "button", class: "btn small poi-day", onclick: () => { update(x => { x.selectedDay = d.day; x.dayFilter = "all"; }, { render: false }); selectTab("itinerary", true); } }, `Day ${d.day}`))) : null,
-      h("div", { class: "poi-coord" }, `座標 ${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}`, p.coord_note ? `｜${p.coord_note}` : ""));
+      h("div", { class: "poi-coord" }, `座標 ${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}`, p.coord_note ? `｜${p.coord_note}` : ""),
+      h("div", { style: "margin-top:6px" }, h("a", { class: "btn small poi-gmaps", href: C.googleMapsUrl(p), target: "_blank", rel: "noopener noreferrer" }, "在 Google 地圖開啟 ↗"),
+        p.approximate ? h("span", { class: "small" }, " 近似位置，導航前請再確認") : null));
   }
+  function exportKML() { download(`${PREFIX}-map.kml`, "application/vnd.google-earth.kml+xml", C.locationsKML(D(), S())); }
   /** 窄螢幕（手機）不用地圖上的彈出視窗：它會蓋住整張地圖與縮放鈕。改在地圖下方顯示資訊卡。 */
   const mapNarrow = () => window.matchMedia("(max-width: 899px)").matches;
   function markSelected(id) {
@@ -7463,6 +7520,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       App.mapVisible = App.mapVisible || Object.fromEntries(Object.keys(POI_TYPE).map(k => [k, true]));
       P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "生態地圖"),
         h("p", { class: "muted small" }, "點地圖上的圓點或清單中的地點看說明。虛線＝依行程順序的示意連線，不是實際道路；虛線外框標記＝近似位置。地圖不顯示任何物種觀測點位。"))));
+      P.append(h("div", { class: "card", id: "map-export" }, h("div", { class: "row", style: "align-items:center" },
+          h("button", { class: "btn", type: "button", id: "kml-download", onclick: exportKML }, "下載地圖檔（KML）"),
+          h("span", { class: "small muted" }, "可匯入 Google My Maps，在手機的 Google 地圖查看；或匯入 Organic Maps／OsmAnd 離線使用。")),
+        h("details", null, h("summary", null, "怎麼匯入？離線能不能看？"),
+          h("ol", { class: "small" },
+            h("li", null, "Google My Maps：電腦開 mymaps.google.com →「建立新地圖」→ 圖層下的「匯入」→ 選這個 KML 檔。之後手機 Google 地圖 App 的「已儲存 → 地圖」就看得到。"),
+            h("li", null, "分享：建議只分享給同行的人，不要設成「知道連結的人都能看」——內容含住宿地點和日期。"),
+            h("li", null, "行程更新後：重新下載 KML，在 My Maps 刪掉舊圖層再匯入一次（My Maps 不會自動同步）。")),
+          h("p", { class: "small" }, h("b", null, "離線："), "Google 地圖的「離線地圖」只下載底圖，My Maps 的標記和說明離線時不一定看得到。要在沒有訊號的保護區看地點，請把同一個 KML 匯入 Organic Maps 或 OsmAnd（免費，可離線），並在出發前下載當地的離線地圖。也可以在地點說明裡按「在 Google 地圖開啟」，把地點存到自己的清單。"))));
       const filters = h("div", { class: "row", id: "map-filters", role: "group", "aria-label": "地點類別" });
       for (const [k, t] of Object.entries(POI_TYPE)) filters.append(h("label", { class: "check" }, h("input", { type: "checkbox", checked: App.mapVisible[k], onchange: e => { App.mapVisible[k] = e.target.checked; refreshMapLayers(); } }), h("span", { style: `color:${t.color}` }, "●"), t.label));
       P.append(filters);
