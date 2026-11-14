@@ -6,7 +6,7 @@
 <title>2027 沙巴雨林生態探索規劃系統｜Tabin × Danum Valley</title>
 <meta name="description" content="2027/01/28–02/06 沙巴 Tabin Wildlife Reserve 與 Danum Valley 10 天 9 夜生態觀察旅行的行程檢查、費用試算、物種與風險決策工具。">
 <meta name="theme-color" content="#1E2922">
-<!-- Leaflet：僅「生態地圖」需要；載入失敗時其他模組照常運作。SRI 已於 2026-11-10 實際下載核對。 -->
+<!-- Leaflet：僅「探索地圖」需要；載入失敗時其他模組照常運作。SRI 已於 2026-11-10 實際下載核對。 -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
@@ -6962,7 +6962,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     { id: "dashboard", zh: "總覽", en: "Dashboard", ico: "◎" },
     { id: "itinerary", zh: "每日行程", short: "行程", en: "Itinerary", ico: "☰" },
     { id: "budget", zh: "費用試算", short: "費用", en: "Budget", ico: "$" },
-    { id: "map", zh: "生態地圖", short: "地圖", en: "Explore Map", ico: "⌖" },
+    { id: "map", zh: "探索地圖", short: "地圖", en: "Explore Map", ico: "⌖" },
     { id: "wildlife", zh: "目標物種", short: "物種", en: "Wildlife", ico: "❦" },
     { id: "compare", zh: "方案比較", short: "比較", en: "Compare", ico: "⇄" },
     { id: "essentials", zh: "旅遊準備與風險", short: "準備", en: "Essentials", ico: "✓" }];
@@ -7117,7 +7117,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
           h("button", { class: "btn", type: "button", onclick: () => selectTab("budget", true) }, "費用試算"),
           h("button", { class: "btn", type: "button", onclick: () => selectTab("itinerary", true) }, "每日行程"),
           h("button", { class: "btn", type: "button", onclick: () => selectTab("wildlife", true) }, "目標物種"),
-          h("button", { class: "btn", type: "button", onclick: () => selectTab("map", true) }, "生態地圖")))));
+          h("button", { class: "btn", type: "button", onclick: () => selectTab("map", true) }, "探索地圖")))));
     P.append(h("p", { class: "small dim", style: "margin-top:14px" }, "狀態標籤：", ["quoted", "public_rate", "third_party", "confirmed", "estimate", "planned", "tbc", "demo", "unquoted"].map(s => [badge(s), " "]), "。示範資料僅供功能展示，不是報價。"));
   }
 
@@ -7466,7 +7466,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     onDone && onDone();
   }
 
-  /* ================= 生態地圖 Explore Map ================= */
+  /* ================= 探索地圖 Explore Map ================= */
   const POI_TYPE = { lodging: { label: "住宿", color: "#D97706" }, wildlife: { label: "生態觀察地點", color: "#5DBB82" }, transport: { label: "交通轉運", color: "#7DB3E0" }, landscape: { label: "自然地景", color: "#C49BE8" } };
   function resolveRoute() {
     return D().locations.route.map(id => resolveLodging(id)).filter(Boolean).map(id => C.poiById(D(), id)).filter(Boolean);
@@ -7518,7 +7518,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (!P.dataset.built) {
       P.dataset.built = "1";
       App.mapVisible = App.mapVisible || Object.fromEntries(Object.keys(POI_TYPE).map(k => [k, true]));
-      P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "生態地圖"),
+      P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "探索地圖"),
         h("p", { class: "muted small" }, "點地圖上的圓點或清單中的地點看說明。虛線＝依行程順序的示意連線，不是實際道路；虛線外框標記＝近似位置。地圖不顯示任何物種觀測點位。"))));
       P.append(h("div", { class: "card", id: "map-export" }, h("div", { class: "row", style: "align-items:center" },
           h("button", { class: "btn", type: "button", id: "kml-download", onclick: exportKML }, "下載地圖檔（KML）"),

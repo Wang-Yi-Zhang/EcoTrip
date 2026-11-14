@@ -16,7 +16,7 @@
 
 ## 快速開始
 
-- **本機使用**：直接用瀏覽器開啟遊程資料夾中的 `index.html`（例如 `sabah2027/index.html`）。行程、試算、清單與已提供的物種介紹都能離線使用；地圖圖磚和 iNaturalist 查詢需要網路。生態地圖分頁可下載 KML 地圖檔，匯入 Google My Maps（在手機 Google 地圖查看）或 Organic Maps／OsmAnd（可離線）；每個地點也有「在 Google 地圖開啟」連結。
+- **本機使用**：直接用瀏覽器開啟遊程資料夾中的 `index.html`（例如 `sabah2027/index.html`）。行程、試算、清單與已提供的物種介紹都能離線使用；地圖圖磚和 iNaturalist 查詢需要網路。探索地圖分頁可下載 KML 地圖檔，匯入 Google My Maps（在手機 Google 地圖查看）或 Organic Maps／OsmAnd（可離線）；每個地點也有「在 Google 地圖開啟」連結。
 - **部署**：見 [docs/03-部署與維護.md](docs/03-部署與維護.md) 的 A 節。
 - **單元測試**（需要 Node.js 18 以上）：
 
