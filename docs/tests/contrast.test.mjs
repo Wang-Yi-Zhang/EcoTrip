@@ -77,8 +77,8 @@ t("銜接餘裕（沙巴，先 Danum 後 Tabin、已購機票）：Day 2 07:20 �
   // 07:20 起飛、航程 55 分鐘＋走到 DVFC 辦公室 30 分鐘 → 08:45 到；09:30 發車、緩衝 30 分鐘 → 最晚 07:35 起飛，餘裕 45 分鐘
   const d2 = list.find(x => x.id === "c-d2-dvfc");
   assert.equal(d2.arrive, "08:45"); assert.equal(d2.latestDepart, "07:35"); assert.equal(d2.slackMin, 45); assert.equal(d2.status, "ok");   // 2026-11-15 已購票，出發時間確定
-  // Day 9：Tabin 排程回程 14:30 發車、1.5 小時 → 16:00 抵達；國內線已購但時刻未填，所以仍是資料不足
-  const d9 = list.find(x => x.id === "c-d9-kk-tabin"); assert.equal(d9.arrive, "16:00"); assert.equal(d9.status, "insufficient");
+  // Day 9：16:05 起飛、緩衝 90 分鐘、車程 1.5 小時 → 最晚 13:05 從 Tabin 出發；私人接送時間未定，所以仍是資料不足
+  const d9 = list.find(x => x.id === "c-d9-kk-tabin"); assert.equal(d9.latestDepart, "13:05"); assert.equal(d9.arrive, null); assert.equal(d9.status, "insufficient");
   // Day 10：住宿未定、到機場時間未知 → 資料不足，且列出缺什麼
   const d10 = list.find(x => x.id === "c-d10-bki"); assert.equal(d10.status, "insufficient"); assert.ok(d10.missing.length >= 3); assert.equal(d10.latestDepart, null);
   // option 為陣列時須全部選到：給一個不存在的組合 → 不列出

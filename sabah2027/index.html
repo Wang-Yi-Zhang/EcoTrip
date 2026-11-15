@@ -1309,7 +1309,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "booking"
      ],
      "species": [],
-     "detail": "對應報價「Private Return Transfer」的回程。官方排程回程 14:30 發車、約 16:00 抵 LDU；2/5 要趕國內線飛亞庇，私人接送可提早出發。實際出發時間待業者確認。",
+     "detail": "對應報價「Private Return Transfer」的回程。官方排程回程 14:30 發車、約 16:00 抵 LDU，趕不上 16:05 的國內線；私人接送最晚 13:05 出發（約 14:35 到 LDU，留 90 分鐘報到緩衝）。實際出發時間待業者確認。",
      "duration_basis": "官方：約 1.5 小時"
     },
     {
@@ -1317,7 +1317,9 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "slot": "afternoon",
      "type": "flight",
      "title": "LDU → BKI AirBorneo 國內航班（除夕）",
-     "duration_h": null,
+     "start": "16:05",
+     "duration_h": 0.9167,
+     "duration_basis": "使用者提供的訂位時刻：16:05 起飛、17:00 抵達，航程 55 分鐘",
      "effort": 1,
      "status": "confirmed",
      "location": "kk_hotel",
@@ -1326,7 +1328,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       "booking"
      ],
      "species": [],
-     "detail": "已購票（2026-11-15 前，使用者告知），4 人。起飛與抵達時刻還沒填入資料：請對照訂位確認信補上，Day 9 的銜接檢查才算得出 Tabin 最晚要幾點出發。"
+     "detail": "已購票（2026-11-15 前，使用者告知），4 人，16:05 LDU → 17:00 BKI。Tabin 官方排程回程 14:30 發車、約 16:00 才到 LDU，趕不上；要靠私人接送最晚 13:05 從 Tabin 出發（見 Day 9 銜接檢查）。"
     },
     {
      "id": "d8-eve",
@@ -1347,7 +1349,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "除夕：交通與餐飲需求高。",
     "這一晚是回程前的最後緩衝。",
-    "國內線已購票（時刻待填入）。Tabin 官方排程回程約 16:00 才到 LDU；班機若在 17:30 以前起飛，就要請 Tabin 私人接送提早出發。"
+    "國內線已購票：16:05 LDU → 17:00 BKI。Tabin 官方排程回程約 16:00 才到 LDU，趕不上；私人接送最晚 13:05 從 Tabin 出發（90 分鐘緩衝為規劃自訂）。"
    ],
    "weather_alt": "道路延誤：改搭當天晚一點的 LDU → BKI 班次。2/6 一早就要搭國際線，當天沒有國內線能銜接，所以 2/5 一定要飛到亞庇。",
    "contingencies": [
@@ -1474,12 +1476,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "c-d9-kk-tabin",
    "day": 9,
-   "title": "Tabin → Lahad Datu，銜接 LDU → BKI 國內線",
+   "title": "Tabin → Lahad Datu，銜接 LDU → BKI 國內線（16:05）",
    "buffer_min": 90,
    "depart": {
-    "time": "14:30",
-    "status": "tbc",
-    "label": "Tabin 官方排程回程發車（改私人接送可提早，時間待業者確認）"
+    "time": null,
+    "label": "Tabin 私人接送出發"
    },
    "legs": [
     {
@@ -1489,14 +1490,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     }
    ],
    "deadline": {
-    "time": null,
-    "label": "2/5 LDU → BKI 班機報到截止"
+    "time": "16:05",
+    "label": "AirBorneo 16:05 起飛（LDU → BKI，已購票）"
    },
    "missing": [
-    "國內線已購票，但起飛時刻還沒填入資料（請對照訂位確認信）",
-    "報價是私人接送，2/5 實際出發時間待業者確認"
+    "報價是私人接送，2/5 實際出發時間待業者確認（要請業者最晚 13:05 出發）",
+    "航空公司的報到截止時間（未查證）"
    ],
-   "basis": "搭官方排程回程約 16:00 抵達 LDU，班機要在 17:30 以後起飛才留得出 90 分鐘緩衝（緩衝為規劃自訂）；更早的班機要靠私人接送提早出發"
+   "basis": "16:05 起飛前留 90 分鐘（報到、託運；緩衝為規劃自訂），最晚 14:35 要到 LDU，所以最晚 13:05 從 Tabin 出發。官方排程回程 14:30 發車、約 16:00 才到，趕不上，這一段一定要用私人接送"
   },
   {
    "id": "c-d10-bki",
@@ -1613,7 +1614,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "includes": [
     "來回接送一趟"
    ],
-   "assumption": "起訖點假設為 Lahad Datu ↔ Tabin（待確認）。官方套裝含排程接送（LDU 08:00／12:00 出發；Tabin 14:30 回程）。2/1 從 Lahad Datu 住宿出發，排程車時間搭得上；2/5 要趕國內線飛亞庇（隔天 07:30 國際線），私人接送可提早出發，有實際用處。是否 2/1 改排程、2/5 留私人接送，已列入確認問題；業者回覆前沿用報價。",
+   "assumption": "起訖點假設為 Lahad Datu ↔ Tabin（待確認）。官方套裝含排程接送（LDU 08:00／12:00 出發；Tabin 14:30 回程）。2/1 從 Lahad Datu 住宿出發，排程車時間搭得上；2/5 要趕 16:05 的國內線（隔天 07:30 國際線），官方 14:30 排程回程趕不上，私人接送必須保留。是否 2/1 改排程、2/5 留私人接送，已列入確認問題；業者回覆前沿用報價。",
    "notes": "規格將此項歸為團體固定成本，但報價以「每人」計價，試算依報價隨人數變動。",
    "source_ids": [
     "src_quote_a",
@@ -5507,7 +5508,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "type": "official",
    "checked_on": "2026-11-15",
    "reliability": "high",
-   "note": "已購票：AirAsia 1/28 TPE → BKI、2/6 BKI → TPE 來回，4 人合計 TWD 68,357.60（使用者本人 17,570.62；另外三人合計 50,786.98）。AirBorneo 1/29 BKI → LDU、2/5 LDU → BKI，4 人合計 TWD 14,135。2/5 回程國內線的時刻尚未提供。"
+   "note": "已購票：AirAsia 1/28 TPE → BKI、2/6 BKI → TPE 來回，4 人合計 TWD 68,357.60（使用者本人 17,570.62；另外三人合計 50,786.98）。AirBorneo 1/29 BKI → LDU、2/5 LDU → BKI，4 人合計 TWD 14,135。時刻（使用者 2026-11-15 提供）：1/28 19:30–23:05、1/29 07:20–08:15、2/5 16:05–17:00、2/6 07:30–10:55。"
   },
   {
    "id": "src_flight_search",
@@ -5640,11 +5641,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     },
     {
      "id": "c-f3",
-     "text": "訂 2/5 LDU → BKI 國內線（中午前後較保險）與亞庇機場附近住宿"
+     "text": "訂 2/5 亞庇機場附近住宿（國內線已購，17:00 抵達 BKI）"
     },
     {
      "id": "c-f4",
-     "text": "向 Tabin 業者確認 Day 5（2/1）接送時間、集合點與 Day 9（2/5）回程時間"
+     "text": "向 Tabin 業者確認 Day 5（2/1）接送時間、集合點與 Day 9（2/5）回程時間（最晚 13:05 從 Tabin 出發）"
     },
     {
      "id": "c-f5",
@@ -6057,8 +6058,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "en": "Is the Tabin quote a standard package plus private add-ons, or a private itinerary replacing the package? Does the 5D4N base package already include scheduled transfers, guided walks, dusk drive, night safari and the Lipad tower overnight?"
     },
     {
-     "zh": "Private Return Transfer 的起訖點？我們 2/1（一）從 Lahad Datu 入住、2/5（五）退房回 Lahad Datu 機場，當天要搭國內線飛亞庇。2/1 去程可否改用官方排程車（LDU 08:00／12:00 出發）、只保留 2/5 回程的私人接送？價格會怎麼變？2/5 最早幾點可以從 Tabin 出發？",
-     "en": "What are the pick-up/drop-off points of the Private Return Transfer? We check in on Mon 1 Feb from Lahad Datu and check out on Fri 5 Feb back to Lahad Datu airport, where we fly to Kota Kinabalu the same day. Could we use the scheduled transfer for the 1 Feb arrival (08:00/12:00 from LDU) and keep only the private transfer for the 5 Feb return? How would the price change? What is the earliest we could leave Tabin on 5 Feb?"
+     "zh": "Private Return Transfer 的起訖點？我們 2/1（一）從 Lahad Datu 入住、2/5（五）退房回 Lahad Datu 機場，當天要搭國內線飛亞庇。2/1 去程可否改用官方排程車（LDU 08:00／12:00 出發）、只保留 2/5 回程的私人接送？價格會怎麼變？2/5 我們的班機 16:05 從 LDU 起飛，私人接送能否在 13:00 從 Tabin 出發？",
+     "en": "What are the pick-up/drop-off points of the Private Return Transfer? We check in on Mon 1 Feb from Lahad Datu and check out on Fri 5 Feb back to Lahad Datu airport, where we fly to Kota Kinabalu the same day. Could we use the scheduled transfer for the 1 Feb arrival (08:00/12:00 from LDU) and keep only the private transfer for the 5 Feb return? How would the price change? Our flight leaves LDU at 16:05 on 5 Feb — could the private transfer leave Tabin at 13:00?"
     },
     {
      "zh": "私人嚮導與私人車輛各 4 天是指哪 4 天？私人夜遊 3 晚是哪 3 晚？第 4 晚能否加購、價格多少？",
