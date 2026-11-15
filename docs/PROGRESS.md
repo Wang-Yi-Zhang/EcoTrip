@@ -1,6 +1,6 @@
 # 進度紀錄（供新 session 接手）
 
-最後更新：2026-11-13（定案 DVFC、匯率存檔規則）。已推送到 https://github.com/Wang-Yi-Zhang/EcoTrip（`main`），GitHub Pages 已開啟。
+最後更新：2026-11-15（機票已購）。已推送到 https://github.com/Wang-Yi-Zhang/EcoTrip（`main`），GitHub Pages 已開啟。
 
 ## 現況
 
@@ -31,7 +31,7 @@
 
 ## 還沒做（依重要性）
 
-1. **航班班表**：BKI–LDU（AirBorneo 官網 2026-11-12 下午讀得到，但沒有公布班表，只能用訂位查詢或致電客服 1300-22-1388）、TPE–BKI 的 2027 年 1/29、2/5、2/6 班次。查到後填入 `itinerary.connections` 中 `c-d8-kk-*`、`c-d9-ld` 的 `time`。最實際的做法是使用者訂位時把時刻告訴我。
+1. **2/5 LDU → BKI 起飛時刻**：機票已購，但使用者還沒提供時刻。拿到後填 `d8-pm` 的 `start`／`duration_h` 與 `c-d9-kk-tabin` 的 `deadline.time`（報到截止）。
 2. **BRL**：接送時刻、集合地點、官方 2027 價格。官方網站沒有公布，只能等業者回信（已在確認問題清單中）。
 3. **物種**：剩 5 筆弱文獻（長鼻猴／Tabin、水鹿／Tabin、獺狸／Danum、褐貓／Danum、扁頭豹貓／Tabin）；Alfred 2010、Hanya 2020 只核對到摘要。
 4. 政府假期公告原始頁（`kabinet.gov.my`）連不上，2/8 補假目前是由轉載通函的附註推得。
@@ -42,6 +42,16 @@
 - 在正式網址的「⚙ 資料／匯出」貼上 Apps Script 網址並按「使用遠端資料」（每個裝置各做一次）。
 - 旅伴三題測試、手機飛航模式測試（`docs/06`），現在有正式網址可以做了。
 - 業者回覆後：更新 `data-costs`、`essentials.tasks` 的期限、`itinerary.connections` 的出發時間與 `status`。
+
+## 2026-11-15 機票已購（使用者告知）
+
+- **AirAsia 國際線** 1/28 TPE → BKI、2/6 BKI → TPE 來回：使用者本人 TWD 17,570.62、另外三人合計 50,786.98，4 人合計 **TWD 68,357.60**。
+- **AirBorneo 國內線** 1/29 BKI → LDU、2/5 LDU → BKI：4 人合計 **TWD 14,135**。
+- 費用：`intl_flight`、`domestic_flight` 改為 `per_group`（整團實付，改人數不會變）、狀態「已確認」、來源 `src_flight_booking`；刪除 `domestic_flight_return`（併入 `domestic_flight`）。機票仍只在勾選「納入機票」時計入，預備金 10% 也會加在機票上。
+- 行程：4 段航班活動狀態改為 confirmed；`c-d2-dvfc` 出發時間確定，銜接狀態從 assumed 變 ok；待辦 `flights_return`、`flights_out` 在資料裡標 `done: true`。
+- 引擎：待辦支援資料欄位 `done: true`（一律視為完成，勾選框停用）。
+- 測試：`core`（國際機票金額）、`contrast`（Day 2 銜接 ok）、`p0`（情境說明不再提機票）各改一條；黃金檔重建，只有含機票的 9 組設定總額改變，其餘 13 組不變。
+- 待使用者做：重貼 `gas/costs-for-sheet.tsv`（少了一列回程國內線，兩列機票改金額）。
 
 ## 2026-11-13 預計班機（使用者提供訂位查詢截圖）
 

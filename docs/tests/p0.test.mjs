@@ -41,7 +41,8 @@ assert.deepEqual([0.9167, 0.5, 3.5833, 3.4167, 1, 1.5, 2].map(durText), ['55 分
 { const st = { ...base }, sc = C.scenarios(data, st), b = C.computeBudget(data, st);
   assert.equal(ctx.scenarioSame(sc), true);
   const t = ctx.scenarioSameText(b, st);
-  assert.ok(t.includes('三種情境結果相同') && t.includes('「納入國際與國內機票」') && t.includes('「納入其他費用」') && t.includes('DVFC 包車'), t);
+  // 2026-11-15 機票已購（實付金額），勾選機票不會產生價差，所以說明裡不再提機票
+  assert.ok(t.includes('三種情境結果相同') && !t.includes('「納入國際與國內機票」') && t.includes('「納入其他費用」') && t.includes('DVFC 包車'), t);
   const st2 = { ...base, includeExtras: true };
   assert.equal(ctx.scenarioSame(C.scenarios(data, st2)), false); }
 console.log('✔ P0範圍四組開關、單人缺價、備案差額、日期、住宿語意及UI語法通過');

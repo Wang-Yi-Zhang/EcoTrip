@@ -402,14 +402,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "duration_h": 3.5833,
      "duration_basis": "AirAsia 訂位查詢：19:30 起飛、23:05 抵達",
      "effort": 1,
-     "status": "tbc",
+     "status": "confirmed",
      "location": "bki_hotel",
      "needs": [
       "flight",
       "booking"
      ],
      "species": [],
-     "detail": "預計搭乘的班次（AirAsia 訂位查詢，2026-11-13），尚未訂位。"
+     "detail": "已購票（2026-11-15 前，使用者告知）：AirAsia 1/28（四）19:30 TPE → 23:05 BKI，4 人。"
     },
     {
      "id": "out-hotel",
@@ -495,14 +495,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "title": "Kota Kinabalu（BKI）→ Lahad Datu（LDU）AirBorneo 國內航班",
      "duration_h": 0.9167,
      "effort": 1,
-     "status": "tbc",
+     "status": "confirmed",
      "location": "ldu",
      "needs": [
       "flight",
       "booking"
      ],
      "species": [],
-     "detail": "預計搭乘 07:20 班（BKI 第一航廈，AirBorneo 訂位查詢，2026-11-13），尚未訂位。DVFC 價目表把 09:30 排程車對應這個時段的班機（MH3012，08:15 抵達）。同日另有 08:20 → 09:15 班，但落地後只剩 15 分鐘，趕不上 09:30 排程車。",
+     "detail": "已購票（2026-11-15 前，使用者告知）：07:20 班（BKI 第一航廈），4 人。DVFC 價目表把 09:30 排程車對應這個時段的班機（MH3012，08:15 抵達）。同日另有 08:20 → 09:15 班，但落地後只剩 15 分鐘，趕不上 09:30 排程車。",
      "start": "07:20",
      "duration_basis": "AirBorneo 訂位查詢：07:20 起飛、08:15 抵達，航程 55 分鐘"
     },
@@ -1316,17 +1316,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "id": "d8-pm",
      "slot": "afternoon",
      "type": "flight",
-     "title": "LDU → BKI 國內航班（除夕）",
+     "title": "LDU → BKI AirBorneo 國內航班（除夕）",
      "duration_h": null,
      "effort": 1,
-     "status": "tbc",
+     "status": "confirmed",
      "location": "kk_hotel",
      "needs": [
       "flight",
       "booking"
      ],
      "species": [],
-     "detail": "班次尚未選定（訂位查詢只看到 1/29 去程）。除夕當天國內線可能較滿，越早訂位越好。"
+     "detail": "已購票（2026-11-15 前，使用者告知），4 人。起飛與抵達時刻還沒填入資料：請對照訂位確認信補上，Day 9 的銜接檢查才算得出 Tabin 最晚要幾點出發。"
     },
     {
      "id": "d8-eve",
@@ -1347,7 +1347,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "notes": [
     "除夕：交通與餐飲需求高。",
     "這一晚是回程前的最後緩衝。",
-    "Tabin 官方排程回程約 16:00 才到 LDU；要訂 17:30 以後的國內線，或請 Tabin 私人接送提早出發，改訂中午前後的班次（較保險）。"
+    "國內線已購票（時刻待填入）。Tabin 官方排程回程約 16:00 才到 LDU；班機若在 17:30 以前起飛，就要請 Tabin 私人接送提早出發。"
    ],
    "weather_alt": "道路延誤：改搭當天晚一點的 LDU → BKI 班次。2/6 一早就要搭國際線，當天沒有國內線能銜接，所以 2/5 一定要飛到亞庇。",
    "contingencies": [
@@ -1358,7 +1358,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "fallback": "改搭 2/5 晚一點的 LDU → BKI 班次；當天都沒有時，只能改 2/6 的國際線（初一機位最緊，損失大）",
      "extra_cost": {
       "amount": null,
-      "note": "國內線改票費；若要改國際線，費用與座位都不確定。所以 2/5 的國內線建議選中午前後，讓 Tabin 私人接送提早出發。"
+      "note": "國內線改票費；若要改國際線，費用與座位都不確定。"
      }
     }
    ]
@@ -1382,14 +1382,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
      "title": "Kota Kinabalu（BKI）→ 台北（TPE）AirAsia 直飛",
      "duration_h": 3.4167,
      "effort": 1,
-     "status": "tbc",
+     "status": "confirmed",
      "location": "kk_hotel",
      "needs": [
       "flight",
       "booking"
      ],
      "species": [],
-     "detail": "預計搭乘的班次（AirAsia 訂位查詢，2026-11-13），尚未訂位。初一清晨出發：先確認住宿到機場的交通（計程車、Grab 在初一清晨是否叫得到）。",
+     "detail": "已購票（2026-11-15 前，使用者告知）：AirAsia 2/6（六）07:30 BKI → 10:55 TPE，4 人。初一清晨出發：先確認住宿到機場的交通（計程車、Grab 在初一清晨是否叫得到）。",
      "start": "07:30",
      "duration_basis": "AirAsia 訂位查詢：07:30 起飛、10:55 抵達"
     }
@@ -1435,7 +1435,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "07:20 班機的報到截止"
    },
    "missing": [
-    "國內線尚未訂位",
     "航空公司的報到截止時間（未查證）"
    ],
    "basis": "前一晚 23:05 才抵達，扣掉入境、領行李、到住宿與清晨回機場，實際可睡的時間很短；選住宿時以離機場近為優先"
@@ -1447,8 +1446,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "buffer_min": 30,
    "depart": {
     "time": "07:20",
-    "status": "tbc",
-    "label": "AirBorneo 07:20 起飛（預計搭乘，尚未訂位）"
+    "status": "confirmed",
+    "label": "AirBorneo 07:20 起飛（已購票）"
    },
    "legs": [
     {
@@ -1467,7 +1466,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "DVFC 排程車從 Lahad Datu 發車（價目表：週一至週五 09:30 或 15:00；1/29 是週五）"
    },
    "missing": [
-    "國內線尚未訂位",
     "排程車只有 8 個座位，需事先預約，4 人是否訂得到未確認",
     "價目表寫週一至週五 09:30／15:00，官方網站寫週一、三、五 15:00，兩者不一致"
    ],
@@ -1495,10 +1493,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "2/5 LDU → BKI 班機報到截止"
    },
    "missing": [
-    "航班尚未訂位；AirBorneo 官網沒有公布班表，2/5 LDU → BKI 的班次時刻要在訂位查詢時才看得到",
+    "國內線已購票，但起飛時刻還沒填入資料（請對照訂位確認信）",
     "報價是私人接送，2/5 實際出發時間待業者確認"
    ],
-   "basis": "搭官方排程回程約 16:00 抵達 LDU，要訂 17:30 以後起飛的班機才留得出 90 分鐘緩衝（緩衝為規劃自訂）；私人接送可提早出發"
+   "basis": "搭官方排程回程約 16:00 抵達 LDU，班機要在 17:30 以後起飛才留得出 90 分鐘緩衝（緩衝為規劃自訂）；更早的班機要靠私人接送提早出發"
   },
   {
    "id": "c-d10-bki",
@@ -1521,7 +1519,6 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     "label": "AirAsia 07:30 起飛（BKI → TPE）"
    },
    "missing": [
-    "國際線尚未訂位",
     "住宿尚未選定，到機場的時間未知",
     "AirAsia 的報到截止時間（未查證）",
     "初一清晨叫得到車嗎（未查證）"
@@ -1537,7 +1534,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
  "currency": "MYR",
  "quoted_label": "Tabin，當地業者 A",
  "toggle_labels": {
-  "flights": "納入國際與國內機票（示範資料，請自填實際票價）",
+  "flights": "納入國際與國內機票（已購票，4 人實付金額）",
   "extras": "納入其他費用（緩衝晚住宿、非套裝餐食、保險、稅費、個人支出）"
  },
  "categories": {
@@ -1736,45 +1733,31 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   },
   {
    "id": "intl_flight",
-   "name": "國際機票（台北 ⇄ 亞庇，AirAsia 來回）",
+   "name": "國際機票（台北 ⇄ 亞庇，AirAsia 來回，4 人已購）",
    "category": "other",
-   "unit": "per_person_trip",
+   "unit": "per_group",
    "price_currency": "TWD",
-   "price": 14918,
-   "status": "public_rate",
+   "price": 68357.6,
+   "status": "confirmed",
    "applies": "flights",
-   "assumption": "AirAsia 訂位查詢（2026-11-13）：1/28 19:30 TPE → BKI、2/6 07:30 BKI → TPE，1 位成人來回 TWD 14,918.39；尚未訂位，價格會變動。不含加購（託運行李、選位、餐點），實際會更高。",
+   "assumption": "已購票實付金額（使用者告知，2026-11-15）：1/28 19:30 TPE → BKI、2/6 07:30 BKI → TPE，4 人合計 TWD 68,357.60（使用者本人 17,570.62；另外三人合計 50,786.98）。整團固定金額，試算頁改人數不會跟著變。",
    "source_ids": [
-    "src_flight_search"
+    "src_flight_booking"
    ]
   },
   {
    "id": "domestic_flight",
-   "name": "國內機票去程（BKI → LDU，1/29 07:20）",
+   "name": "國內機票（AirBorneo，1/29 BKI → LDU、2/5 LDU → BKI，4 人已購）",
    "category": "other",
-   "unit": "per_person_trip",
-   "price": 219,
-   "status": "public_rate",
+   "unit": "per_group",
+   "price_currency": "TWD",
+   "price": 14135,
+   "status": "confirmed",
    "applies": "flights",
-   "assumption": "AirBorneo 訂位查詢（2026-11-13）：1/29 07:20 BKI → 08:15 LDU，經濟艙 MYR 219 起；尚未訂位，價格會變動。託運行李額度未確認。",
+   "assumption": "已購票實付金額（使用者告知，2026-11-15）：去程 1/29 07:20 BKI → 08:15 LDU、回程 2/5 LDU → BKI，4 人來回合計 TWD 14,135。整團固定金額，試算頁改人數不會跟著變。託運行李額度未確認。",
    "source_ids": [
-    "src_flight_search"
+    "src_flight_booking"
    ]
-  },
-  {
-   "id": "domestic_flight_return",
-   "name": "國內機票回程（LDU → BKI，2/5 除夕）",
-   "category": "other",
-   "unit": "per_person_trip",
-   "price": {
-    "low": 219,
-    "mid": 219,
-    "high": 400
-   },
-   "status": "estimate",
-   "applies": "flights",
-   "assumption": "班次與價格未查。低、中情境假設與去程同為 MYR 219；高情境以除夕需求高估 MYR 400。請訂位後改填實際票價。",
-   "source_ids": []
   },
   {
    "id": "buffer_hotel",
@@ -5519,6 +5502,14 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "note": "官網有 BKI–LDU 航線頁，確認這條航線由 AirBorneo 經營；但網站沒有公布班表，班次時刻只能用訂位查詢表單逐日查（本工具沒有代為查詢）。官網 2026-03-09 公告：新訂位、改票、退票請洽客服中心 1300-22-1388。"
   },
   {
+   "id": "src_flight_booking",
+   "title": "機票購票結果（使用者告知）",
+   "type": "official",
+   "checked_on": "2026-11-15",
+   "reliability": "high",
+   "note": "已購票：AirAsia 1/28 TPE → BKI、2/6 BKI → TPE 來回，4 人合計 TWD 68,357.60（使用者本人 17,570.62；另外三人合計 50,786.98）。AirBorneo 1/29 BKI → LDU、2/5 LDU → BKI，4 人合計 TWD 14,135。2/5 回程國內線的時刻尚未提供。"
+  },
+  {
    "id": "src_flight_search",
    "title": "航空公司網站訂位查詢畫面（AirAsia TPE ⇄ BKI、AirBorneo BKI → LDU；使用者提供截圖）",
    "type": "official",
@@ -5540,7 +5531,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
    "title": "春節連假：回程日為初一",
    "trigger": "2/5 除夕（非假期）；2/6 初一、2/7 初二為全國假期；2/7 是週日，依假期表附註在沙巴順延至 2/8（一）補假",
    "impact": "回程國際線、國內線與 LD／KK 住宿需求高；延誤或取消時改票選擇很少。",
-   "action": "優先鎖定 2/6 回程機位與 2/5 住宿；國內段與國際段保留充足轉機時間；保險需含航班延誤／取消。",
+   "action": "國際線與國內線機票已購（2026-11-15）；優先訂 2/5 住宿；國內段與國際段保留充足轉機時間；保險需含航班延誤／取消。",
    "source_ids": [
     "src_cny"
    ]
@@ -5931,6 +5922,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "flights_return",
    "title": "鎖定回程機位：2/5 LDU → BKI（除夕）、2/6 07:30 BKI → 台北（AirAsia）",
+   "done": true,
    "due": "2026-11-30",
    "due_kind": "self",
    "due_basis": "規劃自訂：2/6 是初一，機位最緊。BKI–LDU 由 AirBorneo 經營，官網沒有公布班表，要用訂位查詢或致電客服 1300-22-1388",
@@ -5944,6 +5936,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   {
    "id": "flights_out",
    "title": "訂去程：1/28 19:30 台北 → 亞庇（AirAsia），1/29 07:20 亞庇 → Lahad Datu（AirBorneo）",
+   "done": true,
    "due": "2026-12-15",
    "due_kind": "self",
    "due_basis": "規劃自訂",
@@ -6632,17 +6625,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   function daysBetween(a, b) { return Math.round((parseISODate(b) - parseISODate(a)) / 86400000); }
   /**
    * 依期限排序的待辦。due = null 表示期限未知（例如業者尚未告知訂金期限），不會被當成「沒有期限」。
-   * due_kind："external" 對方規定的期限；"self" 自訂目標日。完成狀態存在 state.checklist["task:<id>"]。
+   * due_kind："external" 對方規定的期限；"self" 自訂目標日。完成狀態存在 state.checklist["task:<id>"]；資料裡寫 done: true 的一律視為已完成。
    */
   function taskList(data, state, today) {
     const tasks = (data.essentials && data.essentials.tasks) || [];
-    const isDone = t => !!(state && state.checklist && state.checklist["task:" + t.id]);
+    const isDone = t => t.done === true || !!(state && state.checklist && state.checklist["task:" + t.id]);
     const byId = new Map(tasks.map(t => [t.id, t]));
     const out = tasks.map(t => {
       const due = /^\d{4}-\d{2}-\d{2}$/.test(t.due || "") ? t.due : null;
       const daysLeft = due && today ? daysBetween(today, due) : null;
       return { id: t.id, title: t.title, due, due_kind: due ? (t.due_kind === "external" ? "external" : "self") : "unknown", due_basis: t.due_basis || "",
-        consequence: t.consequence || "", done: isDone(t), daysLeft, overdue: daysLeft != null && daysLeft < 0 && !isDone(t),
+        consequence: t.consequence || "", done: isDone(t), doneInData: t.done === true, daysLeft, overdue: daysLeft != null && daysLeft < 0 && !isDone(t),
         blocked_by: (t.depends_on || []).filter(id => byId.has(id) && !isDone(byId.get(id))).map(id => byId.get(id).title), source_ids: t.source_ids || [] };
     });
     const rank = x => (x.done ? 2 : 0) + (x.due ? 0 : 1);          // 未完成且有期限 → 未完成但期限未知 → 已完成
@@ -7130,7 +7123,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     const when = x.due ? `${x.due.slice(5).replace("-", "/")}（${x.daysLeft < 0 ? "已逾期 " + -x.daysLeft + " 天" : x.daysLeft === 0 ? "今天" : "剩 " + x.daysLeft + " 天"}）` : "期限未知";
     const lvl = x.done ? "ok" : x.due == null ? "info" : x.daysLeft < 0 ? "error" : x.daysLeft <= 14 ? "warn" : "info";
     return h("div", { class: "msg " + lvl },
-      h("label", { class: "check", style: "padding:0" }, h("input", { type: "checkbox", id: "task-" + x.id, checked: x.done, onchange: e => update(st => { st.checklist["task:" + x.id] = e.target.checked; }) }),
+      h("label", { class: "check", style: "padding:0" }, h("input", { type: "checkbox", id: "task-" + x.id, checked: x.done, disabled: x.doneInData ? true : null, onchange: e => update(st => { st.checklist["task:" + x.id] = e.target.checked; }) }),
         h("span", null, h("b", null, when), x.title, " ", badge(x.due_kind === "external" ? "confirmed" : x.due == null ? "tbc" : "suggested", x.due_kind === "external" ? "對方規定" : x.due == null ? "期限待業者告知" : "自訂目標日"))),
       h("div", { class: "small muted" }, "逾期後果：", x.consequence || "未填", x.blocked_by.length ? `｜需先完成：${x.blocked_by.join("、")}` : "", x.due_basis ? `｜期限依據：${x.due_basis}` : ""));
   }
