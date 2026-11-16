@@ -46,11 +46,12 @@ function makeSheet(name) {
 }
 function makeEnv() {
   const sheets = new Map();
-  const ss = { getSheetByName: n => sheets.get(n) || null, insertSheet: n => { const s = makeSheet(n); sheets.set(n, s); return s; } };
-  const dv = () => { const r = { k: null }; const b = { requireValueInList(l) { r.k = "list"; r.list = l; return b; }, requireNumberGreaterThanOrEqualTo(n) { r.k = "num"; return b; }, requireCheckbox() { r.k = "bool"; return b; }, setAllowInvalid(a) { r.allowInvalid = a; return b; }, setHelpText() { return b; }, build() { return r; } }; return b; };
+  const ss = { getSpreadsheetTimeZone: () => "Asia/Taipei", getSheetByName: n => sheets.get(n) || null, insertSheet: n => { const s = makeSheet(n); sheets.set(n, s); return s; } };
+  const dv = () => { const r = { k: null }; const b = { requireValueInList(l) { r.k = "list"; r.list = l; return b; }, requireNumberGreaterThanOrEqualTo(n) { r.k = "num"; return b; }, requireCheckbox() { r.k = "bool"; return b; }, requireValueInRange(rg) { r.k = "range"; r.range = rg; return b; }, requireDate() { r.k = "date"; return b; }, setAllowInvalid(a) { r.allowInvalid = a; return b; }, setHelpText() { return b; }, build() { return r; } }; return b; };
   const ctx = {
     SpreadsheetApp: { getActiveSpreadsheet: () => ss, newDataValidation: dv, ProtectionType: { RANGE: "RANGE" } },
     ContentService: { MimeType: { JSON: "json" }, createTextOutput: t => ({ text: t, setMimeType() { return this; } }) },
+    Utilities: { formatDate: (d, tz, f) => { assert.equal(tz, "Asia/Taipei"); assert.equal(f, "yyyy-MM-dd"); return d.toISOString().slice(0, 10); } },
     Logger: { log() {} }, JSON, Date, String, Number, Math, Object, Array
   };
   vm.createContext(ctx); vm.runInContext(gasSrc, ctx);
@@ -61,7 +62,7 @@ const headRow = sh => { const n = sh.getLastColumn(); return sh.getRange(1, 1, 1
 let pass = 0, fail = 0;
 function t(name, fn) { try { fn(); pass++; console.log("✔", name); } catch (e) { fail++; console.log("✘", name, "\n   ", e.message); } }
 
-t("Code.gs 第一行是 @OnlyCurrentDoc，且 doGet 內沒有寫入呼叫", () => {
+t("Code.gs 第一行是 @OnlyCurrentDoc，且 doGet 與各讀取函式內沒有寫入呼叫", () => {
   assert.ok(gasSrc.startsWith("/** @OnlyCurrentDoc */"));
   const body = gasSrc.slice(gasSrc.indexOf("function doGet"), gasSrc.indexOf("function readCosts_"));
   const reader = gasSrc.slice(gasSrc.indexOf("function readCosts_"), gasSrc.indexOf("function setupSheets"));
@@ -98,7 +99,7 @@ t("既有工作表（缺欄位、順序不同、有自訂欄與資料）：只�
   assert.equal(h.length, 7 + ctx.COSTS_HEADERS.length - 6);
   assert.deepEqual(J(sh.getRange(2, 1, 1, 7).getValues()[0]), ["Tabin base", "tabin_base", "阿明負責問", 5100, "quoted", "per_person", "per_person"]);
 });
-t("單一來源：Code.gs 的 ALLOWED 與網站 EcoCore.allowedValues(data) 逐項相同（8 個欄位）", () => {
+t("單一來源：Code.gs 的 ALLOWED 與網站 EcoCore.allowedValues(data) 逐項相同（10 個欄位）", () => {
   const { ctx } = makeEnv(), want = J(C.allowedValues(data)), got = J(ctx.ALLOWED);
   assert.deepEqual(Object.keys(got).sort(), Object.keys(want).sort());
   for (const k of Object.keys(want)) assert.deepEqual([...got[k]].sort(), [...want[k]].sort(), `${k} 不一致：請執行 node tools/gas-allowed.mjs --write`);
@@ -205,6 +206,96 @@ t("試算表工具可用在另一趟旅行（--trip）：依該行程的分類�
     assert.equal(tea[col("price")], "1500"); assert.equal(tea[col("qty_nights_from")], "activity_count"); assert.equal(tea[col("count_label")], "茶席");
     assert.equal(museum[col("price")], "", "未報價要留空，不是 0"); assert.equal(museum[col("status")], "unquoted"); assert.equal(museum[col("default_on")], "TRUE");
   } finally { if (existsSync(abs)) rmSync(abs, { recursive: true, force: true }); }
+});
+
+/* ---------- 代墊與付款管理（SDD-002 第 3 步）：members、ledger 工作表 ---------- */
+const M_ROWS = [["A", "r1", "active", "", "L003"], ["B", "r1", "", "", ""], ["C", "r2", "", "", ""], ["D", "r2", "withdrawn", new Date(Date.UTC(2026, 11, 1)), ""]];
+const dt = (y, m, dd) => new Date(Date.UTC(y, m - 1, dd));
+// 欄位順序：id date type payer to amount currency home_actual cost_id vendor_due repay_due evidence ref_id note
+const L_ROWS = [
+  ["P1", dt(2026, 11, 16), "plan", "A", "all", 10200, "MYR", "", "dvfc_package", dt(2026, 11, 30), "", "", "", "私人：訂位代號寫在這裡也不會外流"],
+  ["L001", dt(2026, 11, 15), "payment", "A", "all", 68357.6, "TWD", "", "intl_flight", "", "", "確認信", "", ""],
+  ["L002", dt(2026, 11, 15), "share", "", "A", 17570.62, "", "", "", "", "", "", "L001", ""],
+  ["L003", dt(2026, 11, 15), "share", "", "B;C;D", 50786.98, "", "", "", "", "", "", "L001", ""],
+  ["L004", dt(2026, 11, 20), "payment", "A", "all", 3000, "MYR", 25800, "", "", dt(2026, 11, 22), "", "P1", ""],
+  ["L005", dt(2026, 11, 21), "repayment", "B", "A", 5000, "TWD", "", "", "", "", "", "", ""],
+  ["", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+];
+function ledgerEnv() {
+  const env = makeEnv(); env.ctx.setupSheets();
+  const m = env.sheets.get("members"), l = env.sheets.get("ledger");
+  M_ROWS.forEach((r, i) => m.writeRow(i + 2, r)); L_ROWS.forEach((r, i) => l.writeRow(i + 2, r));
+  return env;
+}
+const ledgerOpts = { home: "TWD", base: "MYR", fx: 8.563, rates: { USD: 3.872 }, today: "2026-11-25", costs: data.costs.items };
+t("setupSheets 建立 members、ledger：表頭、下拉（類型／狀態／幣別）、日期驗證、付款人從 members 選", () => {
+  const { ctx, sheets } = makeEnv(); ctx.setupSheets();
+  const m = sheets.get("members"), l = sheets.get("ledger");
+  assert.deepEqual(J(headRow(m)), ["nick", "room", "status", "withdrawn_on", "confirmed_through"]);
+  assert.deepEqual(J(headRow(l)), ["id", "date", "type", "payer", "to", "amount", "currency", "home_actual", "cost_id", "vendor_due", "repay_due", "evidence", "ref_id", "note"]);
+  const col = (sh, n) => headRow(sh).indexOf(n) + 1, rule = (sh, n) => sh.validation.get(col(sh, n)).rule;
+  assert.deepEqual(J(rule(l, "type").list), J(C.LEDGER_TYPES)); assert.equal(rule(l, "type").allowInvalid, false);
+  assert.deepEqual(J(rule(m, "status").list), ["active", "withdrawn"]);
+  assert.deepEqual(J(rule(l, "currency").list), J(C.allowedValues(data).price_currency));
+  for (const n of ["date", "vendor_due", "repay_due"]) assert.equal(rule(l, n).k, "date", n);
+  assert.equal(rule(m, "withdrawn_on").k, "date");
+  assert.equal(rule(l, "payer").k, "range"); assert.equal(rule(l, "amount").k, "num"); assert.equal(rule(l, "home_actual").k, "num");
+  assert.equal(m.frozen, 1); assert.equal(l.frozen, 1); assert.equal(l.protections.length, 1);
+  assert.ok(ctx.setupSheets().includes("未做任何變更"));
+});
+t("doGet 回傳 members、ledger：日期轉成 yyyy-MM-dd、空白列略過、數字留空變 null", () => {
+  const { ctx } = ledgerEnv();
+  const env = JSON.parse(ctx.doGet({}).text);
+  assert.equal(env.errors, undefined, JSON.stringify(env.errors));
+  assert.deepEqual(env.data.members.items.map(x => x.nick), ["A", "B", "C", "D"]);
+  assert.equal(env.data.members.items[3].withdrawn_on, "2026-12-01");
+  assert.equal(env.data.ledger.items.length, 6);
+  const p1 = env.data.ledger.items[0];
+  assert.equal(p1.date, "2026-11-16"); assert.equal(p1.vendor_due, "2026-11-30"); assert.equal(p1.home_actual, null); assert.equal(p1.amount, 10200);
+  assert.equal(env.data.ledger.items[4].home_actual, 25800);
+});
+t("隱私：note 欄與旅伴自己加的欄位都不會回傳", () => {
+  const { ctx, sheets } = ledgerEnv();
+  const m = sheets.get("members"), l = sheets.get("ledger");
+  m.getRange(1, 6).setValue("本名"); m.getRange(2, 6).setValue("不該外流的本名");
+  l.getRange(1, 15).setValue("卡號末四碼"); l.getRange(2, 15).setValue("1234");
+  const text = ctx.doGet({}).text;
+  for (const w of ["私人", "訂位代號", "本名", "不該外流", "卡號", "1234"]) assert.ok(!text.includes(w), "回傳內容含 " + w);
+  const env = JSON.parse(text);
+  for (const it of env.data.ledger.items) assert.ok(!("note" in it));
+  assert.deepEqual(Object.keys(env.data.members.items[0]).sort(), ["confirmed_through", "nick", "room", "status", "withdrawn_on"]);
+});
+t("往返測試：試算表 → doGet → computeLedger，與直接用原始資料算的結果相同", () => {
+  const { ctx } = ledgerEnv();
+  const env = JSON.parse(ctx.doGet({}).text);
+  const iso = v => v instanceof Date ? v.toISOString().slice(0, 10) : v;
+  const keys = ["id", "date", "type", "payer", "to", "amount", "currency", "home_actual", "cost_id", "vendor_due", "repay_due", "evidence", "ref_id"];
+  const direct = { items: L_ROWS.map(r => Object.fromEntries(keys.map((k, i) => [k, iso(r[i])]))) };
+  const mem = { items: M_ROWS.map(r => ({ nick: r[0], room: r[1], status: r[2], withdrawn_on: iso(r[3]), confirmed_through: r[4] })) };
+  const a = J(C.computeLedger(env.data.members, env.data.ledger, ledgerOpts)), b = J(C.computeLedger(mem, direct, ledgerOpts));
+  assert.deepEqual(a, b);
+  assert.deepEqual(a.warnings, []);
+  assert.equal(a.members.reduce((s, x) => s + x.net, 0), 0);
+  assert.equal(a.plans[0].remaining, 7200);
+  assert.deepEqual(J(a.pending.A), ["L004", "L005"]);
+  // 網站目前的遠端驗證會略過不認識的資料集，不會因此拒收整份資料（第 4 步才加入驗證）
+  const v = C.validateEnvelope(env);
+  assert.ok(v.ignored.includes("members") || v.accepted.members);
+});
+t("members、ledger 只有表頭：doGet 不回傳這兩個資料集", () => {
+  const { ctx } = makeEnv(); ctx.setupSheets();
+  const env = JSON.parse(ctx.doGet({}).text);
+  assert.ok(!env.data.members); assert.ok(!env.data.ledger);
+});
+t("ledger 缺欄位時 doGet 回報要執行 setupSheets", () => {
+  const { ctx, ss } = makeEnv();
+  const sh = ss.insertSheet("ledger"); sh.writeRow(1, ["id", "date", "type"]); sh.writeRow(2, ["L1", "2026-11-01", "payment"]);
+  const env = JSON.parse(ctx.doGet({}).text);
+  assert.ok(env.errors.some(e => e.includes("ledger") && e.includes("setupSheets")), JSON.stringify(env.errors));
+});
+t("Code.gs 檔頭寫明帳本只放暱稱、note 不回傳", () => {
+  const head = gasSrc.slice(0, gasSrc.indexOf("var SHEET_COSTS"));
+  assert.ok(head.includes("只放暱稱")); assert.ok(head.includes("note"));
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);

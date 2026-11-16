@@ -15,7 +15,7 @@ vm.runInContext(html.match(/<script id="core-js">([^]*?)<\/script>/)[1], ctx);
 const data = {};
 for (const m of html.matchAll(/<script type="application\/json" id="data-([a-z]+)">([^]*?)<\/script>/g)) data[m[1]] = JSON.parse(m[2]);
 const a = ctx.EcoCore.allowedValues(data);
-const order = ["category", "unit", "status", "applies", "price_currency", "when", "qty_from", "dataset"];
+const order = ["category", "unit", "status", "applies", "price_currency", "when", "qty_from", "dataset", "ledger_type", "member_status"];
 const block = "var ALLOWED = {\n" + order.map(k => `  ${k}: ${JSON.stringify(a[k]).replace(/","/g, '", "')}`).join(",\n") + "\n};";
 if (!process.argv.includes("--write")) { console.log(block); process.exit(0); }
 // 沙巴直接改 gas/Code.gs；其他行程以 gas/Code.gs 為範本，寫到該行程資料夾的 Code.gs（每趟旅行用各自的試算表與 Apps Script）

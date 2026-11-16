@@ -27,6 +27,11 @@
  *
  * 注意：這個端點是公開的，任何人知道網址都能讀取，請勿放入個資、護照號碼、訂位代號。
  *
+ * 代墊與付款管理（docs/SDD-002）：members、ledger 兩張工作表也會由 doGet 回傳。
+ *   - 人員只放暱稱，不放本名、帳號、卡號、訂位代號。
+ *   - ledger 的 note 欄是私人備註，doGet 不回傳；旅伴自己加的欄位也不回傳（只讀 MEMBERS_HEADERS／LEDGER_HEADERS 定義的欄位）。
+ *   - 帳本只新增、不修改：改錯就新增一筆 type=reversal、ref_id=被沖銷那筆的 id，再新增正確的一筆。
+ *
  * 維護：網站（sabah2027/index.html 的 validateDataset）新增欄位或允許值時，請同步更新下方常數，
  *       再重新執行 setupSheets() 並「管理部署作業 → 編輯 → 新版本」。
  */
@@ -34,6 +39,8 @@
 /* ===================== 欄位定義（建表與讀取共用，唯一一份） ===================== */
 var SHEET_COSTS = "costs";
 var SHEET_JSON = "json";
+var SHEET_MEMBERS = "members";
+var SHEET_LEDGER = "ledger";
 
 // 允許值的唯一來源是網站（sabah2027/index.html 的 EcoCore.allowedValues）。這一段由 node tools/gas-allowed.mjs --write 產生，
 // 請勿手改；docs/tests/gas.test.mjs 會比對兩邊是否相同。
@@ -45,7 +52,9 @@ var ALLOWED = {
   price_currency: ["MYR", "TWD", "USD"],
   when: ["singles"],
   qty_from: ["pax", "rooms", "singles", "triples", "activity_count"],
-  dataset: ["trip", "itinerary", "costs", "species", "locations", "sources", "essentials"]
+  dataset: ["trip", "itinerary", "costs", "species", "locations", "sources", "essentials"],
+  ledger_type: ["plan", "payment", "share", "repayment", "refund", "reversal"],
+  member_status: ["active", "withdrawn"]
 };
 
 /**
@@ -55,6 +64,8 @@ var ALLOWED = {
  *   bool               核取方塊
  *   text               自由文字；多值欄位以「;」分隔
  *   json               JSON 文字
+ *   date               日期（doGet 轉成 yyyy-MM-dd）
+ *   member             從 members 工作表的 nick 欄選
  */
 var COSTS_HEADERS = [
   { name: "id", kind: "text", note: "唯一代碼（英數與底線），例如 tabin_base" },
@@ -90,6 +101,32 @@ var JSON_HEADERS = [
   { name: "dataset", kind: "list:dataset", note: "資料集名稱" },
   { name: "json", kind: "text", note: "整份資料集 JSON（每格上限 50,000 字元）" }
 ];
+/** members 工作表：一列一位旅伴（只放暱稱） */
+var MEMBERS_HEADERS = [
+  { name: "nick", kind: "text", note: "暱稱（唯一；不要填本名）" },
+  { name: "room", kind: "text", note: "預設房間代號，同房的人填同一個（房間類費用依此分攤）" },
+  { name: "status", kind: "list:member_status", note: "active 同行｜withdrawn 退出；留空＝active" },
+  { name: "withdrawn_on", kind: "date", note: "退出日期（這天起的 to=all 不含此人）" },
+  { name: "confirmed_through", kind: "text", note: "這位旅伴已核對到的最後一筆 ledger id（旅伴回覆後由擁有者代填）" }
+];
+/** ledger 工作表：一列一筆事件，只新增不修改 */
+var LEDGER_HEADERS = [
+  { name: "id", kind: "text", note: "唯一編號，例如 L001" },
+  { name: "date", kind: "date", note: "實際日期（付款、還款、退款）；plan 填建立日" },
+  { name: "type", kind: "list:ledger_type", note: "plan 預計｜payment 付款｜share 指定分攤｜repayment 旅伴還款｜refund 業者退款｜reversal 沖銷" },
+  { name: "payer", kind: "member", note: "付錢的人（repayment＝還錢的人）；share、reversal 留空" },
+  { name: "to", kind: "text", note: "all，或以 ; 分隔的暱稱；repayment＝收錢的那一位" },
+  { name: "amount", kind: "number", note: "原幣金額（大於 0）" },
+  { name: "currency", kind: "list:price_currency", note: "原幣幣別；留空＝結算幣別" },
+  { name: "home_actual", kind: "number", note: "卡片／銀行實際入帳的結算幣別金額；未入帳留空（網站用匯率暫估）" },
+  { name: "cost_id", kind: "text", note: "對應 costs 的費用 id（選填）" },
+  { name: "vendor_due", kind: "date", note: "付業者期限（plan 必填）" },
+  { name: "repay_due", kind: "date", note: "旅伴還款期限；留空＝date + 7 天" },
+  { name: "evidence", kind: "text", note: "憑證位置，例如「Gmail 2026-11-15 確認信」；不要貼內容" },
+  { name: "ref_id", kind: "text", note: "關聯的另一筆：reversal→被沖銷的；share→付款；payment→預計；refund→原付款" },
+  { name: "note", kind: "text", note: "私人備註，doGet 不回傳" }
+];
+var PRIVATE_FIELDS = ["note"];
 
 /* ===================== 公開端點（唯讀） ===================== */
 function doGet(e) {
@@ -114,6 +151,12 @@ function doGet(e) {
         catch (err) { errors.push("json!" + name + " 不是合法 JSON：" + err.message); }
       }
     }
+    // 帳本：放在 json 之後，同名資料集以工作表為準
+    var tz = ss.getSpreadsheetTimeZone();
+    var mem = ss.getSheetByName(SHEET_MEMBERS);
+    if (mem) { var mi = readRows_(mem, SHEET_MEMBERS, MEMBERS_HEADERS, "nick", tz, errors); if (mi.length) out.data.members = { items: mi }; }
+    var led = ss.getSheetByName(SHEET_LEDGER);
+    if (led) { var li = readRows_(led, SHEET_LEDGER, LEDGER_HEADERS, "id", tz, errors); if (li.length) out.data.ledger = { items: li }; }
   } catch (err) {
     out = { schema: "ecotrip/1", error: String(err), data: {} };
   }
@@ -172,9 +215,39 @@ function readCosts_(sheet, errors) {
   return { currency: "MYR", items: items, compare: null };
 }
 
+/**
+ * 讀取 members／ledger 這類「一列一筆」的工作表（唯讀）。
+ * 只讀 defs 定義的欄位，且略過 PRIVATE_FIELDS；key 欄空白的列略過。
+ * 日期轉成 yyyy-MM-dd（依試算表時區），數字欄留空回傳 null，其他一律去頭尾空白的文字。
+ */
+function readRows_(sheet, label, defs, key, tz, errors) {
+  var values = sheet.getDataRange().getValues();
+  var head = values[0].map(function (h) { return String(h).trim(); });
+  var col = {};
+  defs.forEach(function (h) { col[h.name] = head.indexOf(h.name); });
+  var missing = defs.filter(function (h) { return col[h.name] < 0; }).map(function (h) { return h.name; });
+  if (missing.length) errors.push(label + " 工作表缺少欄位：" + missing.join(", ") + "（請執行 setupSheets 補齊）");
+  var items = [];
+  for (var r = 1; r < values.length; r++) {
+    var k = col[key] >= 0 ? String(values[r][col[key]] === null || values[r][col[key]] === undefined ? "" : values[r][col[key]]).trim() : "";
+    if (!k) continue;
+    var item = {};
+    defs.forEach(function (h) {
+      if (PRIVATE_FIELDS.indexOf(h.name) >= 0) return;
+      var v = col[h.name] >= 0 ? values[r][col[h.name]] : "";
+      if (v instanceof Date) v = Utilities.formatDate(v, tz, "yyyy-MM-dd");
+      else if (h.kind === "number") v = (v === "" || v === null || v === undefined) ? null : Number(v);
+      else v = String(v === null || v === undefined ? "" : v).trim();
+      item[h.name] = v;
+    });
+    items.push(item);
+  }
+  return items;
+}
+
 /* ===================== 建表（只由擁有者手動執行） ===================== */
 /**
- * 建立／補齊 costs 與 json 工作表的欄位與資料驗證。可重複執行（冪等）：
+ * 建立／補齊 costs、json、members、ledger 工作表的欄位與資料驗證。可重複執行（冪等）：
  *   - 工作表不存在才建立；已存在就沿用。
  *   - 只把「缺少的欄名」加到最右邊；既有欄位、順序、資料列、旅伴自己加的欄位都不動。
  *   - 重新套用下拉選單／數字／核取方塊驗證到第 2 列以下（不改動儲存格內容）。
@@ -183,13 +256,14 @@ function readCosts_(sheet, errors) {
 function setupSheets() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var report = [];
-  [[SHEET_COSTS, COSTS_HEADERS], [SHEET_JSON, JSON_HEADERS]].forEach(function (pair) {
+  // members 要在 ledger 之前，ledger 的 payer 下拉選單從 members 的 nick 欄取值
+  [[SHEET_COSTS, COSTS_HEADERS], [SHEET_JSON, JSON_HEADERS], [SHEET_MEMBERS, MEMBERS_HEADERS], [SHEET_LEDGER, LEDGER_HEADERS]].forEach(function (pair) {
     var name = pair[0], defs = pair[1];
     var sh = ss.getSheetByName(name);
     if (!sh) { sh = ss.insertSheet(name); report.push("建立工作表 " + name); }
     var added = ensureHeaders_(sh, defs);
     if (added.length) report.push(name + " 新增欄位：" + added.join(", "));
-    applyValidation_(sh, defs);
+    applyValidation_(ss, sh, defs);
     sh.setFrozenRows(1);
     protectHeader_(sh);
   });
@@ -221,7 +295,7 @@ function ensureHeaders_(sh, defs) {
 }
 
 /** 依欄位 kind 套用資料驗證到第 2 列以下 */
-function applyValidation_(sh, defs) {
+function applyValidation_(ss, sh, defs) {
   var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (h) { return String(h).trim(); });
   var rows = Math.max(sh.getMaxRows() - 1, 1);
   defs.forEach(function (d) {
@@ -237,6 +311,15 @@ function applyValidation_(sh, defs) {
         .setAllowInvalid(false).setHelpText("請填非負數字；未知請留空，不要填 0").build();
     } else if (d.kind === "bool") {
       rule = SpreadsheetApp.newDataValidation().requireCheckbox().build();
+    } else if (d.kind === "date") {
+      rule = SpreadsheetApp.newDataValidation().requireDate()
+        .setAllowInvalid(false).setHelpText("請填日期，例如 2026-11-30").build();
+    } else if (d.kind === "member") {
+      var m = ss.getSheetByName(SHEET_MEMBERS);
+      var mh = m.getRange(1, 1, 1, Math.max(m.getLastColumn(), 1)).getValues()[0].map(function (h) { return String(h).trim(); });
+      var nc = mh.indexOf("nick") + 1;
+      if (nc > 0) rule = SpreadsheetApp.newDataValidation().requireValueInRange(m.getRange(2, nc, Math.max(m.getMaxRows() - 1, 1), 1), true)
+        .setAllowInvalid(false).setHelpText("請從 members 工作表的暱稱選擇").build();
     }
     if (rule) range.setDataValidation(rule);
   });

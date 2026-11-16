@@ -6710,18 +6710,20 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 
   /**
    * 費用欄位允許值的唯一來源（試算表下拉選單 gas/Code.gs 的 ALLOWED 必須與此相同，由 docs/tests/gas.test.mjs 比對）。
-   * 前四項由引擎決定；後四項由行程資料決定（分類、幣別、會影響費用的選擇題選項）。
+   * unit、status、qty_from、dataset、ledger_type、member_status 由引擎決定；其餘由行程資料決定（分類、幣別、會影響費用的選擇題選項）。
    */
   function allowedValues(data) {
     const money = currencyOf(data), opts = [];
     for (const c of choiceDefs(data)) if (c.compare_category) for (const o of c.options) opts.push(o.key);
     return { unit: Object.keys(UNIT_LABEL).filter(u => u !== "percent"), status: COST_STATUSES.slice(), qty_from: CTX_KEYS.slice(), dataset: DATASETS.slice(),
       category: Object.keys(categoryLabels(data)), price_currency: [...new Set([money.base, money.home, ...Object.keys(money.defaultRates)].filter(Boolean))],
-      applies: BUILTIN_APPLIES.concat(opts), when: ["singles"].concat(opts.map(k => "plan_" + k)) };
+      applies: BUILTIN_APPLIES.concat(opts), when: ["singles"].concat(opts.map(k => "plan_" + k)),
+      ledger_type: LEDGER_TYPES.slice(), member_status: MEMBER_STATUSES.slice() };
   }
 
   /* ---------- 代墊與付款管理（docs/SDD-002）：members、ledger 兩張工作表 → 每人淨額、到期、結清 ---------- */
   const LEDGER_TYPES = ["plan", "payment", "share", "repayment", "refund", "reversal"];
+  const MEMBER_STATUSES = ["active", "withdrawn"];
   const ROOM_UNITS = new Set(["per_room", "per_room_per_night"]);
   /** 把 total（整數分）依權重分配；除不盡的幾分錢全部給 absorber（索引） */
   function allocateCents(total, weights, absorber) {
