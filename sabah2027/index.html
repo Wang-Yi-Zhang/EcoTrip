@@ -8215,7 +8215,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       h("p", { class: "small muted" }, "把每人淨額互相抵銷後的最少轉帳。一筆轉帳不一定對應單一筆費用；每人的淨額由哪些款項組成，看下方個人明細。", L.final ? "" : "目前含暫估金額，數字會再變。"),
       L.settle.length ? h("ul", null, L.settle.map(x => h("li", null, h("b", null, x.from), " 轉給 ", h("b", null, x.to), " ", h("span", { class: "num" }, fmtCents(x.cents))))) : h("p", { class: "muted small" }, "大家都已結清。")));
     // 個人明細
-    const sel = h("select", { id: "ledger-nick", "aria-label": "選擇旅伴", onchange: e => { ledgerNick = e.target.value; renderLedger(); } }, nicks.map(n => h("option", { value: n, selected: n === ledgerNick ? "" : null }, n)));
+    const sel = h("select", { id: "ledger-nick", "aria-label": "選擇旅伴", onchange: e => {
+      // 重畫整個分頁時面板會先清空，瀏覽器會把捲軸拉回上方；記住位置與焦點，畫完再還原
+      const y = window.scrollY; ledgerNick = e.target.value; renderLedger();
+      window.scrollTo(0, y); const again = document.getElementById("ledger-nick"); if (again) again.focus({ preventScroll: true }); } }, nicks.map(n => h("option", { value: n, selected: n === ledgerNick ? "" : null }, n)));
     sel.value = ledgerNick;
     const me = L.members.find(m => m.nick === ledgerNick), pend = new Set(L.pending[ledgerNick]);
     const costName = id => { const it = id && D().costs.items.find(x => x.id === id); return it ? it.name : id; };
