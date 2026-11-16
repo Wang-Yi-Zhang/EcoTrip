@@ -6720,6 +6720,224 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       applies: BUILTIN_APPLIES.concat(opts), when: ["singles"].concat(opts.map(k => "plan_" + k)) };
   }
 
+  /* ---------- 代墊與付款管理（docs/SDD-002）：members、ledger 兩張工作表 → 每人淨額、到期、結清 ---------- */
+  const LEDGER_TYPES = ["plan", "payment", "share", "repayment", "refund", "reversal"];
+  const ROOM_UNITS = new Set(["per_room", "per_room_per_night"]);
+  /** 把 total（整數分）依權重分配；除不盡的幾分錢全部給 absorber（索引） */
+  function allocateCents(total, weights, absorber) {
+    const W = weights.reduce((a, w) => a + w, 0);
+    if (!(W > 0)) return weights.map(() => 0);
+    const out = weights.map(w => Math.floor(total * w / W));
+    out[absorber] += total - out.reduce((a, v) => a + v, 0);
+    return out;
+  }
+  /**
+   * 計算帳本。members = {items:[{nick, room, status, withdrawn_on, confirmed_through}]}；
+   * ledger = {items:[{id, date, type, payer, to, amount, currency, home_actual, cost_id, vendor_due, repay_due, evidence, ref_id}]}；
+   * opts = {home, base, fx（1 本位幣 = ? 結算幣別）, rates（1 外幣 = ? 本位幣）, today, costs:[{id, unit}], budgetLines:[{id, name, amountHome}]}。
+   * 金額一律換成結算幣別的「分」（整數）。淨額為正 = 別人欠他。
+   */
+  function computeLedger(members, ledger, opts) {
+    opts = opts || {};
+    const warnings = [];
+    const warn = (idx, code, id, msg) => warnings.push({ idx, code, id: id || "", msg });
+    // ---- 成員 ----
+    const mem = [], byNick = {};
+    for (const m of (members && members.items) || []) {
+      const nick = String(m.nick == null ? "" : m.nick).trim(); if (!nick) continue;
+      if (byNick[nick]) { warn(-1, "duplicate_member", "", `暱稱重複：${nick}`); continue; }
+      const room = String(m.room == null ? "" : m.room).trim();
+      const x = { nick, room: room || "\u0000" + nick, withdrawn: String(m.status || "").trim() === "withdrawn", withdrawnOn: String(m.withdrawn_on || "").trim() || null,
+        confirmedThrough: String(m.confirmed_through || "").trim() || null };
+      mem.push(x); byNick[nick] = x;
+    }
+    const order = nick => mem.findIndex(m => m.nick === nick);
+    const inactiveOn = (m, date) => m.withdrawn && (!m.withdrawnOn || !date || date >= m.withdrawnOn);
+    // ---- 幣別 ----
+    const home = opts.home, base = opts.base, fx = isNum(Number(opts.fx)) && Number(opts.fx) > 0 ? Number(opts.fx) : null, rates = opts.rates || {};
+    const allowedCur = new Set([home, base, ...Object.keys(rates)].filter(Boolean));
+    const toHome = (amt, cur) => {
+      if (cur === home) return amt;
+      if (!fx) return null;
+      if (cur === base) return amt * fx;
+      const r = Number(rates[cur]); return isNum(r) && r > 0 ? amt * r * fx : null;
+    };
+    const costUnit = {}; for (const c of opts.costs || []) costUnit[c.id] = c.unit;
+    const s = v => String(v == null ? "" : v).trim();
+    const num = v => (v === "" || v == null) ? NaN : Number(v);
+    // ---- 第一輪：讀列、基本檢查 ----
+    const rows = [], byId = {};
+    ((ledger && ledger.items) || []).forEach((raw, idx) => {
+      const id = s(raw.id); if (!id) return;
+      if (byId[id]) { warn(idx, "duplicate_id", id, `id 重複：${id}（後面那筆不計入）`); return; }
+      const r = { idx, id, date: s(raw.date) || null, type: s(raw.type), payer: s(raw.payer), toRaw: s(raw.to), amount: num(raw.amount), currency: s(raw.currency) || home,
+        homeActual: num(raw.home_actual), costId: s(raw.cost_id) || null, vendorDue: s(raw.vendor_due) || null, repayDue: s(raw.repay_due) || null,
+        evidence: s(raw.evidence) || null, refId: s(raw.ref_id) || null, ok: true };
+      byId[id] = r; rows.push(r);
+      if (!LEDGER_TYPES.includes(r.type)) { warn(idx, "bad_type", id, `不認識的類型：${r.type || "（空白）"}`); r.ok = false; return; }
+      if (r.type === "reversal") return;
+      if (!(r.amount > 0)) { warn(idx, "bad_amount", id, "金額必須是大於 0 的數字"); r.ok = false; return; }
+      if (r.type !== "share" && !allowedCur.has(r.currency)) { warn(idx, "bad_currency", id, `不允許的幣別：${r.currency}`); r.ok = false; return; }
+      if (r.type !== "share" && !byNick[r.payer]) { warn(idx, "unknown_member", id, `不認識的暱稱：${r.payer || "（空白）"}`); r.ok = false; return; }
+      // 對象
+      if (r.toRaw === "all") r.toList = null;
+      else {
+        const list = [...new Set(r.toRaw.split(/[;；,，]/).map(x => x.trim()).filter(Boolean))];
+        const bad = list.filter(n => !byNick[n]);
+        if (bad.length) { warn(idx, "unknown_member", id, `不認識的暱稱：${bad.join("、")}`); r.ok = false; return; }
+        if (!list.length) { warn(idx, "missing_to", id, "沒有填對象（all 或暱稱）"); r.ok = false; return; }
+        r.toList = list.sort((a, b) => order(a) - order(b));
+        const late = list.filter(n => byNick[n].withdrawn && r.date && byNick[n].withdrawnOn && r.date >= byNick[n].withdrawnOn);
+        if (late.length) warn(idx, "withdrawn_member", id, `${late.join("、")} 已退出，仍被列入`);
+      }
+      if (r.type === "repayment" && (!r.toList || r.toList.length !== 1)) { warn(idx, "bad_repayment", id, "還款的對象必須剛好一人（收錢的人）"); r.ok = false; return; }
+      if (r.costId && opts.costs && !(r.costId in costUnit)) warn(idx, "unknown_cost", id, `費用 id 不存在：${r.costId}`);
+      if (r.type === "share") return;
+      // 換算
+      const conv = toHome(r.amount, r.currency);
+      if (isNum(r.homeActual) && r.homeActual > 0) {
+        r.cents = Math.round(r.homeActual * 100); r.estimated = false;
+        if (r.currency !== home && conv != null && Math.abs(r.homeActual - conv) / conv > 0.05) warn(idx, "actual_mismatch", id, `實際入帳 ${r.homeActual} 與換算 ${conv.toFixed(2)} 相差超過 5%`);
+      } else if (conv == null) { warn(idx, "no_rate", id, `沒有 ${r.currency} 的匯率，無法換算`); r.ok = false; return; }
+      else { r.cents = Math.round(conv * 100); r.estimated = r.currency !== home; }
+    });
+    // ---- 沖銷 ----
+    for (const r of rows) {
+      if (r.type !== "reversal" || !r.ok) continue;
+      const tg = r.refId && byId[r.refId];
+      if (!tg) { warn(r.idx, "bad_ref", r.id, `沖銷對象不存在：${r.refId || "（空白）"}`); r.ok = false; continue; }
+      if (tg.type === "reversal") { warn(r.idx, "reverse_reversal", r.id, "不能沖銷沖銷列；要恢復請重新新增一筆"); r.ok = false; continue; }
+      if (tg.reversedBy) { warn(r.idx, "double_reversal", r.id, `${tg.id} 已被 ${tg.reversedBy} 沖銷過`); r.ok = false; continue; }
+      tg.reversedBy = r.id; r.target = tg;
+    }
+    const live = r => r.ok && !r.reversedBy;
+    // ---- 指定分攤 ----
+    for (const r of rows) {
+      if (r.type !== "share" || !live(r)) continue;
+      const p = r.refId && byId[r.refId];
+      if (!p || p.type !== "payment") { warn(r.idx, "bad_ref", r.id, `share 必須指到一筆付款：${r.refId || "（空白）"}`); continue; }
+      if (!r.toList) { warn(r.idx, "bad_share", r.id, "share 的對象要寫暱稱，不能是 all"); continue; }
+      (p.shares = p.shares || []).push(r);
+    }
+    // 分配一筆款項給對象：回傳 {nick: 分}
+    const splitTo = (r, cents) => {
+      let list = r.toList || mem.filter(m => !inactiveOn(m, r.date)).map(m => m.nick);
+      if (!list.length) return null;
+      const absorber = Math.max(0, list.indexOf(r.payer));
+      let weights = list.map(() => 1);
+      if (r.costId && ROOM_UNITS.has(costUnit[r.costId])) {
+        const size = {}; for (const n of list) size[byNick[n].room] = (size[byNick[n].room] || 0) + 1;
+        const L = Object.values(size).reduce((a, b) => a * b / gcd(a, b), 1);
+        weights = list.map(n => L / size[byNick[n].room]);
+      }
+      const parts = allocateCents(cents, weights, absorber), out = {};
+      list.forEach((n, i) => { out[n] = (out[n] || 0) + parts[i]; });
+      return out;
+    };
+    function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+    // ---- 計算每筆的影響 ----
+    const entries = [], alloc = {};
+    for (const r of rows) {
+      if (!r.ok || !["payment", "refund", "repayment", "reversal"].includes(r.type)) continue;
+      const e = { id: r.id, idx: r.idx, type: r.type, date: r.date, payer: r.payer || null, cents: r.cents == null ? null : r.cents, currency: r.currency, amount: isNum(r.amount) ? r.amount : null,
+        estimated: !!r.estimated, costId: r.costId, evidence: r.evidence, refId: r.refId, reversedBy: r.reversedBy || null, effects: {} };
+      const add = (n, v) => { if (v) e.effects[n] = (e.effects[n] || 0) + v; };
+      if (r.type === "reversal") { e.affects = r.target ? Object.keys((entries.find(x => x.id === r.target.id) || {}).effects || {}) : []; entries.push(e); continue; }
+      if (r.type === "repayment") { add(r.payer, r.cents); add(r.toList[0], -r.cents); entries.push(e); continue; }
+      let parts = null;
+      if (r.type === "payment" && r.shares && r.shares.length) {
+        const sum = r.shares.reduce((a, x) => a + x.amount, 0);
+        if (Math.abs(sum - r.amount) > 0.005) warn(r.idx, "share_sum", r.id, `share 加總 ${+sum.toFixed(2)} 不等於付款金額 ${r.amount}，改用對象平分`);
+        else {
+          const rowIdx = Math.max(0, r.shares.findIndex(x => x.toList.includes(r.payer)));
+          const rowCents = allocateCents(r.cents, r.shares.map(x => Math.round(x.amount * 100)), rowIdx);
+          parts = {};
+          r.shares.forEach((x, i) => { const sub = allocateCents(rowCents[i], x.toList.map(() => 1), Math.max(0, x.toList.indexOf(r.payer)));
+            x.toList.forEach((n, j) => { parts[n] = (parts[n] || 0) + sub[j]; }); });
+        }
+      }
+      if (!parts) parts = splitTo(r, r.cents);
+      if (!parts) { warn(r.idx, "empty_to", r.id, "這一天沒有可分攤的成員"); continue; }
+      const sign = r.type === "payment" ? 1 : -1;
+      add(r.payer, sign * r.cents);
+      for (const [n, v] of Object.entries(parts)) add(n, -sign * v);
+      e.parts = parts; alloc[r.id] = { parts, r };
+      entries.push(e);
+    }
+    // 沖銷列的 affects 要在被沖銷那筆算好之後才知道
+    for (const e of entries) if (e.type === "reversal") { const tg = byId[e.refId]; const te = tg && entries.find(x => x.id === tg.id); e.affects = te ? Object.keys(te.effects) : (tg && tg.type === "share" && alloc[tg.refId] ? Object.keys(alloc[tg.refId].parts) : []); }
+    // ---- 每人合計 ----
+    const tot = {}; for (const m of mem) tot[m.nick] = { nick: m.nick, paid: 0, share: 0, repaidOut: 0, repaidIn: 0, net: 0, estimated: false };
+    for (const e of entries) {
+      if (e.reversedBy || e.type === "reversal") continue;
+      const r = byId[e.id];
+      for (const [n, v] of Object.entries(e.effects)) { tot[n].net += v; if (e.estimated) tot[n].estimated = true; }
+      if (e.type === "repayment") { tot[r.payer].repaidOut += r.cents; tot[r.toList[0]].repaidIn += r.cents; continue; }
+      const sign = e.type === "payment" ? 1 : -1;
+      tot[r.payer].paid += sign * r.cents;
+      for (const [n, v] of Object.entries(e.parts)) tot[n].share += sign * v;
+    }
+    const list = mem.map(m => tot[m.nick]);
+    const totals = { paid: list.reduce((a, m) => a + m.paid, 0), share: list.reduce((a, m) => a + m.share, 0) };
+    const netSum = list.reduce((a, m) => a + m.net, 0);
+    if (netSum !== 0) warn(1e9, "net_sum", "", `淨額加總不是 0（${netSum} 分）`);
+    if (totals.paid !== totals.share) warn(1e9, "share_total", "", `分攤合計 ${totals.share} 與實付合計 ${totals.paid} 不相等`);
+    // ---- 滾動結清：每筆付款 → 旅伴對付款人的還款項目 ----
+    const dues = [];
+    for (const e of entries) {
+      if (e.type !== "payment" || e.reversedBy) continue;
+      const r = byId[e.id], due = r.repayDue || (r.date ? addDaysISO(r.date, 7) : null);
+      for (const [n, v] of Object.entries(e.parts)) if (n !== r.payer && v > 0) dues.push({ payment_id: r.id, from: n, to: r.payer, cents: v, due, repaid: 0, remaining: v, status: "open", idx: r.idx });
+    }
+    for (const e of entries) {
+      if (e.type !== "refund" || e.reversedBy || !e.refId) continue;
+      for (const [n, v] of Object.entries(e.parts)) {
+        const d = dues.find(x => x.payment_id === e.refId && x.from === n && x.to === e.payer);
+        if (d) { const c = Math.min(d.remaining, v); d.cents -= c; d.remaining -= c; }
+      }
+    }
+    const pool = {};
+    for (const e of entries) if (e.type === "repayment" && !e.reversedBy) { const k = e.payer + "\u0000" + byId[e.id].toList[0]; pool[k] = (pool[k] || 0) + e.cents; }
+    dues.sort((a, b) => String(a.due || "9999").localeCompare(String(b.due || "9999")) || a.idx - b.idx);
+    for (const d of dues) {
+      const k = d.from + "\u0000" + d.to, c = Math.min(pool[k] || 0, d.remaining);
+      d.repaid += c; d.remaining -= c; pool[k] = (pool[k] || 0) - c;
+      d.status = d.remaining === 0 ? "paid" : (opts.today && d.due && opts.today > d.due ? "overdue" : "open");
+      delete d.idx;
+    }
+    // ---- 預計付款 ----
+    const plans = rows.filter(r => r.type === "plan" && live(r)).map(p => {
+      const pays = rows.filter(r => r.type === "payment" && live(r) && r.refId === p.id);
+      const sameCur = pays.every(r => r.currency === p.currency);
+      const paidCents = pays.reduce((a, r) => a + r.cents, 0), paidAmt = pays.reduce((a, r) => a + r.amount, 0);
+      const remaining = sameCur ? Math.max(0, Math.round((p.amount - paidAmt) * 100) / 100) : null;
+      const remainingCents = Math.max(0, p.cents - paidCents);
+      return { id: p.id, payer: p.payer, amount: p.amount, currency: p.currency, cents: p.cents, estimated: p.estimated, paidCents, remaining, remainingCents,
+        vendor_due: p.vendorDue, cost_id: p.costId, open: sameCur ? remaining > 0 : remainingCents > 0, payments: pays.map(r => r.id) };
+    });
+    for (const r of rows) if (r.type === "payment" && live(r) && r.refId && !(byId[r.refId] && byId[r.refId].type === "plan")) warn(r.idx, "bad_ref", r.id, `付款的 ref_id 要指到預計付款：${r.refId}`);
+    const covered = new Set(rows.filter(r => live(r) && (r.type === "payment" || r.type === "plan") && r.costId).map(r => r.costId));
+    const unpaidCosts = (opts.budgetLines || []).filter(l => !covered.has(l.id)).map(l => ({ id: l.id, name: l.name, amountHome: l.amountHome }));
+    // ---- 最少轉帳（貪婪：最大債權人與最大債務人互抵） ----
+    const bal = list.map(m => ({ nick: m.nick, v: m.net, o: order(m.nick) })), settle = [];
+    for (;;) {
+      const cr = bal.filter(b => b.v > 0).sort((a, b) => b.v - a.v || a.o - b.o)[0], db = bal.filter(b => b.v < 0).sort((a, b) => a.v - b.v || a.o - b.o)[0];
+      if (!cr || !db) break;
+      const c = Math.min(cr.v, -db.v); settle.push({ from: db.nick, to: cr.nick, cents: c }); cr.v -= c; db.v += c;
+    }
+    // ---- 待確認 ----
+    const pending = {};
+    for (const m of mem) {
+      const ci = m.confirmedThrough && byId[m.confirmedThrough] ? byId[m.confirmedThrough].idx : -1;
+      if (m.confirmedThrough && !byId[m.confirmedThrough]) warn(-1, "bad_confirmed", "", `${m.nick} 的 confirmed_through 找不到：${m.confirmedThrough}`);
+      pending[m.nick] = entries.filter(e => e.idx > ci && (e.type === "reversal" ? e.affects.includes(m.nick) : e.effects[m.nick])).map(e => e.id);
+    }
+    warnings.sort((a, b) => a.idx - b.idx);
+    return { members: list, entries: entries.map(e => { const o = { ...e }; delete o.idx; delete o.parts; if (e.parts) o.shares = e.parts; return o; }),
+      dues, plans, unpaidCosts, settle, final: !entries.some(e => e.estimated && !e.reversedBy && e.type !== "reversal"), pending, totals,
+      warnings: warnings.map(w => ({ code: w.code, id: w.id, msg: w.msg })) };
+  }
+
   /* ---------- 地圖匯出（KML：可匯入 Google My Maps、Google Earth、Organic Maps、OsmAnd） ---------- */
   const POI_KML = { lodging: { label: "住宿", color: "D97706" }, wildlife: { label: "生態觀察地點", color: "5DBB82" }, transport: { label: "交通轉運", color: "7DB3E0" }, landscape: { label: "自然地景", color: "C49BE8" } };
   const xmlEsc = s => String(s == null ? "" : s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
@@ -6778,7 +6996,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     categoryLabels, currencyOf, choiceDefs, choiceDef, choiceValue, optionSelected, itemActive,
     resolveLodging, poiById, activityChoice, activityStatus, activityCostRef, computeCtx, computeBudget, compareChoice,
     scenarios, checkItinerary, lodgingNightsSummary, observabilityLabel, validateDataset, validateEnvelope,
-    validateReferences, budgetCSV, toMinutes, locationsKML, googleMapsUrl, poiDays };
+    validateReferences, budgetCSV, toMinutes, locationsKML, googleMapsUrl, poiDays, computeLedger, allocateCents, LEDGER_TYPES };
 })(typeof window !== "undefined" ? window : globalThis);
 </script>
 

@@ -2,9 +2,9 @@
 
 最後更新：2026-11-15（機票已購）。已推送到 https://github.com/Wang-Yi-Zhang/EcoTrip（`main`），GitHub Pages 已開啟。
 
-## 代墊與付款管理（2026-11-16 設計定案，未實作）
+## 代墊與付款管理（2026-11-16 設計定案，計算核心完成）
 
-- 設計見 `docs/SDD-002-代墊與付款管理.md`：帳本放在試算表的 `members`、`ledger` 工作表，只用暱稱，網站唯讀。下一步是 `EcoCore.computeLedger` 與 `docs/tests/ledger.test.mjs`（測試先行）。
+- 設計見 `docs/SDD-002-代墊與付款管理.md`：帳本放在試算表的 `members`、`ledger` 工作表，只用暱稱，網站唯讀。計算核心 `EcoCore.computeLedger` 與 `docs/tests/ledger.test.mjs`（36 項，含 golden 三筆與 200 組隨機守恆）已完成。下一步是第 3 步：`gas/Code.gs` 新增 `members`、`ledger` 工作表。
 - 待使用者提供：AirAsia 每人明細、三筆已付費用的卡片入帳金額。
 
 ## 現況

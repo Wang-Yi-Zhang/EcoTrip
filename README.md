@@ -26,6 +26,7 @@ node docs/tests/core.test.mjs
 
 ```bash
 node docs/tests/gas.test.mjs
+node docs/tests/ledger.test.mjs
 ```
 
 ```bash
@@ -67,9 +68,10 @@ node tools/build-site.mjs
 | [docs/04-測試結果.md](docs/04-測試結果.md) | 實際執行過的測試，以及尚未測試的項目 |
 | [docs/research.md](docs/research.md)、`docs/research-data.json` | 事實查證結果（附來源與查核日期） |
 | [docs/向業者確認問題清單.md](docs/向業者確認問題清單.md) | 寄給 Tabin、BRL、DVFC 的中英對照問題 |
-| [docs/SDD-002-代墊與付款管理.md](docs/SDD-002-代墊與付款管理.md) | 代墊與付款管理的設計（帳本工作表、分攤與結清規則、驗收），尚未實作 |
+| [docs/SDD-002-代墊與付款管理.md](docs/SDD-002-代墊與付款管理.md) | 代墊與付款管理的設計（帳本工作表、分攤與結清規則、驗收）；計算核心已完成，試算表與畫面未做 |
 | `gas/Code.gs` | Google Apps Script 遠端資料端點範例，含 `setupSheets()` 自動建立欄位 |
 | `docs/tests/core.test.mjs` | 核心計算與檢查邏輯的單元測試 |
+| `docs/tests/ledger.test.mjs` | 代墊與付款管理：分攤、尾數、退款、沖銷、到期、最少轉帳，加上 200 組隨機帳本的守恆檢查 |
 | `docs/tests/golden.test.mjs` | 黃金檔：沙巴行程在 22 組設定下的結果不得改變（2026-11-13 拿掉 Danum 方案與最後一晚的選擇前是 36 組） |
 | `docs/tests/contrast.test.mjs` | 對照旅行（結構不同的另一趟行程）跑同一個引擎；程式碼不得含行程專有字樣 |
 | [docs/05-報價信對照.md](docs/05-報價信對照.md) | Tabin 報價信原文與費用資料逐項對照 |

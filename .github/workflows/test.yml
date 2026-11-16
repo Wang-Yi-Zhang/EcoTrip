@@ -24,6 +24,8 @@ jobs:
         run: node docs/tests/fx-state.test.mjs
       - name: 地圖匯出（KML）與行程資料一致
         run: node docs/tests/kml.test.mjs
+      - name: 代墊與付款管理（分攤、結清、守恆）
+        run: node docs/tests/ledger.test.mjs
       - name: 對照旅行可以產生網頁
         run: node tools/build-trip.mjs docs/tests/fixtures/contrast-trip.json /tmp/contrast.html
       - name: 首頁與各行程網頁是最新的
