@@ -58,7 +58,7 @@ t("匯率變更：TWD = MYR × 匯率", () => {
 t("TWD 計價項目（國際機票）換算成 MYR", () => {
   const b = C.computeBudget(data, { ...base, includeFlights: true });
   const f = line(b, "intl_flight");
-  assert.equal(f.amountHome, 68357.6); assert.ok(Math.abs(f.amountBase - 68357.6 / 7.2) < 1e-6);   // AirAsia 4 人實付（2026-11-15）
+  assert.equal(f.amountHome, 68427.2); assert.ok(Math.abs(f.amountBase - 68427.2 / 7.2) < 1e-6);   // AirAsia 4 人實付（2026-11-16 更正：17,570.62 + 50,856.58）
 });
 t("Danum 已定案為 DVFC、最後一晚固定住亞庇（2/6 07:30 從 BKI 起飛）：沒有選擇題", () => {
   eq(C.choiceDefs(data).map(c => c.id), []);

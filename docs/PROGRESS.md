@@ -57,7 +57,7 @@
 
 ## 2026-11-15 機票已購（使用者告知）
 
-- **AirAsia 國際線** 1/28 TPE → BKI、2/6 BKI → TPE 來回：使用者本人 TWD 17,570.62、另外三人合計 50,786.98，4 人合計 **TWD 68,357.60**。
+- **AirAsia 國際線** 1/28 TPE → BKI、2/6 BKI → TPE 來回：使用者本人 TWD 17,570.62、另外三人合計 50,856.58，4 人合計 **TWD 68,427.20**（2026-11-16 使用者更正並確認已刷卡；原記另外三人 50,786.98、合計 68,357.60）。
 - **AirBorneo 國內線** 1/29 BKI → LDU、2/5 LDU → BKI：4 人合計 **TWD 14,135**。
 - 費用：`intl_flight`、`domestic_flight` 改為 `per_group`（整團實付，改人數不會變）、狀態「已確認」、來源 `src_flight_booking`；刪除 `domestic_flight_return`（併入 `domestic_flight`）。機票仍只在勾選「納入機票」時計入，預備金 10% 也會加在機票上。
 - 行程：4 段航班活動狀態改為 confirmed；`c-d2-dvfc` 出發時間確定，銜接狀態從 assumed 變 ok；待辦 `flights_return`、`flights_out` 在資料裡標 `done: true`。
