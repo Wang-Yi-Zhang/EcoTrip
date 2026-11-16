@@ -30,19 +30,20 @@ const pay = (id, payer, amount, extra = {}) => ({ id, date: "2026-11-15", type: 
 
 t("核心有 computeLedger", () => assert.equal(typeof C.computeLedger, "function"));
 
-// ---------- golden：三筆已發生的費用（金額取自 PROGRESS.md 的總額，待卡片帳單核對；付款人與每人分配為虛構） ----------
-t("golden：國際線一人代墊三人（A 本人 17,570.62，另三人合計 50,786.98）＋國內線平分＋住宿平分", () => {
+// ---------- golden：已購機票（2026-11-16 使用者提供的付款結構；人名改成 A–D，金額待卡片帳單核對） ----------
+// A 自付國際線 17,570.62（PROGRESS.md）；B 代墊 B、C、D 三人國際線合計 50,856.58；A 代墊四人國內線 14,135。
+// 注意：PROGRESS.md 原本寫「另外三人合計 50,786.98」，與 50,856.58 差 69.60，待使用者確認。三人國際線每人金額未知，先平分。
+t("golden：A 自付國際線、B 代墊三人國際線、A 代墊四人國內線", () => {
   const r = run([
-    pay("L001", "A", 68357.60, { cost_id: "air", evidence: "確認信（待帳單核對）" }),
-    { id: "L002", date: "2026-11-15", type: "share", ref_id: "L001", to: "A", amount: 17570.62 },
-    { id: "L003", date: "2026-11-15", type: "share", ref_id: "L001", to: "B;C;D", amount: 50786.98 },
-    pay("L004", "A", 14135, { cost_id: "air" }),
-    pay("L005", "A", 1800, { date: "2026-11-14" }),
+    pay("L001", "A", 17570.62, { to: "A", cost_id: "air", evidence: "確認信（待帳單核對）" }),
+    pay("L002", "B", 50856.58, { to: "B;C;D", cost_id: "air" }),
+    pay("L003", "A", 14135, { cost_id: "air" }),
   ]);
-  assert.deepEqual(shares(r), { A: 2155437, B: 2091275, C: 2091274, D: 2091274 }, "50,786.98 ÷ 3 多出的 1 分由 B（名單第一位，付款人不在名單裡）吸收");
-  assert.deepEqual(nets(r), { A: 6273823, B: -2091275, C: -2091274, D: -2091274 });
+  assert.deepEqual(shares(r), { A: 2110437, B: 2048595, C: 2048594, D: 2048594 }, "50,856.58 ÷ 3 多出的 1 分由付款人 B 吸收");
+  assert.deepEqual(nets(r), { A: 1060125, B: 3037063, C: -2048594, D: -2048594 });
   assert.equal(sumNet(r), 0);
-  assert.equal(r.totals.paid, 8429260);
+  assert.equal(r.totals.paid, 8256220);
+  assert.deepEqual(r.settle, [{ from: "C", to: "B", cents: 2048594 }, { from: "D", to: "A", cents: 1060125 }, { from: "D", to: "B", cents: 988469 }]);
   assert.equal(r.final, true, "全部是結算幣別，沒有暫估");
   assert.deepEqual(r.warnings, []);
 });
