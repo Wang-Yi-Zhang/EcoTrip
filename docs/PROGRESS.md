@@ -2,9 +2,9 @@
 
 最後更新：2026-11-15（機票已購）。已推送到 https://github.com/Wang-Yi-Zhang/EcoTrip（`main`），GitHub Pages 已開啟。
 
-## 代墊與付款管理（2026-11-16 設計定案，計算核心與 GAS 完成）
+## 代墊與付款管理（2026-11-16 完成，待部署）
 
-- 設計見 `docs/SDD-002-代墊與付款管理.md`：帳本放在試算表的 `members`、`ledger` 工作表，只用暱稱，網站唯讀。計算核心 `EcoCore.computeLedger` 與 `docs/tests/ledger.test.mjs`（42 項，含 golden 三筆與 200 組隨機守恆）已完成。第 3 步 `gas/Code.gs` 已加上 `members`、`ledger` 工作表與 `doGet` 回傳（不含 `note`）；使用者要在 Apps Script 重新貼上、執行 `setupSheets()`、發布新版本才會生效。同日加上 `ledger.rooms` 欄：每筆住宿可寫自己的房間分法（四人一間或兩兩一間），`members.room` 只當預設。下一步是第 4 步：「分帳」分頁。
+- 設計見 `docs/SDD-002-代墊與付款管理.md`：帳本放在試算表的 `members`、`ledger` 工作表，只用暱稱，網站唯讀。計算核心 `EcoCore.computeLedger` 與 `docs/tests/ledger.test.mjs`（44 項，含 golden 三筆與 200 組隨機守恆）已完成。第 3 步 `gas/Code.gs` 已加上 `members`、`ledger` 工作表與 `doGet` 回傳（不含 `note`）；使用者要在 Apps Script 重新貼上、執行 `setupSheets()`、發布新版本才會生效。同日加上 `ledger.rooms` 欄：每筆住宿可寫自己的房間分法（四人一間或兩兩一間），`members.room` 只當預設。第 4 步「分帳」分頁完成（網站多一個分頁，在內建瀏覽器用虛構帳本驗證過桌面與手機版）。待辦：使用者重新部署 GAS（貼上 `Code.gs`、執行 `setupSheets()`、發布新版本），在試算表填 `members`、`ledger`；拿到卡片帳單後把 golden 測試換成實際金額；用 Splitwise 交叉比對一次。
 - 待使用者提供：AirAsia 每人明細、三筆已付費用的卡片入帳金額。
 
 ## 現況

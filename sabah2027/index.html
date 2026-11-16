@@ -264,6 +264,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   <section id="p-wildlife" role="tabpanel" aria-labelledby="t-wildlife"></section>
   <section id="p-compare" role="tabpanel" aria-labelledby="t-compare"></section>
   <section id="p-essentials" role="tabpanel" aria-labelledby="t-essentials"></section>
+  <section id="p-ledger" role="tabpanel" aria-labelledby="t-ledger"></section>
 </main>
 
 <nav class="mob-nav" aria-label="主選單（行動版）"><div class="tabs" role="tablist" id="tabs-mob"></div></nav>
@@ -6560,13 +6561,30 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     if (!obj || typeof obj !== "object") return { ok: false, errors: ["回應不是 JSON 物件"] };
     if (obj.schema !== ENVELOPE_SCHEMA) return { ok: false, errors: [`schema 應為 "${ENVELOPE_SCHEMA}"，收到 ${JSON.stringify(obj.schema)}`] };
     if (!obj.data || typeof obj.data !== "object") return { ok: false, errors: ["缺少 data 物件"] };
-    const accepted = {}, errors = [], ignored = [];
+    const accepted = {}, errors = [], ignored = [], ledger = {};
     for (const k of Object.keys(obj.data)) {
+      if (LEDGER_DATASETS.includes(k)) {   // 帳本沒有內建版本，另外放，不參與行程資料的覆蓋與參照檢查
+        const errs = validateLedgerDataset(k, obj.data[k]);
+        if (errs.length) errors.push(...errs.map(x => `[${k}] ${x}`)); else ledger[k] = obj.data[k];
+        continue;
+      }
       if (!DATASETS.includes(k)) { ignored.push(k); continue; }
       const errs = validateDataset(k, obj.data[k]);
       if (errs.length) errors.push(...errs.map(x => `[${k}] ${x}`)); else accepted[k] = obj.data[k];
     }
-    return { ok: Object.keys(accepted).length > 0, accepted, errors, ignored, updated_at: obj.updated_at || null };
+    return { ok: Object.keys(accepted).length > 0 || Object.keys(ledger).length > 0, accepted, ledger, errors, ignored, updated_at: obj.updated_at || null };
+  }
+  /** 帳本資料集（members、ledger）：只檢查形狀；內容規則由 computeLedger 檢查並以警告顯示 */
+  const LEDGER_DATASETS = ["members", "ledger"];
+  function validateLedgerDataset(name, d) {
+    if (!d || typeof d !== "object" || !Array.isArray(d.items)) return ["需要 {items:[…]}"];
+    if (d.items.length > 5000) return ["超過 5,000 列"];
+    const out = [];
+    d.items.forEach((it, i) => {
+      if (!it || typeof it !== "object" || Array.isArray(it)) { out.push(`第 ${i + 1} 列不是物件`); return; }
+      for (const [k, v] of Object.entries(it)) if (!(v === null || ["string", "number", "boolean"].includes(typeof v))) out.push(`第 ${i + 1} 列的 ${k} 型別不對`);
+    });
+    return out.slice(0, 20);
   }
 
   function validateReferences(data) {
@@ -7014,7 +7032,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     categoryLabels, currencyOf, choiceDefs, choiceDef, choiceValue, optionSelected, itemActive,
     resolveLodging, poiById, activityChoice, activityStatus, activityCostRef, computeCtx, computeBudget, compareChoice,
     scenarios, checkItinerary, lodgingNightsSummary, observabilityLabel, validateDataset, validateEnvelope,
-    validateReferences, budgetCSV, toMinutes, locationsKML, googleMapsUrl, poiDays, computeLedger, allocateCents, LEDGER_TYPES };
+    validateReferences, budgetCSV, toMinutes, locationsKML, googleMapsUrl, poiDays, computeLedger, allocateCents, LEDGER_TYPES, LEDGER_DATASETS, validateLedgerDataset };
 })(typeof window !== "undefined" ? window : globalThis);
 </script>
 
@@ -7094,7 +7112,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     }
     return out;
   }
-  const App = { local: null, data: null, origin: {}, remote: { status: "idle", errors: [], updated_at: null, fetchedAt: null }, state: null, map: null };
+  const App = { local: null, data: null, ledger: null, origin: {}, remote: { status: "idle", errors: [], updated_at: null, fetchedAt: null }, state: null, map: null };
 
   /* ================= 使用者狀態（LocalStorage） ================= */
   function defaultState(data) {
@@ -7217,7 +7235,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     { id: "map", zh: "探索地圖", short: "地圖", en: "Explore Map", ico: "⌖" },
     { id: "wildlife", zh: "目標物種", short: "物種", en: "Wildlife", ico: "❦" },
     { id: "compare", zh: "方案比較", short: "比較", en: "Compare", ico: "⇄" },
-    { id: "essentials", zh: "旅遊準備與風險", short: "準備", en: "Essentials", ico: "✓" }];
+    { id: "essentials", zh: "旅遊準備與風險", short: "準備", en: "Essentials", ico: "✓" },
+    { id: "ledger", zh: "分帳", en: "Split", ico: "⇆" }];
   /** 沒有物種資料就不顯示物種分頁；沒有方案比較就不顯示比較分頁 */
   const visibleTabs = () => TABS.filter(t => (t.id !== "wildlife" || D().species.items.length) && (t.id !== "compare" || (D().costs.compare && compareChoices().length)));
   function applyTitles() {
@@ -7256,7 +7275,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   function renderActive() {
     const id = App.state.tab;
     const fn = { dashboard: renderDashboard, itinerary: renderItinerary, budget: renderBudget, map: renderMap,
-      wildlife: renderWildlife, compare: renderCompare, essentials: renderEssentials }[id];
+      wildlife: renderWildlife, compare: renderCompare, essentials: renderEssentials, ledger: renderLedger }[id];
     try { fn && fn(); }
     catch (e) { console.error(e); const p = document.getElementById("p-" + id); clear(p).append(msg("error", `此模組發生錯誤：${e.message}。其他分頁仍可使用。`)); }
   }
@@ -8121,6 +8140,99 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
             oninput: e => update(x => { (x.riskLog[r.id] = x.riskLog[r.id] || {}).note = e.target.value; }, { render: false }) })); })));
   }
 
+  /* ================= 分帳（代墊與付款管理，docs/SDD-002） ================= */
+  const LEDGER_TYPE_LABEL = { plan: "預計", payment: "付款", share: "指定分攤", repayment: "還款", refund: "退款", reversal: "沖銷" };
+  let ledgerNick = null;   // 個人明細目前選的暱稱（只在這次開啟期間記住）
+  /** 分（整數）→ 結算幣別金額；signed 時正數加 + */
+  function fmtCents(c, signed) {
+    if (c == null) return "—";
+    const v = Math.abs(c) / 100, t = v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (c < 0 ? "−" : signed && c > 0 ? "+" : "") + (curSym(money().home) ? curSym(money().home) + " " : "") + t;
+  }
+  function ledgerResult() {
+    const L = App.ledger, s = S(), m = money();
+    let budgetLines = [];
+    try { budgetLines = C.computeBudget(D(), s).lines.filter(l => l.active && l.amountHome != null).map(l => ({ id: l.id, name: l.name, amountHome: l.amountHome })); } catch (e) { }
+    return C.computeLedger(L.members || { items: [] }, L.ledger || { items: [] },
+      { home: m.home, base: m.base, fx: s.fx, rates: s.rates, today: todayISO(), costs: D().costs.items, budgetLines });
+  }
+  function ledgerSetupCard() {
+    const remote = S().dataSource === "remote" && S().gasUrl;
+    return h("div", { class: "card" }, h("h3", null, "還沒有帳本資料"),
+      h("p", null, "分帳頁從 Google 試算表的 members、ledger 兩張工作表讀取，網站本身不存任何人的帳。"),
+      h("ol", { class: "small" },
+        h("li", null, "在 Apps Script 貼上最新的 gas/Code.gs，執行 setupSheets()，再到「管理部署作業」發布新版本。"),
+        h("li", null, "members 填暱稱與預設房間；ledger 一列記一筆款項（各欄說明在表頭註解）。"),
+        h("li", null, remote ? "回到這頁重新整理即可。" : "點右上「⚙ 資料／匯出」，貼上 /exec 網址並按「使用遠端資料」。")),
+      h("p", { class: "small muted" }, "隱私：拿到 /exec 網址的人都讀得到帳本，所以只填暱稱，不要填本名、帳號、卡號或訂位代號；ledger 的 note 欄不會傳到網站。格式與規則見 docs/SDD-002-代墊與付款管理.md、docs/03-部署與維護.md。"),
+      remote && App.remote.status === "loading" ? msg("info", "遠端資料讀取中…") : null);
+  }
+  function renderLedger() {
+    const P = clear(document.getElementById("p-ledger"));
+    const r = App.remote || {};
+    P.append(h("div", { class: "section-head" }, h("div", null, h("h2", null, "分帳"),
+      h("p", { class: "muted small" }, "誰替誰付了多少、什麼時候要還。金額單位是", curSym(money().home) || money().home || "結算幣別", "；正數＝別人欠他，負數＝他要付給別人。",
+        r.fetchedAt ? `資料讀取時間 ${fmtTime(r.fetchedAt)}${r.status === "stale" ? "（離線，使用上次的資料）" : ""}。` : ""))));
+    if (!App.ledger || !App.ledger.members || !App.ledger.ledger) { P.append(ledgerSetupCard()); return; }
+    const L = ledgerResult(), nicks = L.members.map(m => m.nick);
+    if (!nicks.length) { P.append(msg("warn", "members 工作表沒有任何暱稱。")); return; }
+    if (!nicks.includes(ledgerNick)) ledgerNick = nicks[0];
+    const estN = L.entries.filter(e => e.estimated && !e.reversedBy).length;
+    P.append(h("div", { class: "grid g2", style: "margin-bottom:14px" },
+      h("div", { class: "card" }, h("div", { class: "kpi" }, h("div", { class: "label" }, "已付給業者（扣除退款）"), h("div", { class: "value num" }, fmtCents(L.totals.paid)),
+        h("div", { class: "sub" }, estN ? `其中 ${estN} 筆是外幣、還沒填實際入帳金額，先用目前匯率暫估` : "全部是實際入帳金額"))),
+      h("div", { class: "card" }, h("div", { class: "kpi" }, h("div", { class: "label" }, "結清狀態"),
+        h("div", { class: "value" }, L.final ? "可以最終結清" : "還不是最終結清"),
+        h("div", { class: "sub" }, L.final ? "沒有暫估金額；下方最少轉帳就是最後要轉的錢。" : "還有暫估金額。先照「到期的還款」一筆一筆還；回國、帳單都入帳後再做最終結清。")))));
+    if (L.warnings.length) P.append(h("div", { class: "card", style: "margin-bottom:14px" }, h("h3", null, "帳本檢查", h("span", { class: "small muted" }, `${L.warnings.length} 項`)),
+      h("p", { class: "small muted" }, "以下問題請到試算表修正（改錯請新增沖銷列，不要改舊列）。有問題的列可能沒有計入。"),
+      L.warnings.map(w => msg(["net_sum", "share_total"].includes(w.code) ? "error" : "warn", (w.id ? w.id + "：" : "") + w.msg))));
+    // 每人
+    P.append(h("div", { class: "card", style: "margin-bottom:14px" }, h("h3", null, "每人淨額"), h("div", { class: "scroll-x" }, h("table", null,
+      h("thead", null, h("tr", null, h("th", null, "暱稱"), h("th", { class: "r" }, "應分攤"), h("th", { class: "r" }, "已付"), h("th", { class: "r" }, "已還出"), h("th", { class: "r" }, "已收回"), h("th", { class: "r" }, "淨額"), h("th", null, "核對"))),
+      h("tbody", null, L.members.map(m => h("tr", null, h("td", null, h("b", null, m.nick), m.estimated ? [" ", badge("estimate", "含暫估")] : null),
+        h("td", { class: "r num" }, fmtCents(m.share)), h("td", { class: "r num" }, fmtCents(m.paid)), h("td", { class: "r num" }, fmtCents(m.repaidOut)), h("td", { class: "r num" }, fmtCents(m.repaidIn)),
+        h("td", { class: "r num" }, h("b", null, fmtCents(m.net, true))),
+        h("td", null, L.pending[m.nick].length ? badge("tbc", `待確認 ${L.pending[m.nick].length} 筆`) : badge("confirmed", "已核對")))))))));
+    // 到期
+    const dues = L.dues.filter(d => d.remaining > 0), plans = L.plans.filter(p => p.open);
+    P.append(h("div", { class: "grid g2", style: "margin-bottom:14px" },
+      h("div", { class: "card" }, h("h3", null, "到期的還款", h("span", { class: "small muted" }, `${dues.length} 筆未還清`)),
+        h("p", { class: "small muted" }, "每筆代墊產生的還款，期限預設是付款日加 7 天。旅伴還錢後在 ledger 記一筆 repayment，會依期限先後抵掉。"),
+        dues.length ? h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "期限"), h("th", null, "誰還給誰"), h("th", { class: "r" }, "還差"), h("th", null, "來自"))),
+          h("tbody", null, dues.map(d => h("tr", null, h("td", null, d.due || "—", " ", d.status === "overdue" ? badge("tbc", "逾期") : null),
+            h("td", null, `${d.from} → ${d.to}`), h("td", { class: "r num" }, fmtCents(d.remaining)), h("td", { class: "small" }, d.payment_id)))))) : h("p", { class: "muted small" }, "沒有未還清的款項。")),
+      h("div", { class: "card" }, h("h3", null, "預計要付的錢", h("span", { class: "small muted" }, "不算進淨額")),
+        h("p", { class: "small muted" }, "ledger 的 plan 列（付業者期限）與費用試算裡還沒有付款紀錄的項目，讓代墊的人先知道要準備多少。"),
+        plans.length ? h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "付業者期限"), h("th", null, "誰付"), h("th", { class: "r" }, "還要付"))),
+          h("tbody", null, plans.map(p => h("tr", null, h("td", null, p.vendor_due || "—", " ", p.vendor_due && p.vendor_due < todayISO() ? badge("tbc", "已過期限") : null),
+            h("td", null, p.payer, h("div", { class: "small dim" }, p.id, p.cost_id ? "｜" + p.cost_id : "")),
+            h("td", { class: "r num" }, p.remaining != null ? `${curSym(p.currency) || p.currency} ${p.remaining.toLocaleString("en-US")}` : fmtCents(p.remainingCents))))))) : h("p", { class: "muted small" }, "ledger 沒有未付清的 plan 列。"),
+        L.unpaidCosts.length ? h("details", { style: "margin-top:8px" }, h("summary", { class: "small" }, `費用試算中還沒有付款紀錄的項目（${L.unpaidCosts.length} 項，約 ${fmtHome(L.unpaidCosts.reduce((a, x) => a + x.amountHome, 0))}）`),
+          h("ul", { class: "small" }, L.unpaidCosts.map(x => h("li", null, x.name, "：約 ", fmtHome(x.amountHome))))) : null)));
+    // 結清
+    P.append(h("div", { class: "card", style: "margin-bottom:14px" }, h("h3", null, L.final ? "最終結清：最少轉帳" : "參考：如果現在結清", h("span", { class: "small muted" }, `${L.settle.length} 筆`)),
+      h("p", { class: "small muted" }, "把每人淨額互相抵銷後的最少轉帳。一筆轉帳不一定對應單一筆費用；每人的淨額由哪些款項組成，看下方個人明細。", L.final ? "" : "目前含暫估金額，數字會再變。"),
+      L.settle.length ? h("ul", null, L.settle.map(x => h("li", null, h("b", null, x.from), " 轉給 ", h("b", null, x.to), " ", h("span", { class: "num" }, fmtCents(x.cents))))) : h("p", { class: "muted small" }, "大家都已結清。")));
+    // 個人明細
+    const sel = h("select", { id: "ledger-nick", "aria-label": "選擇旅伴", onchange: e => { ledgerNick = e.target.value; renderLedger(); } }, nicks.map(n => h("option", { value: n, selected: n === ledgerNick ? "" : null }, n)));
+    sel.value = ledgerNick;
+    const me = L.members.find(m => m.nick === ledgerNick), pend = new Set(L.pending[ledgerNick]);
+    const costName = id => { const it = id && D().costs.items.find(x => x.id === id); return it ? it.name : id; };
+    const mine = L.entries.filter(e => (e.type === "reversal" ? e.affects.includes(ledgerNick) : e.effects[ledgerNick]));
+    P.append(h("div", { class: "card", id: "ledger-statement" }, h("h3", null, "個人明細 ", sel),
+      h("p", { class: "small muted" }, "可以截圖傳給本人核對。標「待確認」的是他上次核對之後新增的款項；他回覆沒問題後，在 members 的 confirmed_through 填最後一筆的 id。"),
+      mine.length ? h("div", { class: "scroll-x" }, h("table", null, h("thead", null, h("tr", null, h("th", null, "日期"), h("th", null, "id"), h("th", null, "類型"), h("th", null, "內容"), h("th", { class: "r" }, "整筆"), h("th", { class: "r" }, "對 " + ledgerNick + " 的影響"))),
+        h("tbody", null, mine.map(e => h("tr", { style: e.reversedBy ? "opacity:.55;text-decoration:line-through" : null },
+          h("td", null, e.date || "—"), h("td", { class: "small" }, e.id, pend.has(e.id) ? [" ", badge("tbc", "待確認")] : null),
+          h("td", null, LEDGER_TYPE_LABEL[e.type] || e.type, e.estimated ? [" ", badge("estimate", "暫估")] : null),
+          h("td", { class: "small" }, e.type === "repayment" ? `${e.payer} 還給 ${Object.keys(e.effects).find(n => n !== e.payer) || ""}` : e.type === "reversal" ? `沖銷 ${e.refId}` : [e.payer ? e.payer + " 付" : "", e.costId ? "｜" + costName(e.costId) : "", e.evidence ? h("div", { class: "dim" }, "憑證：" + e.evidence) : null],
+            e.reversedBy ? h("div", { class: "dim" }, `已被 ${e.reversedBy} 沖銷`) : null),
+          h("td", { class: "r num" }, e.type === "reversal" ? "—" : fmtCents(e.cents)),
+          h("td", { class: "r num" }, e.type === "reversal" || e.reversedBy ? "—" : fmtCents(e.effects[ledgerNick] || 0, true))))),
+        h("tfoot", null, h("tr", null, h("td", { colspan: "5" }, h("b", null, "淨額")), h("td", { class: "r num" }, h("b", null, fmtCents(me.net, true))))))) : h("p", { class: "muted small" }, "沒有和這位旅伴有關的款項。")));
+  }
+
   /* ================= GAS 遠端資料 ================= */
   const REMOTE_CACHE_KEY = PREFIX + ".remote.v1";
   function gasUrlOk(u) { try { const x = new URL(u); return x.protocol === "https:" && ["script.google.com", "script.googleusercontent.com"].includes(x.hostname); } catch (e) { return false; } }
@@ -8138,6 +8250,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   }
   function applyRemote(env, fetchedAt, stale) {
     const v = C.validateEnvelope(env);
+    App.ledger = v.ledger && Object.keys(v.ledger).length ? v.ledger : null;   // 帳本不參與行程資料的覆蓋與回退
     App.data = Object.assign({}, App.local);
     App.origin = Object.fromEntries(C.DATASETS.map(k => [k, "local"]));
     for (const [k, val] of Object.entries(v.accepted || {})) { App.data[k] = val; App.origin[k] = "remote"; }
@@ -8166,7 +8279,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
     } catch (e) {
       let cached = null; try { cached = JSON.parse(localStorage.getItem(REMOTE_CACHE_KEY) || "null"); } catch (x) { }
       if (cached && cached.url === url) { applyRemote(cached.env, cached.t, true); App.remote.errors = [e.message]; }
-      else { App.data = App.local; App.origin = Object.fromEntries(C.DATASETS.map(k => [k, "local"])); App.remote = { status: "error", errors: [e.message] }; }
+      else { App.data = App.local; App.ledger = null; App.origin = Object.fromEntries(C.DATASETS.map(k => [k, "local"])); App.remote = { status: "error", errors: [e.message] }; }
     }
     updatePill(); renderActive();
     if (interactive) renderSettings();
@@ -8283,10 +8396,10 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
           h("button", { class: "btn", type: "button", onclick: async () => {
             clear(testOut).append(h("p", { class: "small" }, "測試中…"));
             try { const env = await fetchGas(urlIn.value.trim()); const v = C.validateEnvelope(env);
-              clear(testOut).append(v.ok ? msg("ok", `連線成功，可用資料集：${Object.keys(v.accepted).join("、")}${v.updated_at ? `（更新時間 ${v.updated_at}）` : ""}`) : msg("error", "連線成功但格式驗證失敗"), v.errors.map(e => msg("error", e)), v.ignored.length ? msg("info", "忽略：" + v.ignored.join("、")) : null);
+              clear(testOut).append(v.ok ? msg("ok", `連線成功，可用資料集：${Object.keys(v.accepted).concat(Object.keys(v.ledger || {}).map(k => k + "（帳本）")).join("、") || "（無）"}${v.updated_at ? `（更新時間 ${v.updated_at}）` : ""}`) : msg("error", "連線成功但格式驗證失敗"), v.errors.map(e => msg("error", e)), v.ignored.length ? msg("info", "忽略：" + v.ignored.join("、")) : null);
             } catch (e) { clear(testOut).append(msg("error", e.message)); } } }, "測試連線"),
           h("button", { class: "btn primary", type: "button", onclick: () => { const u = urlIn.value.trim(); if (!gasUrlOk(u)) { clear(testOut).append(msg("error", "網址格式不符")); return; } update(x => { x.gasUrl = u; x.dataSource = "remote"; }, { render: false }); loadRemote(true); } }, "使用遠端資料"),
-          h("button", { class: "btn", type: "button", onclick: () => { update(x => { x.dataSource = "local"; }, { render: false }); App.data = App.local; App.origin = Object.fromEntries(C.DATASETS.map(k => [k, "local"])); App.remote = { status: "idle", errors: [] }; updatePill(); renderActive(); renderSettings(); } }, "改回本機資料")),
+          h("button", { class: "btn", type: "button", onclick: () => { update(x => { x.dataSource = "local"; }, { render: false }); App.data = App.local; App.ledger = null; App.origin = Object.fromEntries(C.DATASETS.map(k => [k, "local"])); App.remote = { status: "idle", errors: [] }; updatePill(); renderActive(); renderSettings(); } }, "改回本機資料")),
         testOut,
         h("hr"),
         h("h3", null, "匯出／匯入（反映目前設定，不是原始資料）"),

@@ -68,7 +68,7 @@ node tools/build-site.mjs
 | [docs/04-測試結果.md](docs/04-測試結果.md) | 實際執行過的測試，以及尚未測試的項目 |
 | [docs/research.md](docs/research.md)、`docs/research-data.json` | 事實查證結果（附來源與查核日期） |
 | [docs/向業者確認問題清單.md](docs/向業者確認問題清單.md) | 寄給 Tabin、BRL、DVFC 的中英對照問題 |
-| [docs/SDD-002-代墊與付款管理.md](docs/SDD-002-代墊與付款管理.md) | 代墊與付款管理的設計（帳本工作表、分攤與結清規則、驗收）；計算核心已完成，試算表與畫面未做 |
+| [docs/SDD-002-代墊與付款管理.md](docs/SDD-002-代墊與付款管理.md) | 代墊與付款管理：設計（帳本工作表、分攤與結清規則、驗收）與實作紀錄；網站的「分帳」分頁 |
 | `gas/Code.gs` | Google Apps Script 遠端資料端點範例，含 `setupSheets()` 自動建立欄位 |
 | `docs/tests/core.test.mjs` | 核心計算與檢查邏輯的單元測試 |
 | `docs/tests/ledger.test.mjs` | 代墊與付款管理：分攤、尾數、退款、沖銷、到期、最少轉帳，加上 200 組隨機帳本的守恆檢查 |

@@ -281,9 +281,9 @@ t("往返測試：試算表 → doGet → computeLedger，與直接用原始資�
   assert.equal(a.members.reduce((s, x) => s + x.net, 0), 0);
   assert.equal(a.plans[0].remaining, 7200);
   assert.deepEqual(J(a.pending.A), ["L004", "L005", "L006", "L007"]);
-  // 網站目前的遠端驗證會略過不認識的資料集，不會因此拒收整份資料（第 4 步才加入驗證）
+  // 網站把帳本放在 v.ledger，不和行程資料混在一起
   const v = C.validateEnvelope(env);
-  assert.ok(v.ignored.includes("members") || v.accepted.members);
+  assert.ok(v.ok); assert.ok(v.ledger.members && v.ledger.ledger); assert.ok(!v.ignored.includes("ledger")); assert.ok(!v.accepted.ledger);
 });
 t("members、ledger 只有表頭：doGet 不回傳這兩個資料集", () => {
   const { ctx } = makeEnv(); ctx.setupSheets();

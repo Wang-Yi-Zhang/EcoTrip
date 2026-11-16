@@ -272,6 +272,18 @@ t("空白列（沒有 id）略過", () => {
   assert.deepEqual(r.warnings, []);
 });
 
+// ---------- 遠端信封：帳本另外放 ----------
+t("validateEnvelope：只有帳本也算成功；帳本放在 ledger，不進 accepted、不算 ignored", () => {
+  const v = J(C.validateEnvelope({ schema: "ecotrip/1", data: { members: { items: M4 }, ledger: { items: [pay("L1", "A", 1)] }, other: {} } }));
+  assert.equal(v.ok, true); assert.deepEqual(Object.keys(v.ledger).sort(), ["ledger", "members"]);
+  assert.deepEqual(v.accepted, {}); assert.deepEqual(v.ignored, ["other"]); assert.deepEqual(v.errors, []);
+});
+t("validateEnvelope：帳本形狀不對就不收並回報", () => {
+  const v = J(C.validateEnvelope({ schema: "ecotrip/1", data: { ledger: { items: "x" }, members: { items: [{ nick: { a: 1 } }] } } }));
+  assert.equal(v.ok, false); assert.deepEqual(v.ledger, {});
+  assert.ok(v.errors.some(e => e.startsWith("[ledger]"))); assert.ok(v.errors.some(e => e.startsWith("[members]") && e.includes("nick")));
+});
+
 // ---------- 守恆：隨機帳本（固定種子） ----------
 t("守恆：200 組隨機帳本，淨額加總恆為 0、每筆影響加總為 0、轉帳後全部歸零", () => {
   let seed = 20261116; const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
