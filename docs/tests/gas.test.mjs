@@ -211,15 +211,17 @@ t("試算表工具可用在另一趟旅行（--trip）：依該行程的分類�
 /* ---------- 代墊與付款管理（SDD-002 第 3 步）：members、ledger 工作表 ---------- */
 const M_ROWS = [["A", "r1", "active", "", "L003"], ["B", "r1", "", "", ""], ["C", "r2", "", "", ""], ["D", "r2", "withdrawn", new Date(Date.UTC(2026, 11, 1)), ""]];
 const dt = (y, m, dd) => new Date(Date.UTC(y, m - 1, dd));
-// 欄位順序：id date type payer to amount currency home_actual cost_id vendor_due repay_due evidence ref_id note
+// 欄位順序：id date type payer to rooms amount currency home_actual cost_id vendor_due repay_due evidence ref_id note
 const L_ROWS = [
-  ["P1", dt(2026, 11, 16), "plan", "A", "all", 10200, "MYR", "", "dvfc_package", dt(2026, 11, 30), "", "", "", "私人：訂位代號寫在這裡也不會外流"],
-  ["L001", dt(2026, 11, 15), "payment", "A", "all", 68357.6, "TWD", "", "intl_flight", "", "", "確認信", "", ""],
-  ["L002", dt(2026, 11, 15), "share", "", "A", 17570.62, "", "", "", "", "", "", "L001", ""],
-  ["L003", dt(2026, 11, 15), "share", "", "B;C;D", 50786.98, "", "", "", "", "", "", "L001", ""],
-  ["L004", dt(2026, 11, 20), "payment", "A", "all", 3000, "MYR", 25800, "", "", dt(2026, 11, 22), "", "P1", ""],
-  ["L005", dt(2026, 11, 21), "repayment", "B", "A", 5000, "TWD", "", "", "", "", "", "", ""],
-  ["", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+  ["P1", dt(2026, 11, 16), "plan", "A", "all", "", 10200, "MYR", "", "dvfc_package", dt(2026, 11, 30), "", "", "", "私人：訂位代號寫在這裡也不會外流"],
+  ["L001", dt(2026, 11, 15), "payment", "A", "all", "", 68357.6, "TWD", "", "intl_flight", "", "", "確認信", "", ""],
+  ["L002", dt(2026, 11, 15), "share", "", "A", "", 17570.62, "", "", "", "", "", "", "L001", ""],
+  ["L003", dt(2026, 11, 15), "share", "", "B;C;D", "", 50786.98, "", "", "", "", "", "", "L001", ""],
+  ["L004", dt(2026, 11, 20), "payment", "A", "all", "", 3000, "MYR", 25800, "", "", dt(2026, 11, 22), "", "P1", ""],
+  ["L005", dt(2026, 11, 21), "repayment", "B", "A", "", 5000, "TWD", "", "", "", "", "", "", ""],
+  ["L006", dt(2026, 11, 14), "payment", "A", "all", "A;B;C;D", 1800, "TWD", "", "", "", "", "訂房確認", "", ""],
+  ["L007", dt(2026, 11, 14), "payment", "A", "all", "A;B|C;D", 3000, "MYR", "", "", "", "", "", "", ""],
+  ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
 ];
 function ledgerEnv() {
   const env = makeEnv(); env.ctx.setupSheets();
@@ -232,7 +234,7 @@ t("setupSheets 建立 members、ledger：表頭、下拉（類型／狀態／幣
   const { ctx, sheets } = makeEnv(); ctx.setupSheets();
   const m = sheets.get("members"), l = sheets.get("ledger");
   assert.deepEqual(J(headRow(m)), ["nick", "room", "status", "withdrawn_on", "confirmed_through"]);
-  assert.deepEqual(J(headRow(l)), ["id", "date", "type", "payer", "to", "amount", "currency", "home_actual", "cost_id", "vendor_due", "repay_due", "evidence", "ref_id", "note"]);
+  assert.deepEqual(J(headRow(l)), ["id", "date", "type", "payer", "to", "rooms", "amount", "currency", "home_actual", "cost_id", "vendor_due", "repay_due", "evidence", "ref_id", "note"]);
   const col = (sh, n) => headRow(sh).indexOf(n) + 1, rule = (sh, n) => sh.validation.get(col(sh, n)).rule;
   assert.deepEqual(J(rule(l, "type").list), J(C.LEDGER_TYPES)); assert.equal(rule(l, "type").allowInvalid, false);
   assert.deepEqual(J(rule(m, "status").list), ["active", "withdrawn"]);
@@ -249,7 +251,8 @@ t("doGet 回傳 members、ledger：日期轉成 yyyy-MM-dd、空白列略過、�
   assert.equal(env.errors, undefined, JSON.stringify(env.errors));
   assert.deepEqual(env.data.members.items.map(x => x.nick), ["A", "B", "C", "D"]);
   assert.equal(env.data.members.items[3].withdrawn_on, "2026-12-01");
-  assert.equal(env.data.ledger.items.length, 6);
+  assert.equal(env.data.ledger.items.length, 8);
+  assert.equal(env.data.ledger.items[7].rooms, "A;B|C;D");
   const p1 = env.data.ledger.items[0];
   assert.equal(p1.date, "2026-11-16"); assert.equal(p1.vendor_due, "2026-11-30"); assert.equal(p1.home_actual, null); assert.equal(p1.amount, 10200);
   assert.equal(env.data.ledger.items[4].home_actual, 25800);
@@ -258,7 +261,7 @@ t("隱私：note 欄與旅伴自己加的欄位都不會回傳", () => {
   const { ctx, sheets } = ledgerEnv();
   const m = sheets.get("members"), l = sheets.get("ledger");
   m.getRange(1, 6).setValue("本名"); m.getRange(2, 6).setValue("不該外流的本名");
-  l.getRange(1, 15).setValue("卡號末四碼"); l.getRange(2, 15).setValue("1234");
+  l.getRange(1, 16).setValue("卡號末四碼"); l.getRange(2, 16).setValue("1234");
   const text = ctx.doGet({}).text;
   for (const w of ["私人", "訂位代號", "本名", "不該外流", "卡號", "1234"]) assert.ok(!text.includes(w), "回傳內容含 " + w);
   const env = JSON.parse(text);
@@ -269,7 +272,7 @@ t("往返測試：試算表 → doGet → computeLedger，與直接用原始資�
   const { ctx } = ledgerEnv();
   const env = JSON.parse(ctx.doGet({}).text);
   const iso = v => v instanceof Date ? v.toISOString().slice(0, 10) : v;
-  const keys = ["id", "date", "type", "payer", "to", "amount", "currency", "home_actual", "cost_id", "vendor_due", "repay_due", "evidence", "ref_id"];
+  const keys = ["id", "date", "type", "payer", "to", "rooms", "amount", "currency", "home_actual", "cost_id", "vendor_due", "repay_due", "evidence", "ref_id"];
   const direct = { items: L_ROWS.map(r => Object.fromEntries(keys.map((k, i) => [k, iso(r[i])]))) };
   const mem = { items: M_ROWS.map(r => ({ nick: r[0], room: r[1], status: r[2], withdrawn_on: iso(r[3]), confirmed_through: r[4] })) };
   const a = J(C.computeLedger(env.data.members, env.data.ledger, ledgerOpts)), b = J(C.computeLedger(mem, direct, ledgerOpts));
@@ -277,7 +280,7 @@ t("往返測試：試算表 → doGet → computeLedger，與直接用原始資�
   assert.deepEqual(a.warnings, []);
   assert.equal(a.members.reduce((s, x) => s + x.net, 0), 0);
   assert.equal(a.plans[0].remaining, 7200);
-  assert.deepEqual(J(a.pending.A), ["L004", "L005"]);
+  assert.deepEqual(J(a.pending.A), ["L004", "L005", "L006", "L007"]);
   // 網站目前的遠端驗證會略過不認識的資料集，不會因此拒收整份資料（第 4 步才加入驗證）
   const v = C.validateEnvelope(env);
   assert.ok(v.ignored.includes("members") || v.accepted.members);

@@ -6792,6 +6792,16 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
         const late = list.filter(n => byNick[n].withdrawn && r.date && byNick[n].withdrawnOn && r.date >= byNick[n].withdrawnOn);
         if (late.length) warn(idx, "withdrawn_member", id, `${late.join("、")} 已退出，仍被列入`);
       }
+      // 這筆的房間分法：| 分隔房間、; 分隔同房的人，例如 A;B|C;D（兩兩一間）、A;B;C;D（四人一間）。留空＝沿用 members 的預設房間
+      const roomsRaw = s(raw.rooms);
+      if (roomsRaw && (r.type === "payment" || r.type === "refund" || r.type === "plan")) {
+        const groups = roomsRaw.split(/[|｜]/).map(g => g.split(/[;；,，]/).map(x => x.trim()).filter(Boolean)).filter(g => g.length);
+        const bad = [...new Set(groups.flat().filter(n => !byNick[n]))];
+        if (bad.length) { warn(idx, "unknown_member", id, `rooms 裡有不認識的暱稱：${bad.join("、")}`); r.ok = false; return; }
+        r.roomOf = {}; const dup = [];
+        groups.forEach((g, gi) => g.forEach(n => { if (n in r.roomOf) dup.push(n); else r.roomOf[n] = gi; }));
+        if (dup.length) warn(idx, "bad_rooms", id, `rooms 裡同一人出現兩次：${[...new Set(dup)].join("、")}（以第一次為準）`);
+      }
       if (r.type === "repayment" && (!r.toList || r.toList.length !== 1)) { warn(idx, "bad_repayment", id, "還款的對象必須剛好一人（收錢的人）"); r.ok = false; return; }
       if (r.costId && opts.costs && !(r.costId in costUnit)) warn(idx, "unknown_cost", id, `費用 id 不存在：${r.costId}`);
       if (r.type === "share") return;
@@ -6826,11 +6836,17 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
       let list = r.toList || mem.filter(m => !inactiveOn(m, r.date)).map(m => m.nick);
       if (!list.length) return null;
       const absorber = Math.max(0, list.indexOf(r.payer));
-      let weights = list.map(() => 1);
-      if (r.costId && ROOM_UNITS.has(costUnit[r.costId])) {
-        const size = {}; for (const n of list) size[byNick[n].room] = (size[byNick[n].room] || 0) + 1;
+      let weights = list.map(() => 1), roomKey = null;
+      if (r.roomOf) {
+        // 這筆有寫房間分法：照它分；沒列進任何房間的對象自己一間，房間裡不在對象中的人不分攤
+        const missing = list.filter(n => !(n in r.roomOf)), extra = Object.keys(r.roomOf).filter(n => !list.includes(n));
+        if (missing.length || extra.length) warn(r.idx, "rooms_mismatch", r.id, [missing.length ? `${missing.join("、")} 不在任何房間（當作自己一間）` : "", extra.length ? `${extra.join("、")} 不在分攤對象中（不分攤）` : ""].filter(Boolean).join("；"));
+        roomKey = n => n in r.roomOf ? "g" + r.roomOf[n] : "\u0000" + n;
+      } else if (r.costId && ROOM_UNITS.has(costUnit[r.costId])) roomKey = n => byNick[n].room;
+      if (roomKey) {
+        const size = {}; for (const n of list) size[roomKey(n)] = (size[roomKey(n)] || 0) + 1;
         const L = Object.values(size).reduce((a, b) => a * b / gcd(a, b), 1);
-        weights = list.map(n => L / size[byNick[n].room]);
+        weights = list.map(n => L / size[roomKey(n)]);
       }
       const parts = allocateCents(cents, weights, absorber), out = {};
       list.forEach((n, i) => { out[n] = (out[n] || 0) + parts[i]; });

@@ -67,6 +67,42 @@ t("非房間類費用即使有房間代號也按人平分", () => {
   const r = run([pay("L1", "A", 900, { cost_id: "pp_cost" })], m);
   assert.deepEqual(shares(r), { A: 30000, B: 30000, C: 30000 });
 });
+// ---------- 每筆的房間分法（rooms 欄：| 分隔房間、; 分隔同房的人） ----------
+const M3 = [{ nick: "A", room: "r1" }, { nick: "B", room: "r1" }, { nick: "C", room: "r2" }];
+t("rooms 欄優先於 members 的預設房間：這晚三人同一間 → 平分", () => {
+  const r = run([pay("L1", "A", 900, { cost_id: "room_cost", rooms: "A;B;C" })], M3);
+  assert.deepEqual(shares(r), { A: 30000, B: 30000, C: 30000 });
+});
+t("rooms 欄有填時，沒有 cost_id 也按房間分攤", () => {
+  const r = run([pay("L1", "A", 900, { rooms: "A;B|C" })], M3);
+  assert.deepEqual(shares(r), { A: 22500, B: 22500, C: 45000 });
+});
+t("不同晚不同分法：一晚三人一間、一晚兩間，各記一筆", () => {
+  const r = run([pay("L1", "A", 900, { date: "2027-01-29", rooms: "A;B;C" }), pay("L2", "A", 900, { date: "2027-01-30", rooms: "A;B|C" })], M3);
+  assert.deepEqual(shares(r), { A: 52500, B: 52500, C: 75000 });
+});
+t("四人一間與兩兩一間：四人時兩種分法每人金額相同", () => {
+  const a = run([pay("L1", "A", 2000, { rooms: "A;B;C;D" })]), b = run([pay("L1", "A", 2000, { rooms: "A;C|B;D" })]);
+  assert.deepEqual(shares(a), { A: 50000, B: 50000, C: 50000, D: 50000 });
+  assert.deepEqual(shares(b), shares(a));
+});
+t("rooms 的檢查：不認識的暱稱、同一人列兩次、對象不在任何房間、房間裡的人不在對象中", () => {
+  let r = run([pay("L1", "A", 100, { rooms: "A;Z" })]);
+  assert.deepEqual(warnIds(r), ["unknown_member:L1"]);
+  r = run([pay("L1", "A", 100, { rooms: "A;B|B;C|D" })]);
+  assert.deepEqual(warnIds(r), ["bad_rooms:L1"]);
+  r = run([pay("L1", "A", 900, { rooms: "A;B" })], M3);
+  assert.deepEqual(warnIds(r), ["rooms_mismatch:L1"]);
+  assert.deepEqual(shares(r), { A: 22500, B: 22500, C: 45000 }, "沒列進房間的人自己一間");
+  r = run([pay("L1", "A", 900, { to: "A;B", rooms: "A|B;C" })], M3);
+  assert.deepEqual(warnIds(r), ["rooms_mismatch:L1"]);
+  assert.deepEqual(shares(r), { A: 45000, B: 45000, C: 0 }, "不在對象中的人不分攤");
+});
+t("退款也照該筆的 rooms 分", () => {
+  const r = run([pay("L1", "A", 900, { rooms: "A;B|C" }), { id: "L2", type: "refund", payer: "A", to: "all", rooms: "A;B|C", amount: 300, currency: "H", ref_id: "L1" }], M3);
+  assert.deepEqual(shares(r), { A: 15000, B: 15000, C: 30000 });
+});
+
 t("個人費用：to 指定一人（例如單人房差價）", () => {
   const r = run([pay("L1", "A", 510, { to: "C" })]);
   assert.deepEqual(shares(r), { A: 0, B: 0, C: 51000, D: 0 });
@@ -248,7 +284,7 @@ t("守恆：200 組隨機帳本，淨額加總恆為 0、每筆影響加總為 0
       const id = "L" + i, date = "2026-12-0" + (1 + Math.floor(rnd() * 9)), cur = pick(["H", "H", "B", "X"]);
       const amt = Math.round(rnd() * 100000) / 100 + 0.01, to = rnd() < 0.5 ? "all" : [...new Set([pick(nicks), pick(nicks)])].join(";");
       const kind = rnd();
-      if (kind < 0.55) rows.push({ id, date, type: "payment", payer: pick(nicks), to, amount: amt, currency: cur, cost_id: pick(["", "room_cost", "pp_cost"]), ...(rnd() < 0.3 ? { home_actual: Math.round(amt * 30) } : {}) });
+      if (kind < 0.55) rows.push({ id, date, type: "payment", payer: pick(nicks), to, amount: amt, currency: cur, cost_id: pick(["", "room_cost", "pp_cost"]), ...(rnd() < 0.3 ? { rooms: pick(["A;B|C;D|E", "A;B;C;D;E", "A|B;C", "A;B;C|D;E"]) } : {}), ...(rnd() < 0.3 ? { home_actual: Math.round(amt * 30) } : {}) });
       else if (kind < 0.7) rows.push({ id, date, type: "repayment", payer: pick(nicks), to: pick(nicks), amount: amt, currency: "H" });
       else if (kind < 0.8 && i) rows.push({ id, date, type: "refund", payer: pick(nicks), to, amount: amt / 3, currency: cur, ref_id: "L" + Math.floor(rnd() * i) });
       else if (kind < 0.9 && i) rows.push({ id, type: "reversal", ref_id: "L" + Math.floor(rnd() * i) });

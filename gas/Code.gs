@@ -104,7 +104,7 @@ var JSON_HEADERS = [
 /** members 工作表：一列一位旅伴（只放暱稱） */
 var MEMBERS_HEADERS = [
   { name: "nick", kind: "text", note: "暱稱（唯一；不要填本名）" },
-  { name: "room", kind: "text", note: "預設房間代號，同房的人填同一個（房間類費用依此分攤）" },
+  { name: "room", kind: "text", note: "預設房間代號，同房的人填同一個（房間類費用沒寫 rooms 時依此分攤）" },
   { name: "status", kind: "list:member_status", note: "active 同行｜withdrawn 退出；留空＝active" },
   { name: "withdrawn_on", kind: "date", note: "退出日期（這天起的 to=all 不含此人）" },
   { name: "confirmed_through", kind: "text", note: "這位旅伴已核對到的最後一筆 ledger id（旅伴回覆後由擁有者代填）" }
@@ -116,6 +116,7 @@ var LEDGER_HEADERS = [
   { name: "type", kind: "list:ledger_type", note: "plan 預計｜payment 付款｜share 指定分攤｜repayment 旅伴還款｜refund 業者退款｜reversal 沖銷" },
   { name: "payer", kind: "member", note: "付錢的人（repayment＝還錢的人）；share、reversal 留空" },
   { name: "to", kind: "text", note: "all，或以 ; 分隔的暱稱；repayment＝收錢的那一位" },
+  { name: "rooms", kind: "text", note: "這筆的房間分法（住宿用，選填）：| 分隔房間、; 分隔同房的人，例如 A;B|C;D 或 A;B;C;D。留空＝members 的預設房間。各晚分法不同就分開記" },
   { name: "amount", kind: "number", note: "原幣金額（大於 0）" },
   { name: "currency", kind: "list:price_currency", note: "原幣幣別；留空＝結算幣別" },
   { name: "home_actual", kind: "number", note: "卡片／銀行實際入帳的結算幣別金額；未入帳留空（網站用匯率暫估）" },

@@ -4,7 +4,7 @@
 
 ## 代墊與付款管理（2026-11-16 設計定案，計算核心與 GAS 完成）
 
-- 設計見 `docs/SDD-002-代墊與付款管理.md`：帳本放在試算表的 `members`、`ledger` 工作表，只用暱稱，網站唯讀。計算核心 `EcoCore.computeLedger` 與 `docs/tests/ledger.test.mjs`（36 項，含 golden 三筆與 200 組隨機守恆）已完成。第 3 步 `gas/Code.gs` 已加上 `members`、`ledger` 工作表與 `doGet` 回傳（不含 `note`）；使用者要在 Apps Script 重新貼上、執行 `setupSheets()`、發布新版本才會生效。下一步是第 4 步：「分帳」分頁。
+- 設計見 `docs/SDD-002-代墊與付款管理.md`：帳本放在試算表的 `members`、`ledger` 工作表，只用暱稱，網站唯讀。計算核心 `EcoCore.computeLedger` 與 `docs/tests/ledger.test.mjs`（42 項，含 golden 三筆與 200 組隨機守恆）已完成。第 3 步 `gas/Code.gs` 已加上 `members`、`ledger` 工作表與 `doGet` 回傳（不含 `note`）；使用者要在 Apps Script 重新貼上、執行 `setupSheets()`、發布新版本才會生效。同日加上 `ledger.rooms` 欄：每筆住宿可寫自己的房間分法（四人一間或兩兩一間），`members.room` 只當預設。下一步是第 4 步：「分帳」分頁。
 - 待使用者提供：AirAsia 每人明細、三筆已付費用的卡片入帳金額。
 
 ## 現況
