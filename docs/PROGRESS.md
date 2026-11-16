@@ -2,6 +2,11 @@
 
 最後更新：2026-11-15（機票已購）。已推送到 https://github.com/Wang-Yi-Zhang/EcoTrip（`main`），GitHub Pages 已開啟。
 
+## 代墊與付款管理（2026-11-16 設計定案，未實作）
+
+- 設計見 `docs/SDD-002-代墊與付款管理.md`：帳本放在試算表的 `members`、`ledger` 工作表，只用暱稱，網站唯讀。下一步是 `EcoCore.computeLedger` 與 `docs/tests/ledger.test.mjs`（測試先行）。
+- 待使用者提供：AirAsia 每人明細、三筆已付費用的卡片入帳金額。
+
 ## 現況
 
 - **正式網址**：首頁 https://wang-yi-zhang.github.io/EcoTrip/ ；沙巴 https://wang-yi-zhang.github.io/EcoTrip/sabah2027/ （分享給旅伴的是後者）。
